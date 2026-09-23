@@ -154,6 +154,29 @@ Use one or the other. A global assignment in `conf.d` wins over a universal
 variable, so a leftover `fish_config` choice will not fight it — but two
 `conf.d` files both setting colours will.
 
+### Installing the Waybar port
+
+The port is the role names as GTK colours; the stylesheet stays yours. Import it
+first, because GTK resolves `@define-color` at parse time and a name used before
+it is defined is an error, not a fallback.
+
+```css
+@import "/path/to/acid/ports/waybar/themes/acid-acetic.css";
+
+window#waybar {
+    background-color: @base;
+    color: @text;
+    border: 1px solid @surface1;
+}
+
+#battery.discharging.warning  { color: @orange; }
+#battery.discharging.critical { color: @red; }
+```
+
+Coming from a Catppuccin stylesheet, three names have no Acid equivalent:
+`@sky` is `@aqua`, `@mauve` is `@purple`, and `@maroon` is `@orange` or `@red`
+depending on whether it marked a warning or an error.
+
 ## Design
 
 Both flavours share one structure, so a port written against the role names
@@ -194,6 +217,7 @@ has one accent set, and ports derive brighter or dimmer variants with
 | Alacritty | [`ports/alacritty/acid.toml.tera`](ports/alacritty/acid.toml.tera) |
 | Neovim | [`ports/nvim/acid.lua.tera`](ports/nvim/acid.lua.tera) |
 | fish | [`ports/fish/acid.fish.tera`](ports/fish/acid.fish.tera) |
+| Waybar | [`ports/waybar/acid.css.tera`](ports/waybar/acid.css.tera) |
 
 ### Installing the Alacritty port
 
