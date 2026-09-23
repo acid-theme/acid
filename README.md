@@ -130,6 +130,30 @@ markup, diagnostics, LSP (semantic tokens link to the treesitter groups, so a
 server cannot repaint a buffer differently from the parser), diffs, spelling,
 `:terminal`, and git signs.
 
+### Installing the fish port
+
+The port renders in two formats from one mapping, because fish has two ways to
+carry a theme.
+
+`fish_config theme choose` writes **universal** variables, which live in
+`fish_variables` and are not usually committed:
+
+```fish
+cp ports/fish/themes/*.theme ~/.config/fish/themes/
+fish_config theme choose "Acid Acetic"
+```
+
+`conf.d/acid-<flavour>.fish` sets the same variables **globally** instead, so
+the theme travels with a tracked config rather than with the machine:
+
+```fish
+ln -sf "$PWD"/ports/fish/conf.d/acid-acetic.fish ~/.config/fish/conf.d/
+```
+
+Use one or the other. A global assignment in `conf.d` wins over a universal
+variable, so a leftover `fish_config` choice will not fight it — but two
+`conf.d` files both setting colours will.
+
 ## Design
 
 Both flavours share one structure, so a port written against the role names
@@ -169,6 +193,7 @@ has one accent set, and ports derive brighter or dimmer variants with
 | --- | --- |
 | Alacritty | [`ports/alacritty/acid.toml.tera`](ports/alacritty/acid.toml.tera) |
 | Neovim | [`ports/nvim/acid.lua.tera`](ports/nvim/acid.lua.tera) |
+| fish | [`ports/fish/acid.fish.tera`](ports/fish/acid.fish.tera) |
 
 ### Installing the Alacritty port
 
