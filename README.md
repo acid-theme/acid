@@ -177,6 +177,25 @@ Coming from a Catppuccin stylesheet, three names have no Acid equivalent:
 `@sky` is `@aqua`, `@mauve` is `@purple`, and `@maroon` is `@orange` or `@red`
 depending on whether it marked a warning or an error.
 
+### Installing the mako port
+
+Colour-only, pulled in with `include=`, which needs an absolute or `~/`-prefixed
+path:
+
+```ini
+include=~/.config/mako/acid-acetic.conf
+
+# Your own settings. mako takes the last matching value, so anything below the
+# include wins, and anything above it is overridden by the theme.
+font=GeistMonoNerdFont 10
+padding=6
+border-size=1
+```
+
+The theme sets the defaults plus `[urgency=low]`, `[urgency=normal]`,
+`[urgency=high]` and `[hidden]`. Those sections do not leak into the including
+file — global options after the `include=` are still read as globals.
+
 ## Design
 
 Both flavours share one structure, so a port written against the role names
@@ -218,6 +237,7 @@ has one accent set, and ports derive brighter or dimmer variants with
 | Neovim | [`ports/nvim/acid.lua.tera`](ports/nvim/acid.lua.tera) |
 | fish | [`ports/fish/acid.fish.tera`](ports/fish/acid.fish.tera) |
 | Waybar | [`ports/waybar/acid.css.tera`](ports/waybar/acid.css.tera) |
+| mako | [`ports/mako/acid.conf.tera`](ports/mako/acid.conf.tera) |
 
 ### Installing the Alacritty port
 
