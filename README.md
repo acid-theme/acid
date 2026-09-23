@@ -196,6 +196,33 @@ The theme sets the defaults plus `[urgency=low]`, `[urgency=normal]`,
 `[urgency=high]` and `[hidden]`. Those sections do not leak into the including
 file — global options after the `include=` are still read as globals.
 
+### Installing the niri port
+
+Two `layout` blocks in one file are a duplicate-node error, but niri merges a
+`layout` block that arrives through `include`, so the theme can carry the
+colours while your config keeps the geometry:
+
+```kdl
+include "acid-acetic.kdl"
+
+layout {
+    gaps 4
+    border {
+        width 0.5
+    }
+}
+```
+
+Drop the `active-color`, `inactive-color` and `urgent-color` lines from your own
+blocks when you add the include. Setting the same key on both sides still
+validates, but which one wins is unspecified — so do not rely on it either way.
+
+The theme sets `focus-ring`, `border`, `shadow`, `insert-hint`, `tab-indicator`
+and the overview backdrop. `background-color` is left commented out, since
+`transparent` is a deliberate choice when a backdrop shows through.
+
+Check the result before reloading: `niri validate -c ~/.config/niri/config.kdl`.
+
 ## Design
 
 Both flavours share one structure, so a port written against the role names
@@ -238,6 +265,7 @@ has one accent set, and ports derive brighter or dimmer variants with
 | fish | [`ports/fish/acid.fish.tera`](ports/fish/acid.fish.tera) |
 | Waybar | [`ports/waybar/acid.css.tera`](ports/waybar/acid.css.tera) |
 | mako | [`ports/mako/acid.conf.tera`](ports/mako/acid.conf.tera) |
+| niri | [`ports/niri/acid.kdl.tera`](ports/niri/acid.kdl.tera) |
 
 ### Installing the Alacritty port
 
