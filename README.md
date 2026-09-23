@@ -108,6 +108,28 @@ Every filter takes a hex string or a colour object, so they chain.
 Use `--context` while writing a template to print the variables it will see, and
 `--stdout` to render without writing files.
 
+### Installing the Neovim port
+
+`ports/nvim` is a runtime directory, so point a plugin manager at the
+repository — `dir = "~/sources/acid/ports/nvim"` for lazy.nvim — or add it to
+`runtimepath` yourself:
+
+```lua
+vim.opt.runtimepath:prepend("~/sources/acid/ports/nvim")
+vim.cmd.colorscheme("acid-acetic")   -- or acid-citric
+```
+
+To try it without touching your config:
+
+```sh
+nvim --clean --cmd 'set rtp^=ports/nvim' -c 'colorscheme acid-citric' README.md
+```
+
+The port covers the editor and chrome groups, legacy syntax, treesitter,
+markup, diagnostics, LSP (semantic tokens link to the treesitter groups, so a
+server cannot repaint a buffer differently from the parser), diffs, spelling,
+`:terminal`, and git signs.
+
 ## Design
 
 Both flavours share one structure, so a port written against the role names
@@ -117,6 +139,12 @@ works for both:
 - **Text** runs `overlay0`–`overlay2`, `subtext0`, `subtext1`, `text`.
 - **Accents** are the seven gruvbox names: `red`, `orange`, `yellow`, `green`,
   `aqua`, `blue`, `purple`.
+
+The accents are named after gruvbox's but are not mapped the way gruvbox maps
+them. Gruvbox paints keywords red and functions green; Acid uses purple for
+keywords and aqua for functions, so red is left for things that are actually
+wrong — errors, deletions, exceptions. `docs/PALETTE.md` has the full table, and
+ports are expected to follow it.
 
 Two things are worth knowing:
 
@@ -140,6 +168,7 @@ has one accent set, and ports derive brighter or dimmer variants with
 | Port | Template |
 | --- | --- |
 | Alacritty | [`ports/alacritty/acid.toml.tera`](ports/alacritty/acid.toml.tera) |
+| Neovim | [`ports/nvim/acid.lua.tera`](ports/nvim/acid.lua.tera) |
 
 ### Installing the Alacritty port
 
