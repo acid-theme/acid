@@ -1,0 +1,17 @@
+[package]
+name = "acidify"
+description = "Render Acid ports from Tera templates, one template per port, one output per flavour."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+
+[dependencies]
+acid-palette = { workspace = true }
+anyhow = { workspace = true }
+clap = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+tera = "1"
+serde_yaml_ng = "0.10"
