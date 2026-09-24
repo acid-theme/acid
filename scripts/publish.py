@@ -272,8 +272,8 @@ def describe_hub() -> str:
 
 def publish(
     registry: dict, port: dict, *, dry_run: bool, tag: str | None, out: Path | None
-) -> bool:
-    """Sync one port. Returns whether anything changed."""
+) -> str:
+    """Sync one port. Returns `changed`, `unchanged` or `skipped`."""
     name = port["name"]
     slug = f"{registry['org']}/{name}"
 
@@ -286,7 +286,7 @@ def publish(
         print(f"  {slug} -> {repo}")
         for path in files + ["README.md", "LICENSE"]:
             print(f"      {path}")
-        return True
+        return "changed"
 
     with tempfile.TemporaryDirectory(prefix=f"acid-{name}-") as workdir:
         repo = Path(workdir) / name
@@ -297,17 +297,15 @@ def publish(
             print(f"  {slug}")
             for path in files + ["README.md", "LICENSE"]:
                 print(f"      {path}")
-            return True
+            return "changed"
 
         try:
             run(["git", "clone", "--quiet", remote_url(registry, port), str(repo)])
         except Failure as error:
             message = str(error)
             if "not found" in message.lower() or "repository not found" in message.lower():
-                raise Failure(
-                    f"{slug} does not exist. Port repositories are created once, "
-                    f"by hand; this only pushes to them."
-                ) from error
+                print(f"  {slug}: no repository yet, skipped")
+                return "skipped"
             raise
 
         # Previews are built into target/, which a fresh checkout does not have.
@@ -339,7 +337,7 @@ def publish(
         run(["git", "add", "--all"], cwd=repo)
         if not run(["git", "status", "--porcelain"], cwd=repo):
             print(f"  {slug}: already up to date")
-            return False
+            return "unchanged"
 
         subject = f"Sync from {registry['hub']}@{describe_hub()}"
         if tag:
@@ -358,7 +356,7 @@ def publish(
             run(["git", "tag", "--force", tag], cwd=repo)
             run(["git", "push", "--quiet", "--force", "origin", tag], cwd=repo)
         print(f"  {slug}: pushed {subject}")
-        return True
+        return "changed"
 
 
 def main() -> int:
@@ -401,12 +399,16 @@ def main() -> int:
             f"{'publishing' if pushing else 'would publish'} "
             f"{len(ports)} port(s) to {registry['org']}:"
         )
-        changed = sum(
+        results = [
             publish(registry, port, dry_run=args.dry_run, tag=args.tag, out=args.out)
             for port in ports
-        )
+        ]
         if pushing:
-            print(f"{changed} of {len(ports)} port(s) changed")
+            summary = f"{results.count('changed')} of {len(ports)} port(s) changed"
+            skipped = results.count("skipped")
+            if skipped:
+                summary += f", {skipped} without a repository yet"
+            print(summary)
         return 0
     except Failure as error:
         print(f"publish: {error}", file=sys.stderr)

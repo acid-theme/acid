@@ -22,6 +22,6 @@ xdotool type --delay 40 'echo "acid" | string upper'
 xdotool key Return
 sleep 1
 # Left uncommitted: this is the line whose highlighting is on display.
-xdotool type --delay 40 'grep -rn --color=auto "surface0" ports/ > /tmp/hits.txt'
+xdotool type --delay 40 'grep -rn --color=auto "fish_color" conf.d/ > /tmp/hits.txt'
 sleep 1
 capture_x11 "$OUT"
