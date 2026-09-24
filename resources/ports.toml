@@ -27,9 +27,8 @@ Then import it from `alacritty.toml`:
 import = ["~/.config/alacritty/acid-acetic.toml"]
 ```
 
-Anything under `[colors]` in your own config overrides the import, so drop a
-leftover `[colors.primary] background` line — it would pin citric to acetic's
-black.
+Anything under `[colors]` in the main config overrides the import. A leftover
+`[colors.primary] background` line pins citric to acetic's black.
 """
 [[port.publish]]
 src = "ports/alacritty/themes"
@@ -139,13 +138,12 @@ curl -fsSLo ~/.config/mako/acid-acetic.conf \\
   https://raw.githubusercontent.com/acid-theme/mako/main/acid-acetic.conf
 ```
 
-Then pull it in from your config. `include` needs an absolute or `~/`-prefixed
-path:
+`include` needs an absolute or `~/`-prefixed path:
 
 ```ini
 include=~/.config/mako/acid-acetic.conf
 
-# Your own settings. mako takes the last matching value, so anything below the
+# Local settings. mako takes the last matching value, so anything below the
 # include wins.
 font=monospace 10
 padding=6
@@ -172,7 +170,7 @@ curl -fsSLo ~/.config/niri/acid-acetic.kdl \\
 
 Two `layout` blocks in one file are a duplicate-node error, but niri merges a
 `layout` block that arrives through `include`, so the theme carries the colours
-while your config keeps the geometry:
+while the main config keeps the geometry:
 
 ```kdl
 include "acid-acetic.kdl"
@@ -185,9 +183,9 @@ layout {
 }
 ```
 
-Drop the `active-color`, `inactive-color` and `urgent-color` lines from your own
-blocks. Setting the same key on both sides still validates, but which one wins
-is unspecified. Check with `niri validate` before reloading.
+Remove the `active-color`, `inactive-color` and `urgent-color` lines from the
+local blocks. Setting the same key on both sides still validates, but which one
+wins is unspecified. Check with `niri validate` before reloading.
 """
 [[port.publish]]
 src = "ports/niri/themes"
@@ -200,7 +198,7 @@ description = "Acid for swaylock. A very dark colourscheme in two flavours."
 template = "ports/swaylock/acid.conf.tera"
 install = """
 swaylock has no include directive, so this is a colours-only config to compose
-with. Keep your own options in a separate file and concatenate the two:
+with. Keep local options in a separate file and concatenate the two:
 
 ```sh
 curl -fsSLo /tmp/acid-acetic.conf \\
@@ -208,7 +206,7 @@ curl -fsSLo /tmp/acid-acetic.conf \\
 cat ~/.config/swaylock/base.conf /tmp/acid-acetic.conf > ~/.config/swaylock/config
 ```
 
-Or add your options to a copy and point swaylock at it with `swaylock -C`. Keep
+Or add local options to a copy and point swaylock at it with `swaylock -C`. Keep
 the two files disjoint: an unrecognised key makes swaylock exit rather than
 lock.
 

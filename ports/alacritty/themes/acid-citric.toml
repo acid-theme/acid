@@ -4,7 +4,7 @@
 # the template, or the palette in crates/acid-palette/src/lib.rs, and re-run
 # `make ports`.
 #
-# Import it from your alacritty.toml:
+# Import it from alacritty.toml:
 #   [general]
 #   import = ["~/.config/alacritty/themes/acid-citric.toml"]
 

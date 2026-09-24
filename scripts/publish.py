@@ -10,6 +10,7 @@ Python with `tomllib` rather than a crate in the workspace, because the work is
 file copying and git plumbing, and this way CI needs nothing built to run it.
 
     publish.py --check            validate the registry, touch no network
+    publish.py --readmes          write each port's README in this repository
     publish.py --dry-run          build the trees, report what would change
     publish.py --out DIR          build the trees into DIR and keep them
     publish.py                    push every port that changed
@@ -28,12 +29,14 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import json
 import tomllib
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 REGISTRY = ROOT / "resources" / "ports.toml"
 README_TEMPLATE = ROOT / "resources" / "port-readme.md"
+PALETTE = ROOT / "palette.json"
 LICENSE = ROOT / "LICENSE"
 
 
@@ -100,6 +103,22 @@ def validate(registry: dict) -> list[str]:
             if dest.startswith("/") or ".." in Path(dest).parts:
                 problems.append(f"{label}: publish dest {dest!r} must stay inside the repo")
 
+        readme = readme_path(port)
+        if not readme.is_file():
+            problems.append(f"{label}: {readme.relative_to(ROOT)} is missing; run `make docs`")
+        elif port.get("install") and port.get("title"):
+            files = [
+                str((Path(rule["dest"]) / item.name) if rule["dest"] else Path(item.name))
+                for rule in port.get("publish", [])
+                if (ROOT / rule["src"]).is_dir()
+                for item in sorted((ROOT / rule["src"]).iterdir())
+                if item.is_file()
+            ]
+            if readme.read_text() != render_readme(registry, port, files):
+                problems.append(
+                    f"{label}: {readme.relative_to(ROOT)} is out of date; run `make docs`"
+                )
+
     # Every port template in the tree must be registered, or it ships nowhere.
     for path in sorted(ROOT.glob("ports/*/*.tera")):
         if path not in declared_templates:
@@ -108,6 +127,25 @@ def validate(registry: dict) -> list[str]:
             )
 
     return problems
+
+
+def port_dir(port: dict) -> Path:
+    return ROOT / Path(port["template"]).parent
+
+
+def readme_path(port: dict) -> Path:
+    return port_dir(port) / "README.md"
+
+
+def flavour_summary() -> str:
+    """One line naming each flavour, taken from the palette rather than repeated."""
+    with PALETTE.open() as handle:
+        palette = json.load(handle)
+    parts = [
+        f"**{flavor['name']}** (`{flavor['colors']['base']['hex']}`)"
+        for flavor in palette.values()
+    ]
+    return f"Two flavours: {parts[0]}, vibrant, and {parts[1]}, muted."
 
 
 def render_readme(registry: dict, port: dict, files: list[str]) -> str:
@@ -121,6 +159,7 @@ def render_readme(registry: dict, port: dict, files: list[str]) -> str:
         "%%TEMPLATE%%": port["template"],
         "%%HUB%%": registry["hub"],
         "%%NAME%%": port["name"],
+        "%%FLAVOURS%%": flavour_summary(),
     }.items():
         text = text.replace(key, value)
     return text
@@ -139,7 +178,7 @@ def build_tree(registry: dict, port: dict, into: Path) -> list[str]:
             shutil.copy2(item, target / item.name)
             published.append(str((target / item.name).relative_to(into)))
 
-    (into / "README.md").write_text(render_readme(registry, port, published))
+    shutil.copy2(readme_path(port), into / "README.md")
     shutil.copy2(LICENSE, into / "LICENSE")
     return published
 
@@ -238,6 +277,8 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--check", action="store_true",
                         help="validate the registry and exit")
+    parser.add_argument("--readmes", action="store_true",
+                        help="write each port's README in this repository and exit")
     parser.add_argument("--dry-run", action="store_true",
                         help="build the trees and report, push nothing")
     parser.add_argument("--only", metavar="NAME", action="append",
@@ -250,6 +291,21 @@ def main() -> int:
 
     try:
         registry = load_registry()
+
+        if args.readmes:
+            for port in registry["port"]:
+                files = [
+                    str((Path(rule["dest"]) / item.name) if rule["dest"] else Path(item.name))
+                    for rule in port["publish"]
+                    if (ROOT / rule["src"]).is_dir()
+                    for item in sorted((ROOT / rule["src"]).iterdir())
+                    if item.is_file()
+                ]
+                target = readme_path(port)
+                target.write_text(render_readme(registry, port, files))
+                print(f"readme: wrote {target.relative_to(ROOT)}")
+            return 0
+
         problems = validate(registry)
         if problems:
             print(f"{REGISTRY.name} does not match the working tree:", file=sys.stderr)

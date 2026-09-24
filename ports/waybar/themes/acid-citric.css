@@ -5,7 +5,7 @@
  * template, or the palette in crates/acid-palette/src/lib.rs, and re-run
  * `make ports`.
  *
- * Import it at the top of your style.css and refer to the roles by name:
+ * Import it above the rules that use it and refer to the roles by name:
  *
  *     @import "themes/acid-citric.css";
  *

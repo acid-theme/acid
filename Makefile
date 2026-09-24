@@ -16,9 +16,10 @@ palette:
 ports:
 	$(ACIDIFY) $(wildcard ports/*/*.tera)
 
-## Render the generated documentation.
+## Render the generated documentation and each port's README.
 docs:
 	$(ACIDIFY) $(wildcard docs/*.tera)
+	@python3 scripts/publish.py --readmes
 
 ## Print every colour slot the current terminal theme has loaded.
 preview:

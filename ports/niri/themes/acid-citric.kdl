@@ -9,10 +9,10 @@
 //
 //     include "~/.config/niri/acid-citric.kdl"
 //
-// niri merges an included `layout` block with the one in your config, which a
-// second `layout` block in the same file cannot do. Keep the colour settings
-// here and the geometry — gaps, widths, struts — in your own config, so the
-// two never set the same key and precedence never has to be reasoned about.
+// niri merges an included `layout` block with the one in the main config, which
+// a second `layout` block in the same file cannot do. Keep the colours here and
+// the geometry — gaps, widths, struts — there, so the two never set the same key
+// and precedence never has to be reasoned about.
 
 layout {
     focus-ring {

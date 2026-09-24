@@ -1,11 +1,9 @@
 # Acid for %%TITLE%%
 
-%%DESCRIPTION%%
+%%FLAVOURS%%
 
-| Flavour | Background | Accents |
-| --- | --- | --- |
-| **Acetic** | `#000000` | Vibrant |
-| **Citric** | `#1c1b19` | Muted |
+Part of [Acid](https://github.com/%%HUB%%), a very dark colourscheme in two
+flavours. The main README lists the other ports.
 
 ## Install
 
@@ -15,15 +13,11 @@
 
 %%FILES%%
 
-## About
+## Generated
 
-This repository is generated. The colours come from the palette in
-[%%HUB%%](https://github.com/%%HUB%%), rendered from
-[`%%TEMPLATE%%`](https://github.com/%%HUB%%/blob/main/%%TEMPLATE%%).
-
-Nothing here is edited by hand, so a pull request against these files cannot be
-merged. Please open issues and pull requests on
-[%%HUB%%](https://github.com/%%HUB%%/issues) instead.
+Rendered by acidify from [`%%TEMPLATE%%`](https://github.com/%%HUB%%/blob/main/%%TEMPLATE%%).
+Edits to these files are overwritten on the next release. Report issues on
+[%%HUB%%](https://github.com/%%HUB%%/issues).
 
 ## Licence
 

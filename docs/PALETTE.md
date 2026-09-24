@@ -5,9 +5,9 @@
   or the palette in crates/acid-palette/src/lib.rs, and re-run `make docs`.
 -->
 
-Acid is a very dark colourscheme in the spirit of gruvbox: warm text, earthy
-accents, and no colour that fights the code for attention. It comes in two
-flavours.
+Every colour in both flavours, with its contrast ratio against its own `base`,
+measured per WCAG 2.1. [DESIGN.md](DESIGN.md) covers the rules the palette
+follows and why.
 
 | Flavour | Background | Accents |
 | --- | --- | --- |
@@ -73,12 +73,11 @@ is the AA threshold for body text.
 ## Roles
 
 The role names come from Catppuccin, so a port written for one scheme maps onto
-the other without renaming anything. The seven accents are named after
-gruvbox's.
+the other without renaming anything.
 
 | Role | Use it for |
 | --- | --- |
-| `base` | The editor field. The background you look at all day. |
+| `base` | The editor field. |
 | `mantle` | Chrome behind the field: status lines, tab bars, footers. |
 | `crust` | The outermost layer: window borders, inactive chrome. |
 | `surface0` … `surface2` | Raised surfaces: floats, popups, selections, the cursor line. |
@@ -92,14 +91,3 @@ gruvbox's.
 | `aqua` | Functions, methods, git changes. |
 | `blue` | Identifiers, properties, links. |
 | `purple` | Keywords, operators, punctuation with meaning. |
-
-### On the depth axis
-
-In `citric`, `crust` is darker than `mantle`, which is darker than `base` — the
-usual arrangement, and the one Catppuccin ports assume.
-
-In `acetic`, `base` is pure black. Nothing can sit below it, so the axis runs the
-other way: `mantle` and `crust` are *lighter* than `base`, and chrome is raised
-off the field rather than sunk beneath it. The flavour advertises this as
-`invertedDepth` in `palette.json` and as `flavor.invertedDepth` in templates, so
-a port that cares can branch on it instead of assuming an order.
