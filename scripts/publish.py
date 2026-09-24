@@ -34,6 +34,7 @@ import tomllib
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
+MANIFEST = ROOT / "Cargo.toml"
 REGISTRY = ROOT / "resources" / "ports.toml"
 README_TEMPLATE = ROOT / "resources" / "port-readme.md"
 PALETTE = ROOT / "palette.json"
@@ -67,11 +68,23 @@ def load_registry() -> dict:
     return registry
 
 
+def workspace_version() -> str:
+    with MANIFEST.open("rb") as handle:
+        return tomllib.load(handle)["workspace"]["package"]["version"]
+
+
 def validate(registry: dict) -> list[str]:
     """Check the registry against the working tree. Returns the problems found."""
     problems: list[str] = []
     seen: set[str] = set()
     declared_templates: set[Path] = set()
+
+    version = workspace_version()
+    if load_palette()["version"] != version:
+        problems.append(
+            f"palette.json says version {load_palette()['version']}, "
+            f"the manifest says {version}; run `make`"
+        )
 
     for port in registry["port"]:
         label = port.get("name", "<unnamed>")
@@ -119,6 +132,17 @@ def validate(registry: dict) -> list[str]:
                     f"{label}: {readme.relative_to(ROOT)} is out of date; run `make docs`"
                 )
 
+        for rule in port.get("publish", []):
+            source = ROOT / rule.get("src", "")
+            if not source.is_dir():
+                continue
+            for item in sorted(source.iterdir()):
+                if item.is_file() and version not in item.read_text(errors="replace"):
+                    problems.append(
+                        f"{label}: {item.relative_to(ROOT)} is not stamped "
+                        f"with version {version}"
+                    )
+
     # Every port template in the tree must be registered, or it ships nowhere.
     for path in sorted(ROOT.glob("ports/*/*.tera")):
         if path not in declared_templates:
@@ -137,13 +161,16 @@ def readme_path(port: dict) -> Path:
     return port_dir(port) / "README.md"
 
 
+def load_palette() -> dict:
+    with PALETTE.open() as handle:
+        return json.load(handle)
+
+
 def flavour_summary() -> str:
     """One line naming each flavour, taken from the palette rather than repeated."""
-    with PALETTE.open() as handle:
-        palette = json.load(handle)
     parts = [
         f"**{flavor['name']}** (`{flavor['colors']['base']['hex']}`)"
-        for flavor in palette.values()
+        for flavor in load_palette()["flavors"].values()
     ]
     return f"Two flavours: {parts[0]}, vibrant, and {parts[1]}, muted."
 
@@ -160,6 +187,7 @@ def render_readme(registry: dict, port: dict, files: list[str]) -> str:
         "%%HUB%%": registry["hub"],
         "%%NAME%%": port["name"],
         "%%FLAVOURS%%": flavour_summary(),
+        "%%VERSION%%": load_palette()["version"],
     }.items():
         text = text.replace(key, value)
     return text

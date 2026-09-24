@@ -29,7 +29,8 @@ Anything under `[colors]` in the main config overrides the import. A leftover
 
 ## Generated
 
-Rendered by acidify from [`ports/alacritty/acid.toml.tera`](https://github.com/acid-theme/acid/blob/main/ports/alacritty/acid.toml.tera).
+Acid 0.1.0, rendered by acidify from
+[`ports/alacritty/acid.toml.tera`](https://github.com/acid-theme/acid/blob/main/ports/alacritty/acid.toml.tera).
 Edits to these files are overwritten on the next release. Report issues on
 [acid-theme/acid](https://github.com/acid-theme/acid/issues).
 

@@ -24,6 +24,10 @@ Render it with `acidify path/to/template.tera`. Output paths resolve against the
 template's own directory unless `--output-dir` says otherwise. `--context` prints
 the variables a template will see; `--stdout` renders without writing.
 
+Every generated file names the version that produced it, so a theme installed by
+hand can be identified. Put `{{ version }}` in the header; `make check` fails
+without it.
+
 A new port also needs an entry in `resources/ports.toml` and a test in
 `tests/ports/`. See [DEVELOPMENT.md](DEVELOPMENT.md).
 
@@ -59,6 +63,7 @@ The fish port uses a custom axis to render two file formats from one mapping.
 | `flavor.color_list` | Every colour in canonical order, with `identifier`, `name`, `order`, `accent`, `hex`, `bare`, `rgb`, `hsl`. |
 | `flavor.accents` | The seven accents, same shape. |
 | `flavor.invertedDepth` | Whether `mantle` and `crust` sit above `base`. |
+| `version` | The release that produced the file. Always available. |
 
 Colours render as `#rrggbb`. Every other form comes from a filter.
 

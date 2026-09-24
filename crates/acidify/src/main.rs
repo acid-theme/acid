@@ -161,6 +161,7 @@ fn build_context(template: &Template, combination: &Map<String, Value>) -> Resul
 
     let mut context = Context::new();
     context.insert("flavors", &palette);
+    context.insert("version", &acid_palette::VERSION);
     for (key, value) in variables {
         context.insert(key, &value);
     }
@@ -175,9 +176,9 @@ fn build_context(template: &Template, combination: &Map<String, Value>) -> Resul
 /// that need a colour's name, order or accent flag.
 fn template_palette() -> Value {
     let mut palette = json::palette();
-    let flavors = palette
+    let flavors = palette["flavors"]
         .as_object_mut()
-        .expect("the palette is an object keyed by flavour");
+        .expect("the palette holds an object keyed by flavour");
 
     for flavor in flavors.values_mut() {
         let colors = flavor["colors"]
@@ -194,7 +195,7 @@ fn template_palette() -> Value {
         );
     }
 
-    palette
+    palette["flavors"].take()
 }
 
 fn render(template: &Template, context: &Context, output_dir: &Path) -> Result<Rendered> {
@@ -279,6 +280,14 @@ mod tests {
         assert_eq!(outputs.len(), 1);
         assert_eq!(outputs[0].0, None);
         assert_eq!(outputs[0].1, "a3ab2f");
+    }
+
+    /// Every template can stamp the version that produced its output.
+    #[test]
+    fn version_is_always_available() {
+        let outputs = render_to_string("---\nacidify: {}\n---\n{{ version }}");
+        assert_eq!(outputs[0].1, acid_palette::VERSION);
+        assert!(!acid_palette::VERSION.is_empty());
     }
 
     #[test]

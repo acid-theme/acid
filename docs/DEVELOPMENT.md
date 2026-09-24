@@ -51,6 +51,38 @@ tests/run.sh --build    # rebuild the image first
 Every port test includes a negative control — a broken theme, an invented key, a
 duplicate node — so a test that cannot fail is caught.
 
+## Versioning
+
+One version covers the palette, the renderer and every port: a theme is only ever
+released together with the palette it came from. It is set once, in
+`[workspace.package]` in `Cargo.toml`, and reaches everything else from there —
+`acid_palette::VERSION`, the `version` field in `palette.json`, the `{{ version }}`
+template variable, and the header of every generated file.
+
+| Change | Bump |
+| --- | --- |
+| A colour value | minor |
+| A role added, removed or renamed | major |
+| A port's mapping, or a new port | minor |
+| A fix that leaves every generated file unchanged | patch |
+
+A colour value is a minor bump rather than a patch because it changes every
+port's output.
+
+`make check` fails if the manifest and `palette.json` disagree, and if any
+published file is missing the current version.
+
+### Releasing
+
+```sh
+$EDITOR Cargo.toml     # bump [workspace.package] version
+make                   # restamp and re-render everything
+make check
+git commit
+git tag v0.2.0
+git push --tags        # publish.yml mirrors the tag to every port repository
+```
+
 ## Publishing
 
 This repository is the hub and the only one edited. Each port also has a

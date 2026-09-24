@@ -15,7 +15,8 @@ flavours. The main README lists the other ports.
 
 ## Generated
 
-Rendered by acidify from [`%%TEMPLATE%%`](https://github.com/%%HUB%%/blob/main/%%TEMPLATE%%).
+Acid %%VERSION%%, rendered by acidify from
+[`%%TEMPLATE%%`](https://github.com/%%HUB%%/blob/main/%%TEMPLATE%%).
 Edits to these files are overwritten on the next release. Report issues on
 [%%HUB%%](https://github.com/%%HUB%%/issues).
 

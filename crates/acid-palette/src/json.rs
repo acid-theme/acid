@@ -5,7 +5,7 @@
 
 use serde_json::{Map, Value, json};
 
-use crate::{Color, FLAVORS, Flavor};
+use crate::{Color, FLAVORS, Flavor, VERSION};
 
 /// Keeps the JSON stable across runs; raw f64 hue and saturation would churn
 /// the diff on unrelated changes.
@@ -55,13 +55,17 @@ pub fn flavor(flavor: &Flavor) -> Value {
     })
 }
 
-/// Every flavour, keyed by identifier and in canonical order.
+/// Every flavour, keyed by identifier and in canonical order, under the version
+/// that produced them.
 pub fn palette() -> Value {
     let mut flavors = Map::new();
     for entry in &FLAVORS {
         flavors.insert(entry.identifier.to_owned(), flavor(entry));
     }
-    Value::Object(flavors)
+    json!({
+        "version": VERSION,
+        "flavors": Value::Object(flavors),
+    })
 }
 
 #[cfg(test)]
@@ -69,12 +73,17 @@ mod tests {
     use super::*;
 
     #[test]
+    fn carries_the_version() {
+        assert_eq!(palette()["version"], crate::VERSION);
+    }
+
+    #[test]
     fn keeps_flavours_and_colours_in_order() {
         let palette = palette();
-        let flavors: Vec<_> = palette.as_object().unwrap().keys().collect();
+        let flavors: Vec<_> = palette["flavors"].as_object().unwrap().keys().collect();
         assert_eq!(flavors, ["acetic", "citric"]);
 
-        let colors = palette["acetic"]["colors"].as_object().unwrap();
+        let colors = palette["flavors"]["acetic"]["colors"].as_object().unwrap();
         let first: Vec<_> = colors.keys().take(3).collect();
         assert_eq!(first, ["red", "orange", "yellow"]);
         assert_eq!(colors.keys().next_back().unwrap(), "crust");
@@ -82,11 +91,14 @@ mod tests {
 
     #[test]
     fn exposes_derived_representations() {
-        let red = &palette()["acetic"]["colors"]["red"];
+        let red = &palette()["flavors"]["acetic"]["colors"]["red"];
         assert_eq!(red["hex"], "#ff4536");
         assert_eq!(red["bare"], "ff4536");
         assert_eq!(red["rgb"]["r"], 255);
         assert_eq!(red["accent"], true);
-        assert_eq!(palette()["acetic"]["accents"].as_array().unwrap().len(), 7);
+        assert_eq!(
+            palette()["flavors"]["acetic"]["accents"].as_array().unwrap().len(),
+            7
+        );
     }
 }

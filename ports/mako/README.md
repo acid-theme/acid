@@ -34,7 +34,8 @@ Sets the defaults plus `[urgency=low]`, `[urgency=normal]`, `[urgency=high]` and
 
 ## Generated
 
-Rendered by acidify from [`ports/mako/acid.conf.tera`](https://github.com/acid-theme/acid/blob/main/ports/mako/acid.conf.tera).
+Acid 0.1.0, rendered by acidify from
+[`ports/mako/acid.conf.tera`](https://github.com/acid-theme/acid/blob/main/ports/mako/acid.conf.tera).
 Edits to these files are overwritten on the next release. Report issues on
 [acid-theme/acid](https://github.com/acid-theme/acid/issues).
 

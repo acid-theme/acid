@@ -11,6 +11,10 @@ use serde::Serialize;
 
 pub use color::{Hex, Hsl, Rgb};
 
+/// The palette's version, and so the colourscheme's. Set in the workspace
+/// manifest; every generated file is stamped with it.
+pub const VERSION: &str = env!("CARGO_PKG_VERSION");
+
 /// One colour, with its palette metadata attached.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
 pub struct Color {
