@@ -163,8 +163,8 @@ pub const ACETIC: Flavor = Flavor {
         surface0: Hex::new(0x242424),
 
         base: Hex::new(0x000000),
-        mantle: Hex::new(0x0a0a0a),
-        crust: Hex::new(0x141414),
+        mantle: Hex::new(0x0f0f0f),
+        crust: Hex::new(0x1c1c1c),
     },
 };
 
@@ -198,8 +198,8 @@ pub const CITRIC: Flavor = Flavor {
         surface0: Hex::new(0x35332c),
 
         base: Hex::new(0x1c1b19),
-        mantle: Hex::new(0x151413),
-        crust: Hex::new(0x0e0e0d),
+        mantle: Hex::new(0x121211),
+        crust: Hex::new(0x060605),
     },
 };
 
@@ -224,6 +224,11 @@ pub const MIN_FILL_STEP: f64 = 1.3;
 /// The contrast ratio dimmed text must clear against the fill it sits on — a
 /// comment on the cursor line being the case that matters.
 pub const MIN_DIM_TEXT: f64 = 3.0;
+
+/// The contrast ratio between `base`, `mantle` and `crust`. Chrome is meant to
+/// be subtle — Catppuccin and gruvbox both sit near 1.1 — so this is a floor
+/// that stops the layers collapsing into one, not a target.
+pub const MIN_CHROME_STEP: f64 = 1.07;
 
 #[cfg(test)]
 mod tests {
@@ -341,6 +346,28 @@ mod tests {
                     flavor.identifier,
                     pair[1],
                     pair[0],
+                );
+            }
+        }
+    }
+
+    /// Chrome stays subtle, but the three layers must still be distinguishable
+    /// from one another.
+    #[test]
+    fn chrome_layers_are_separable() {
+        for flavor in FLAVORS {
+            let c = &flavor.colors;
+            for (lower, upper) in [("base", c.base), ("mantle", c.mantle)]
+                .into_iter()
+                .zip([("mantle", c.mantle), ("crust", c.crust)])
+            {
+                let ratio = lower.1.contrast(upper.1);
+                assert!(
+                    ratio >= MIN_CHROME_STEP,
+                    "{}: {} against {} is {ratio:.2}:1, below {MIN_CHROME_STEP}:1",
+                    flavor.identifier,
+                    upper.0,
+                    lower.0,
                 );
             }
         }

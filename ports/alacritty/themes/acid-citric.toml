@@ -42,11 +42,11 @@ background = "#9f988a"
 # mantle is lighter than base in acetic, darker in citric.
 [colors.footer_bar]
 foreground = "#cabea7"
-background = "#151413"
+background = "#121211"
 
 [colors.line_indicator]
 foreground = "#cabea7"
-background = "#151413"
+background = "#121211"
 
 [colors.selection]
 text = "#e2d6b6"

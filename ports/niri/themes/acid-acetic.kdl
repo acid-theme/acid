@@ -30,8 +30,8 @@ layout {
     // Shadows read as depth against the workspace, not against a window, so
     // they are anchored to crust rather than to base.
     shadow {
-        color "#141414b3"
-        inactive-color "#14141473"
+        color "#1c1c1cb3"
+        inactive-color "#1c1c1c73"
     }
 
     insert-hint {
@@ -51,5 +51,5 @@ layout {
 }
 
 overview {
-    backdrop-color "#141414"
+    backdrop-color "#1c1c1c"
 }

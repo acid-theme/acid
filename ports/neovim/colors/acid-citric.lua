@@ -26,8 +26,8 @@ local p = {
   surface1 = "#49443b",
   surface0 = "#35332c",
   base = "#1c1b19",
-  mantle = "#151413",
-  crust = "#0e0e0d",
+  mantle = "#121211",
+  crust = "#060605",
   none = "NONE",
 }
 
