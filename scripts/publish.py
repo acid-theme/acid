@@ -13,7 +13,7 @@ file copying and git plumbing, and this way CI needs nothing built to run it.
     publish.py --dry-run          build the trees, report what would change
     publish.py --out DIR          build the trees into DIR and keep them
     publish.py                    push every port that changed
-    publish.py --only nvim        just one port
+    publish.py --only neovim      just one port
     publish.py --tag v0.1.0       also move that tag in each mirror
 
 Set ACID_PUBLISH_TOKEN to push with a token; without it, git's own credentials
@@ -317,6 +317,18 @@ def publish(
             shutil.move(str(repo / "previews"), str(kept))
             print(f"  {slug}: no previews built; keeping the published ones")
 
+        # A repository with no commits has an unborn HEAD named after whatever
+        # the client defaults to, so the branch is chosen explicitly.
+        # symbolic-ref fails outright when the remote has no HEAD, which is the
+        # case for a repository with no commits.
+        default = run(
+            ["git", "symbolic-ref", "--quiet", "--short", "refs/remotes/origin/HEAD"],
+            cwd=repo,
+            check=False,
+        )
+        branch = default.removeprefix("origin/") if default else "main"
+        run(["git", "checkout", "--quiet", "-B", branch], cwd=repo)
+
         clear_tracked(repo)
         build_tree(registry, port, repo)
 
@@ -340,8 +352,7 @@ def publish(
             ],
             cwd=repo,
         )
-        head = run(["git", "symbolic-ref", "--short", "HEAD"], cwd=repo, check=False)
-        run(["git", "push", "--quiet", "origin", f"HEAD:{head or 'main'}"], cwd=repo)
+        run(["git", "push", "--quiet", "origin", f"HEAD:{branch}"], cwd=repo)
         if tag:
             run(["git", "tag", "--force", tag], cwd=repo)
             run(["git", "push", "--quiet", "--force", "origin", tag], cwd=repo)

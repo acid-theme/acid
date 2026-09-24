@@ -46,7 +46,7 @@ built from `tests/Containerfile`. Podman is required.
 
 ```sh
 tests/run.sh            # every port
-tests/run.sh nvim       # one port
+tests/run.sh neovim     # one port
 tests/run.sh --build    # rebuild the image first
 ```
 
@@ -71,7 +71,7 @@ republishing.
 
 ```sh
 previews/run.sh            # every port
-previews/run.sh nvim       # one port
+previews/run.sh neovim     # one port
 ```
 
 That builds the mirrors and renders from them, so it runs exactly what a port's
@@ -131,7 +131,7 @@ the sources: the palette, the templates, the registry and the generators.
 
 ```sh
 make publish                                    # push everything that changed
-make publish ARGS="--only nvim --dry-run"
+make publish ARGS="--only neovim --dry-run"
 ```
 
 Publishing is idempotent, and only ever pushes. Port repositories are created

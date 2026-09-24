@@ -10,14 +10,14 @@ text, earthy accents, and nothing that competes with the code for attention.
 
 | Acetic | Citric |
 | --- | --- |
-| ![Acid Acetic in Neovim](https://raw.githubusercontent.com/acid-theme/nvim/main/previews/acetic.png) | ![Acid Citric in Neovim](https://raw.githubusercontent.com/acid-theme/nvim/main/previews/citric.png) |
+| ![Acid Acetic in Neovim](https://raw.githubusercontent.com/acid-theme/neovim/main/previews/acetic.png) | ![Acid Citric in Neovim](https://raw.githubusercontent.com/acid-theme/neovim/main/previews/citric.png) |
 
 ## Ports
 
 | Port | Repository | Template |
 | --- | --- | --- |
 | Alacritty | [acid-theme/alacritty](https://github.com/acid-theme/alacritty) | [ports/alacritty](ports/alacritty) |
-| Neovim | [acid-theme/nvim](https://github.com/acid-theme/nvim) | [ports/nvim](ports/nvim) |
+| Neovim | [acid-theme/neovim](https://github.com/acid-theme/neovim) | [ports/neovim](ports/neovim) |
 | fish | [acid-theme/fish](https://github.com/acid-theme/fish) | [ports/fish](ports/fish) |
 | Waybar | [acid-theme/waybar](https://github.com/acid-theme/waybar) | [ports/waybar](ports/waybar) |
 | mako | [acid-theme/mako](https://github.com/acid-theme/mako) | [ports/mako](ports/mako) |

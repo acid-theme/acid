@@ -37,23 +37,23 @@ src = "ports/alacritty/themes"
 dest = ""
 
 [[port]]
-name = "nvim"
+name = "neovim"
 title = "Neovim"
 description = "Acid for Neovim. A very dark colourscheme in two flavours."
-template = "ports/nvim/acid.lua.tera"
+template = "ports/neovim/acid.lua.tera"
 preview_packages = ["neovim", "alacritty", "xorg-server-xvfb", "xdotool"]
 install = """
 With Neovim's built-in plugin manager:
 
 ```lua
-vim.pack.add({ { src = "https://github.com/acid-theme/nvim" } })
+vim.pack.add({ { src = "https://github.com/acid-theme/neovim" } })
 vim.cmd.colorscheme("acid-acetic")
 ```
 
 With lazy.nvim:
 
 ```lua
-{ "acid-theme/nvim", name = "acid", lazy = false, priority = 1000 }
+{ "acid-theme/neovim", name = "acid", lazy = false, priority = 1000 }
 ```
 
 Or without a plugin manager, by dropping `colors/acid-acetic.lua` into
@@ -63,7 +63,7 @@ Covers the editor and chrome groups, legacy syntax, treesitter, markup,
 diagnostics, LSP semantic tokens, diffs, spelling, `:terminal` and git signs.
 """
 [[port.publish]]
-src = "ports/nvim/colors"
+src = "ports/neovim/colors"
 dest = "colors"
 
 [[port]]

@@ -3,7 +3,7 @@
 
 for flavor in acetic citric; do
     output=$(nvim --headless --clean -u NONE \
-        --cmd "set rtp^=/acid/ports/nvim" \
+        --cmd "set rtp^=/acid/ports/neovim" \
         -c "lua
             local ok, err = pcall(vim.cmd.colorscheme, 'acid-$flavor')
             if not ok then print('ERROR ' .. tostring(err)) end
