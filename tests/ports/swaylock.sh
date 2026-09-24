@@ -2,6 +2,8 @@
 # every key is checked against its own --help output.
 . /acid/tests/lib.sh
 
+require swaylock
+
 swaylock --help 2>&1 | grep -oE '^\s+--[a-z-]+|^\s+-[A-Za-z], --[a-z-]+' \
     | grep -oE -- '--[a-z-]+' | sed 's/^--//' | sort -u > /tmp/options
 

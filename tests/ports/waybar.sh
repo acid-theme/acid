@@ -2,6 +2,8 @@
 # engine Waybar uses rather than by a regular expression.
 . /acid/tests/lib.sh
 
+require python3
+
 python3 - <<'PY'
 import sys, pathlib
 import gi

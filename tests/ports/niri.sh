@@ -3,6 +3,8 @@
 # that, so it is asserted here.
 . /acid/tests/lib.sh
 
+require niri
+
 for flavor in acetic citric; do
     theme="ports/niri/themes/acid-$flavor.kdl"
     if niri validate -c "$theme" 2>&1 | grep -q "config is valid"; then

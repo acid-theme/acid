@@ -2,6 +2,8 @@
 # start on either means the config was read successfully.
 . /acid/tests/lib.sh
 
+require mako
+
 parses() {
     # Succeeds when mako gets past config parsing.
     ! env -u WAYLAND_DISPLAY XDG_CONFIG_HOME="$1" timeout 5 mako 2>&1 \

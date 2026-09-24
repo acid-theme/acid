@@ -51,7 +51,19 @@ tests/run.sh --build    # rebuild the image first
 ```
 
 Every port test includes a negative control — a broken theme, an invented key, a
-duplicate node — so a test that cannot fail is caught.
+duplicate node — so a test that cannot fail is caught, and asserts its own tool
+is installed, since a check that looks for an error in a command's output would
+otherwise pass when the command is missing.
+
+The image is named after a hash of `tests/Containerfile`, so changing the
+definition changes the image rather than reusing a stale one. `tests/run.sh`
+takes a matching local image if there is one, pulls
+`ghcr.io/acid-theme/acid-tests:<hash>` if not, and builds only as a last resort.
+CI publishes the image whenever it had to build one, so the next run pulls it
+instead of reinstalling seven programs.
+
+`--build` forces a rebuild, which is what to use when a rolling package has moved
+underneath an unchanged Containerfile.
 
 ## Previews
 

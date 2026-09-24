@@ -1,6 +1,8 @@
 # Neovim loads the colourscheme and reports what actually resolved.
 . /acid/tests/lib.sh
 
+require nvim
+
 for flavor in acetic citric; do
     output=$(nvim --headless --clean -u NONE \
         --cmd "set rtp^=/acid/ports/neovim" \

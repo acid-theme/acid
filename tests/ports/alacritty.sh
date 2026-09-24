@@ -3,6 +3,8 @@
 # deliberately broken file proves the check can fail.
 . /acid/tests/lib.sh
 
+require alacritty
+
 for flavor in acetic citric; do
     theme="ports/alacritty/themes/acid-$flavor.toml"
     output=$(alacritty migrate --dry-run -c "$theme" 2>&1)

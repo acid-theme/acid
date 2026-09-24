@@ -14,6 +14,9 @@ jobs:
   check:
     name: Check
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     steps:
       - uses: actions/checkout@v7
 
@@ -44,13 +47,20 @@ jobs:
       - name: Port registry matches the tree
         run: python3 scripts/publish.py --check
 
-      # Each port checked by the program that will read its theme.
+      # Each port checked by the program that will read its theme. The image is
+      # pulled when the registry has it and built once when it does not, so a
+      # run does not reinstall seven programs from scratch.
       - name: Port tests
         run: |
           command -v podman >/dev/null || {
             sudo apt-get update -qq && sudo apt-get install -y -qq podman
           }
+          podman login ghcr.io -u "${{ github.actor }}" -p "${{ secrets.GITHUB_TOKEN }}"
           tests/run.sh
+
+      - name: Publish the test image
+        if: hashFiles('target/test-image-built') != ''
+        run: podman push "$(cat target/test-image-built)"
 
       # Build the mirrors without pushing, so a pull request shows what each
       # port repository would receive.

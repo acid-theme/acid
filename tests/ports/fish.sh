@@ -2,6 +2,8 @@
 # and a conf.d script that sets the same variables globally. They must agree.
 . /acid/tests/lib.sh
 
+require fish
+
 root=/tmp/fishconfig
 mkdir -p "$root/fish/themes" "$root/share"
 cp ports/fish/themes/*.theme "$root/fish/themes/"

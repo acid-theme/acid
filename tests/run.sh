@@ -5,7 +5,13 @@ set -euo pipefail
 
 cd "$(dirname "$0")/.."
 
-IMAGE=acid-tests
+# The image is named after a hash of its own definition, so a changed
+# Containerfile means a different image rather than a stale one. Published to a
+# registry by CI; built locally when it cannot be pulled.
+TAG=$(sha256sum tests/Containerfile | cut -c1-12)
+IMAGE="acid-tests:$TAG"
+REGISTRY=${ACID_REGISTRY:-ghcr.io/acid-theme}
+REMOTE="$REGISTRY/$IMAGE"
 
 if ! command -v podman >/dev/null 2>&1; then
     echo "tests: podman is not installed" >&2
@@ -22,9 +28,20 @@ for arg in "$@"; do
     esac
 done
 
-if [ "$build" = true ] || ! podman image exists "$IMAGE"; then
+if [ "$build" = true ]; then
     echo "tests: building $IMAGE"
     podman build -t "$IMAGE" -f tests/Containerfile tests/
+elif ! podman image exists "$IMAGE"; then
+    if podman pull --quiet "$REMOTE" >/dev/null 2>&1; then
+        echo "tests: pulled $REMOTE"
+        podman tag "$REMOTE" "$IMAGE"
+    else
+        echo "tests: building $IMAGE"
+        podman build -t "$IMAGE" -f tests/Containerfile tests/
+        # Tells CI the registry does not have this image yet.
+        mkdir -p target
+        printf '%s\n' "$REMOTE" > target/test-image-built
+    fi
 fi
 
 if [ ${#ports[@]} -eq 0 ]; then

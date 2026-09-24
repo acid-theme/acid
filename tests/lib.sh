@@ -16,6 +16,18 @@ contains() {
     esac
 }
 
+# A missing program must fail loudly: several checks look for an error in a
+# command's output, and absent output is not an error.
+require() {
+    for program in "$@"; do
+        if ! command -v "$program" >/dev/null 2>&1; then
+            fail "$program is not installed in the test image"
+            summary
+            exit 1
+        fi
+    done
+}
+
 summary() {
     printf '    -- %d passed, %d failed\n' "$_pass" "$_fail"
     [ "$_fail" -eq 0 ]
