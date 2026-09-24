@@ -147,16 +147,16 @@ pub const ACETIC: Flavor = Flavor {
         purple: Hex::new(0xea7fc4),
 
         text: Hex::new(0xf2e9d0),
-        subtext1: Hex::new(0xcdc7b8),
-        subtext0: Hex::new(0xa8a49a),
+        subtext1: Hex::new(0xc3bba9),
+        subtext0: Hex::new(0xa49f95),
 
-        overlay2: Hex::new(0x8c8c8c),
-        overlay1: Hex::new(0x6f6f6f),
-        overlay0: Hex::new(0x555555),
+        overlay2: Hex::new(0x898989),
+        overlay1: Hex::new(0x707070),
+        overlay0: Hex::new(0x5a5a5a),
 
-        surface2: Hex::new(0x3a3a3a),
-        surface1: Hex::new(0x2b2b2b),
-        surface0: Hex::new(0x1e1e1e),
+        surface2: Hex::new(0x4a4a4a),
+        surface1: Hex::new(0x383838),
+        surface0: Hex::new(0x242424),
 
         base: Hex::new(0x000000),
         mantle: Hex::new(0x0a0a0a),
@@ -182,16 +182,16 @@ pub const CITRIC: Flavor = Flavor {
         purple: Hex::new(0xc5839c),
 
         text: Hex::new(0xe2d6b6),
-        subtext1: Hex::new(0xc5b99f),
-        subtext0: Hex::new(0xa89e8b),
+        subtext1: Hex::new(0xcabea7),
+        subtext0: Hex::new(0xb4ab9b),
 
-        overlay2: Hex::new(0x918879),
-        overlay1: Hex::new(0x776f64),
-        overlay0: Hex::new(0x5d5850),
+        overlay2: Hex::new(0x9f988a),
+        overlay1: Hex::new(0x857d70),
+        overlay0: Hex::new(0x6b665c),
 
-        surface2: Hex::new(0x433f36),
-        surface1: Hex::new(0x35322b),
-        surface0: Hex::new(0x282621),
+        surface2: Hex::new(0x5b554a),
+        surface1: Hex::new(0x49443b),
+        surface0: Hex::new(0x35332c),
 
         base: Hex::new(0x1c1b19),
         mantle: Hex::new(0x151413),
@@ -212,6 +212,14 @@ pub fn flavor(identifier: &str) -> Option<Flavor> {
 /// The contrast ratio every accent and text tone must clear against its own
 /// `base`. WCAG 2.1 AA for body text.
 pub const MIN_CONTRAST: f64 = 4.5;
+
+/// The contrast ratio between neighbouring fills. Below this a cursor line or a
+/// selection is the same colour as the buffer behind it.
+pub const MIN_FILL_STEP: f64 = 1.3;
+
+/// The contrast ratio dimmed text must clear against the fill it sits on — a
+/// comment on the cursor line being the case that matters.
+pub const MIN_DIM_TEXT: f64 = 3.0;
 
 #[cfg(test)]
 mod tests {
@@ -259,6 +267,54 @@ mod tests {
                     "{}/{} is {ratio:.2}:1 on base, below {MIN_CONTRAST}:1",
                     flavor.identifier,
                     color.identifier,
+                );
+            }
+        }
+    }
+
+    /// Fills that stack on each other have to be told apart. Only the four
+    /// fills are covered: `mantle` and `crust` are chrome, and acetic keeps
+    /// those nearly flush with its pure black base on purpose.
+    #[test]
+    fn fills_are_separable() {
+        for flavor in FLAVORS {
+            let c = &flavor.colors;
+            let fills = [
+                ("base", c.base),
+                ("surface0", c.surface0),
+                ("surface1", c.surface1),
+                ("surface2", c.surface2),
+            ];
+            for pair in fills.windows(2) {
+                let (lower, upper) = (pair[0], pair[1]);
+                let ratio = lower.1.contrast(upper.1);
+                assert!(
+                    ratio >= MIN_FILL_STEP,
+                    "{}: {} on {} is {ratio:.2}:1, below {MIN_FILL_STEP}:1",
+                    flavor.identifier,
+                    upper.0,
+                    lower.0,
+                );
+            }
+        }
+    }
+
+    /// Dimmed text keeps working on a raised fill. Text tones are not required
+    /// to separate from one another — they are a hierarchy, not fills — so only
+    /// their contrast against a fill is asserted.
+    #[test]
+    fn dim_text_is_readable_on_fills() {
+        for flavor in FLAVORS {
+            let c = &flavor.colors;
+            for (text_name, text, fill_name, fill) in [
+                ("overlay1", c.overlay1, "surface0", c.surface0),
+                ("overlay2", c.overlay2, "surface1", c.surface1),
+            ] {
+                let ratio = text.contrast(fill);
+                assert!(
+                    ratio >= MIN_DIM_TEXT,
+                    "{}: {text_name} on {fill_name} is {ratio:.2}:1, below {MIN_DIM_TEXT}:1",
+                    flavor.identifier,
                 );
             }
         }

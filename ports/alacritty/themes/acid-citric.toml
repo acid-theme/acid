@@ -11,7 +11,7 @@
 [colors.primary]
 background = "#1c1b19"
 foreground = "#e2d6b6"
-dim_foreground = "#a89e8b"
+dim_foreground = "#b4ab9b"
 bright_foreground = "#e8dec5"
 
 [colors.cursor]
@@ -24,7 +24,7 @@ cursor = "#7cad76"
 
 [colors.search.matches]
 foreground = "#1c1b19"
-background = "#918879"
+background = "#9f988a"
 
 [colors.search.focused_match]
 foreground = "#1c1b19"
@@ -36,37 +36,37 @@ background = "#d9a441"
 
 [colors.hints.end]
 foreground = "#1c1b19"
-background = "#918879"
+background = "#9f988a"
 
 # Chrome sits behind the editor field, so it follows the flavour's depth axis:
 # mantle is lighter than base in acetic, darker in citric.
 [colors.footer_bar]
-foreground = "#c5b99f"
+foreground = "#cabea7"
 background = "#151413"
 
 [colors.line_indicator]
-foreground = "#c5b99f"
+foreground = "#cabea7"
 background = "#151413"
 
 [colors.selection]
 text = "#e2d6b6"
-background = "#433f36"
+background = "#5b554a"
 
 # ANSI 0-7. `black` is a visible surface rather than the background, so that
 # black-on-black text stays legible.
 [colors.normal]
-black = "#35322b"
+black = "#49443b"
 red = "#de5a48"
 green = "#a3ab2f"
 yellow = "#d9a441"
 blue = "#7d9cba"
 magenta = "#c5839c"
 cyan = "#7cad76"
-white = "#c5b99f"
+white = "#cabea7"
 
 # ANSI 8-15.
 [colors.bright]
-black = "#433f36"
+black = "#5b554a"
 red = "#e4796b"
 green = "#c0c93a"
 yellow = "#e0b463"
@@ -78,14 +78,14 @@ white = "#e2d6b6"
 # Dim colours are blended towards the background rather than darkened, so they
 # recede without shifting hue.
 [colors.dim]
-black = "#282621"
+black = "#35332c"
 red = "#a4473a"
 green = "#7b8028"
 yellow = "#a07b35"
 blue = "#60758a"
 magenta = "#926475"
 cyan = "#5f815a"
-white = "#a89e8b"
+white = "#b4ab9b"
 
 # Orange has no ANSI slot. Index 16 is where gruvbox puts it, so tools that
 # already know that convention pick it up.

@@ -18,14 +18,14 @@ set -g fish_color_end c5839c
 set -g fish_color_error de5a48
 set -g fish_color_param e2d6b6
 set -g fish_color_option 7d9cba
-set -g fish_color_comment 776f64 --italics
+set -g fish_color_comment 857d70 --italics
 set -g fish_color_operator c5839c
 set -g fish_color_escape dd7b34
-set -g fish_color_autosuggestion 5d5850
+set -g fish_color_autosuggestion 6b665c
 set -g fish_color_cancel de5a48
-set -g fish_color_gray 776f64
-set -g fish_color_selection e2d6b6 --background=433f36
-set -g fish_color_search_match --background=433f36
+set -g fish_color_gray 857d70
+set -g fish_color_selection e2d6b6 --background=5b554a
+set -g fish_color_search_match --background=5b554a
 set -g fish_color_match d9a441
 set -g fish_color_valid_path --underline
 set -g fish_color_history_current --bold
@@ -41,15 +41,15 @@ set -g fish_color_status de5a48
 # Completion pager. The pager background is left unset so it inherits the
 # terminal's own, which keeps a transparent terminal transparent.
 set -g fish_pager_color_prefix 7cad76 --bold
-set -g fish_pager_color_completion c5b99f
-set -g fish_pager_color_description 776f64
-set -g fish_pager_color_progress a89e8b --background=282621
-set -g fish_pager_color_search_match --background=433f36
-set -g fish_pager_color_selected_background --background=433f36
+set -g fish_pager_color_completion cabea7
+set -g fish_pager_color_description 857d70
+set -g fish_pager_color_progress b4ab9b --background=35332c
+set -g fish_pager_color_search_match --background=5b554a
+set -g fish_pager_color_selected_background --background=5b554a
 set -g fish_pager_color_selected_prefix 7cad76 --bold
 set -g fish_pager_color_selected_completion e2d6b6
-set -g fish_pager_color_selected_description a89e8b
-set -g fish_pager_color_secondary_background --background=282621
+set -g fish_pager_color_selected_description b4ab9b
+set -g fish_pager_color_secondary_background --background=35332c
 set -g fish_pager_color_secondary_prefix 7cad76
-set -g fish_pager_color_secondary_completion c5b99f
-set -g fish_pager_color_secondary_description 776f64
+set -g fish_pager_color_secondary_completion cabea7
+set -g fish_pager_color_secondary_description 857d70
