@@ -1,0 +1,219 @@
+# The port registry.
+#
+# One entry per port repository in the acid-theme organisation. This drives
+# scripts/publish.py: which files leave the hub, where they land in the mirror,
+# and what the mirror's README says. `make check` validates it against the
+# working tree, so a port cannot be added here without its files existing, or
+# added to ports/ without appearing here.
+
+org = "acid-theme"
+hub = "acid-theme/acid"
+
+[[port]]
+name = "alacritty"
+title = "Alacritty"
+description = "Acid for Alacritty. A very dark colourscheme in two flavours."
+template = "ports/alacritty/acid.toml.tera"
+install = """
+```sh
+curl -fsSLo ~/.config/alacritty/acid-acetic.toml \\
+  https://raw.githubusercontent.com/acid-theme/alacritty/main/acid-acetic.toml
+```
+
+Then import it from `alacritty.toml`:
+
+```toml
+[general]
+import = ["~/.config/alacritty/acid-acetic.toml"]
+```
+
+Anything under `[colors]` in your own config overrides the import, so drop a
+leftover `[colors.primary] background` line — it would pin citric to acetic's
+black.
+"""
+[[port.publish]]
+src = "ports/alacritty/themes"
+dest = ""
+
+[[port]]
+name = "nvim"
+title = "Neovim"
+description = "Acid for Neovim. A very dark colourscheme in two flavours."
+template = "ports/nvim/acid.lua.tera"
+install = """
+With Neovim's built-in plugin manager:
+
+```lua
+vim.pack.add({ { src = "https://github.com/acid-theme/nvim" } })
+vim.cmd.colorscheme("acid-acetic")
+```
+
+With lazy.nvim:
+
+```lua
+{ "acid-theme/nvim", name = "acid", lazy = false, priority = 1000 }
+```
+
+Or without a plugin manager, by dropping `colors/acid-acetic.lua` into
+`~/.config/nvim/colors/`.
+
+Covers the editor and chrome groups, legacy syntax, treesitter, markup,
+diagnostics, LSP semantic tokens, diffs, spelling, `:terminal` and git signs.
+"""
+[[port.publish]]
+src = "ports/nvim/colors"
+dest = "colors"
+
+[[port]]
+name = "fish"
+title = "fish"
+description = "Acid for the fish shell. A very dark colourscheme in two flavours."
+install = """
+With fisher:
+
+```fish
+fisher install acid-theme/fish
+fish_config theme choose "Acid Acetic"
+```
+
+`fish_config` writes universal variables, which usually are not committed with a
+config. To keep the theme in tracked config instead, use the `conf.d` form,
+which sets the same variables globally:
+
+```fish
+curl -fsSLo ~/.config/fish/conf.d/acid-acetic.fish \\
+  https://raw.githubusercontent.com/acid-theme/fish/main/conf.d/acid-acetic.fish
+```
+
+Use one or the other, not both.
+"""
+template = "ports/fish/acid.fish.tera"
+[[port.publish]]
+src = "ports/fish/themes"
+dest = "themes"
+[[port.publish]]
+src = "ports/fish/conf.d"
+dest = "conf.d"
+
+[[port]]
+name = "waybar"
+title = "Waybar"
+description = "Acid for Waybar. A very dark colourscheme in two flavours."
+template = "ports/waybar/acid.css.tera"
+install = """
+```sh
+curl -fsSLo ~/.config/waybar/acid-acetic.css \\
+  https://raw.githubusercontent.com/acid-theme/waybar/main/acid-acetic.css
+```
+
+Import it first in your `style.css`, because GTK resolves `@define-color` at
+parse time and a name used before it is defined is an error, not a fallback:
+
+```css
+@import "acid-acetic.css";
+
+window#waybar {
+    background-color: @base;
+    color: @text;
+    border: 1px solid @surface1;
+}
+```
+
+Coming from a Catppuccin stylesheet, three names have no Acid equivalent:
+`@sky` is `@aqua`, `@mauve` is `@purple`, and `@maroon` is `@orange` or `@red`
+depending on whether it marked a warning or an error.
+"""
+[[port.publish]]
+src = "ports/waybar/themes"
+dest = ""
+
+[[port]]
+name = "mako"
+title = "mako"
+description = "Acid for mako. A very dark colourscheme in two flavours."
+template = "ports/mako/acid.conf.tera"
+install = """
+```sh
+curl -fsSLo ~/.config/mako/acid-acetic.conf \\
+  https://raw.githubusercontent.com/acid-theme/mako/main/acid-acetic.conf
+```
+
+Then pull it in from your config. `include` needs an absolute or `~/`-prefixed
+path:
+
+```ini
+include=~/.config/mako/acid-acetic.conf
+
+# Your own settings. mako takes the last matching value, so anything below the
+# include wins.
+font=monospace 10
+padding=6
+border-size=1
+```
+
+Sets the defaults plus `[urgency=low]`, `[urgency=normal]`, `[urgency=high]` and
+`[hidden]`. Those sections do not leak into the including file.
+"""
+[[port.publish]]
+src = "ports/mako/themes"
+dest = ""
+
+[[port]]
+name = "niri"
+title = "niri"
+description = "Acid for niri. A very dark colourscheme in two flavours."
+template = "ports/niri/acid.kdl.tera"
+install = """
+```sh
+curl -fsSLo ~/.config/niri/acid-acetic.kdl \\
+  https://raw.githubusercontent.com/acid-theme/niri/main/acid-acetic.kdl
+```
+
+Two `layout` blocks in one file are a duplicate-node error, but niri merges a
+`layout` block that arrives through `include`, so the theme carries the colours
+while your config keeps the geometry:
+
+```kdl
+include "acid-acetic.kdl"
+
+layout {
+    gaps 4
+    border {
+        width 0.5
+    }
+}
+```
+
+Drop the `active-color`, `inactive-color` and `urgent-color` lines from your own
+blocks. Setting the same key on both sides still validates, but which one wins
+is unspecified. Check with `niri validate` before reloading.
+"""
+[[port.publish]]
+src = "ports/niri/themes"
+dest = ""
+
+[[port]]
+name = "swaylock"
+title = "swaylock"
+description = "Acid for swaylock. A very dark colourscheme in two flavours."
+template = "ports/swaylock/acid.conf.tera"
+install = """
+swaylock has no include directive, so this is a colours-only config to compose
+with. Keep your own options in a separate file and concatenate the two:
+
+```sh
+curl -fsSLo /tmp/acid-acetic.conf \\
+  https://raw.githubusercontent.com/acid-theme/swaylock/main/acid-acetic.conf
+cat ~/.config/swaylock/base.conf /tmp/acid-acetic.conf > ~/.config/swaylock/config
+```
+
+Or add your options to a copy and point swaylock at it with `swaylock -C`. Keep
+the two files disjoint: an unrecognised key makes swaylock exit rather than
+lock.
+
+All 29 of swaylock's colour options are set, so nothing falls back to its
+light-grey default.
+"""
+[[port.publish]]
+src = "ports/swaylock/themes"
+dest = ""

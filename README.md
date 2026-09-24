@@ -27,6 +27,8 @@ else is derived, so run `make` afterwards and commit what changes.
 make            # regenerate palette.json, every port, and the docs
 make check      # fail if anything is stale, and run the tests. For CI
 make preview    # print every colour slot the current terminal theme has loaded
+make mirrors    # build each port repository's contents locally, push nothing
+make publish    # push each port to its own repository
 ```
 
 ## Writing a port
@@ -305,6 +307,66 @@ general.import = ["~/.config/alacritty/themes/acid-acetic.toml"]
 Anything under `[colors]` in `alacritty.toml` overrides the import, so drop any
 leftover `[colors.primary] background` line — it would pin citric to acetic's
 black. `make preview` then shows what actually loaded.
+
+## Distribution
+
+This repository is the hub and the only one anyone edits. Each port also has its
+own repository in the [acid-theme](https://github.com/acid-theme) organisation,
+holding just that port's files at the root — so a single `curl` installs a theme,
+and `vim.pack` and `fisher` can consume the Neovim and fish ports directly.
+
+Those repositories are **mirrors**. `scripts/publish.py` renders each one from
+[`resources/ports.toml`](resources/ports.toml) and pushes one commit per change,
+so nothing there is ever hand-edited. A pull request against a mirror cannot be
+merged; the generated README in each one says so and points back here.
+
+```
+acid-theme/acid        this repository: palette, acidify, templates, docs
+acid-theme/alacritty   ┐
+acid-theme/nvim        │
+acid-theme/fish        │ generated. one commit per change, pushed by CI.
+acid-theme/waybar      │ port files at the root, plus a README and LICENSE.
+acid-theme/mako        │
+acid-theme/niri        │
+acid-theme/swaylock    ┘
+```
+
+### The registry
+
+`resources/ports.toml` declares, per port: the repository name, the description,
+the template it comes from, where its files land in the mirror, and the install
+instructions its README carries. `make check` validates it against the working
+tree, so a template cannot be added without a registry entry, and an entry
+cannot point at files that do not exist.
+
+### Running it
+
+The port repositories are created once, by hand. Publishing only ever pushes to
+repositories that already exist — it will not create one, and fails with a clear
+error if a repository is missing.
+
+```sh
+make mirrors                # build every mirror into target/mirrors
+make publish                # push everything that changed
+make publish ARGS="--only nvim --dry-run"
+```
+
+Publishing is idempotent: a port whose files have not changed produces no commit
+and no push.
+
+### In CI
+
+`.github/workflows/ci.yml` runs formatting, lints, tests, `make check` and the
+registry validation on every push, and uploads the built mirrors as an artifact
+so a pull request shows what each port repository would receive.
+
+`.github/workflows/publish.yml` publishes on a `v*` tag, or on manual dispatch
+with optional `only` and `dry_run` inputs. It gates on the full check first.
+
+It needs a token that can write to the sibling repositories, because the default
+`GITHUB_TOKEN` is scoped to this repository alone. Create a fine-grained
+personal access token owned by the organisation with `Contents: Read and write`
+on the port repositories, and store it as the `ACID_PUBLISH_TOKEN` secret.
 
 ## Licence
 

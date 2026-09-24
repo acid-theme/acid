@@ -1,0 +1,75 @@
+name: Publish
+
+# Pushes each port to its own repository in the organisation. Port repositories
+# are mirrors of this one, so this workflow is the only thing that writes to
+# them.
+#
+# Needs a token that can write to the sibling repositories: the default
+# GITHUB_TOKEN is scoped to this repository alone. Create a fine-grained
+# personal access token owned by the organisation, with `Contents: Read and
+# write` on the port repositories, and store it as the ACID_PUBLISH_TOKEN
+# secret.
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      only:
+        description: "Limit to one port (blank for all)"
+        required: false
+        type: string
+      dry_run:
+        description: "Build and report without pushing"
+        required: false
+        type: boolean
+        default: false
+
+concurrency:
+  group: publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: Publish
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Cache cargo
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: cargo-${{ runner.os }}-${{ hashFiles('Cargo.lock') }}
+          restore-keys: cargo-${{ runner.os }}-
+
+      # Never publish something that does not build, or whose committed output
+      # does not match its template.
+      - name: Gate on the full check
+        run: |
+          cargo test --workspace
+          make check
+          python3 scripts/publish.py --check
+
+      - name: Publish
+        env:
+          ACID_PUBLISH_TOKEN: ${{ secrets.ACID_PUBLISH_TOKEN }}
+        run: |
+          if [ -z "$ACID_PUBLISH_TOKEN" ]; then
+            echo "::error::ACID_PUBLISH_TOKEN is not set; see this workflow's header."
+            exit 1
+          fi
+          args=""
+          case "${{ github.ref_type }}" in
+            tag) args="--tag ${{ github.ref_name }}" ;;
+          esac
+          if [ "${{ inputs.dry_run }}" = "true" ]; then
+            args="$args --dry-run"
+          fi
+          if [ -n "${{ inputs.only }}" ]; then
+            args="$args --only ${{ inputs.only }}"
+          fi
+          python3 scripts/publish.py $args

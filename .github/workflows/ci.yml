@@ -1,0 +1,56 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Cache cargo
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: cargo-${{ runner.os }}-${{ hashFiles('Cargo.lock') }}
+          restore-keys: cargo-${{ runner.os }}-
+
+      - name: Formatting
+        run: cargo fmt --all --check
+
+      - name: Lints
+        run: cargo clippy --workspace --all-targets -- --deny warnings
+
+      - name: Tests
+        run: cargo test --workspace
+
+      # The generated files are committed, so a template edited without a
+      # re-render would otherwise ship stale themes with nothing to catch it.
+      - name: Generated files are current
+        run: make check
+
+      - name: Port registry matches the tree
+        run: python3 scripts/publish.py --check
+
+      # Build the mirrors without pushing, so a pull request shows what each
+      # port repository would receive.
+      - name: Build mirrors
+        run: python3 scripts/publish.py --out target/mirrors
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mirrors
+          path: target/mirrors
+          if-no-files-found: error
