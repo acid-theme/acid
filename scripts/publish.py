@@ -214,6 +214,7 @@ def build_preview(registry: dict, port: dict, into: Path, published: list[str]) 
     caller = CALLER_TEMPLATE.read_text()
     caller = caller.replace("%%WATCH%%", '"\n      - "'.join(watch))
     caller = caller.replace("%%HUB%%", registry["hub"])
+    caller = caller.replace("%%HUB_REF%%", registry.get("hub_ref", "main"))
     workflows = into / ".github" / "workflows"
     workflows.mkdir(parents=True, exist_ok=True)
     (workflows / "preview.yml").write_text(caller)

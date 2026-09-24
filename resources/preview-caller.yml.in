@@ -12,6 +12,6 @@ on:
 
 jobs:
   preview:
-    uses: %%HUB%%/.github/workflows/port-preview.yml@main
+    uses: %%HUB%%/.github/workflows/port-preview.yml@%%HUB_REF%%
     permissions:
       contents: write

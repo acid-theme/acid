@@ -69,6 +69,9 @@ here is a reusable workflow, and each port's generated workflow is a dozen lines
 calling it. A change to the steps takes effect on every port's next run without
 republishing.
 
+`hub_ref` in the registry is the ref those workflows call. A branch tracks fixes
+as they land; a tag pins the steps to a release instead.
+
 ```sh
 previews/run.sh            # every port
 previews/run.sh neovim     # one port
