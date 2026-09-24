@@ -44,6 +44,14 @@ jobs:
       - name: Port registry matches the tree
         run: python3 scripts/publish.py --check
 
+      # Each port checked by the program that will read its theme.
+      - name: Port tests
+        run: |
+          command -v podman >/dev/null || {
+            sudo apt-get update -qq && sudo apt-get install -y -qq podman
+          }
+          tests/run.sh
+
       # Build the mirrors without pushing, so a pull request shows what each
       # port repository would receive.
       - name: Build mirrors

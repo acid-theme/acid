@@ -27,6 +27,7 @@ else is derived, so run `make` afterwards and commit what changes.
 make            # regenerate palette.json, every port, and the docs
 make check      # fail if anything is stale, and run the tests. For CI
 make preview    # print every colour slot the current terminal theme has loaded
+make test-ports # run each port's tests in a container. needs podman
 make mirrors    # build each port repository's contents locally, push nothing
 make publish    # push each port to its own repository
 ```
@@ -159,8 +160,7 @@ variable, so a leftover `fish_config` choice will not fight it — but two
 ### Installing the Waybar port
 
 The port is the role names as GTK colours; the stylesheet stays yours. Import it
-first, because GTK resolves `@define-color` at parse time and a name used before
-it is defined is an error, not a fallback.
+above the rules that use it, so a later definition can override it.
 
 ```css
 @import "/path/to/acid/ports/waybar/themes/acid-acetic.css";
@@ -177,7 +177,8 @@ window#waybar {
 
 Coming from a Catppuccin stylesheet, three names have no Acid equivalent:
 `@sky` is `@aqua`, `@mauve` is `@purple`, and `@maroon` is `@orange` or `@red`
-depending on whether it marked a warning or an error.
+depending on whether it marked a warning or an error. GTK reports no error for a
+colour name it does not know, so a leftover name fails silently.
 
 ### Installing the mako port
 

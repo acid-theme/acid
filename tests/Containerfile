@@ -1,0 +1,19 @@
+# Every port's own tool, so each theme is checked by the program that will read
+# it rather than by a parser written here. Arch because it packages all seven.
+FROM docker.io/library/archlinux:latest
+
+RUN pacman -Syu --noconfirm --needed --disable-download-timeout \
+        alacritty \
+        fish \
+        mako \
+        neovim \
+        niri \
+        swaylock \
+        waybar \
+        gtk3 \
+        python-gobject \
+        diffutils \
+    && pacman -Scc --noconfirm
+
+WORKDIR /acid
+ENV ACID_IN_CONTAINER=1

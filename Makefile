@@ -4,7 +4,7 @@
 TEMPLATES := $(wildcard ports/*/*.tera) $(wildcard docs/*.tera)
 ACIDIFY   := cargo run --quiet -p acidify --
 
-.PHONY: all palette ports docs preview registry mirrors publish check test fmt clean
+.PHONY: all palette ports docs preview registry mirrors publish check test test-ports fmt clean
 
 all: palette ports docs
 
@@ -23,6 +23,11 @@ docs:
 ## Print every colour slot the current terminal theme has loaded.
 preview:
 	@bash scripts/preview.sh
+
+## Run each port's tests in a container, against that port's own tool.
+## Needs podman. ARGS limits it, e.g. ARGS="nvim".
+test-ports:
+	@tests/run.sh $(ARGS)
 
 ## Validate the port registry against the working tree.
 registry:

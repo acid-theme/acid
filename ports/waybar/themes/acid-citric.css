@@ -15,8 +15,9 @@
  *         border: 1px solid @surface1;
  *     }
  *
- * GTK resolves @define-color at parse time, so a name used before it is
- * defined is an error rather than a fallback. Keep the import first.
+ * Keep the import above the rules, so a later definition can override it. GTK
+ * reports no error for a colour name it does not know, so a missing role fails
+ * silently rather than loudly.
  */
 
 @define-color red #de5a48;
