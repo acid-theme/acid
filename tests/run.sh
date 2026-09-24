@@ -37,7 +37,7 @@ elif ! podman image exists "$IMAGE"; then
         podman tag "$REMOTE" "$IMAGE"
     else
         echo "tests: building $IMAGE"
-        podman build -t "$IMAGE" -f tests/Containerfile tests/
+        podman build -t "$IMAGE" -t "$REMOTE" -f tests/Containerfile tests/
         # Tells CI the registry does not have this image yet.
         mkdir -p target
         printf '%s\n' "$REMOTE" > target/test-image-built
