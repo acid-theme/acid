@@ -223,6 +223,26 @@ and the overview backdrop. `background-color` is left commented out, since
 
 Check the result before reloading: `niri validate -c ~/.config/niri/config.kdl`.
 
+### Installing the swaylock port
+
+swaylock has no include directive, so the theme is a colours-only config to
+compose with. Keep your own options in a separate file and concatenate the two:
+
+```sh
+cat ~/.config/swaylock/base.conf \
+    ~/sources/acid/ports/swaylock/themes/acid-acetic.conf \
+    > ~/.config/swaylock/config
+```
+
+Or add your options to a copy of the theme and point swaylock at it with
+`swaylock -C`. Either way, keep the two files disjoint: an unrecognised key
+makes swaylock exit rather than lock, and a duplicate key is silently the last
+one to win.
+
+All 29 of swaylock's colour options are set, so nothing falls back to its
+light-grey default. The ring carries state — a surface when idle, then green
+cleared, yellow for Caps Lock, blue verifying, red wrong.
+
 ## Design
 
 Both flavours share one structure, so a port written against the role names
@@ -266,6 +286,7 @@ has one accent set, and ports derive brighter or dimmer variants with
 | Waybar | [`ports/waybar/acid.css.tera`](ports/waybar/acid.css.tera) |
 | mako | [`ports/mako/acid.conf.tera`](ports/mako/acid.conf.tera) |
 | niri | [`ports/niri/acid.kdl.tera`](ports/niri/acid.kdl.tera) |
+| swaylock | [`ports/swaylock/acid.conf.tera`](ports/swaylock/acid.conf.tera) |
 
 ### Installing the Alacritty port
 
