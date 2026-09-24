@@ -4,7 +4,7 @@
 TEMPLATES := $(wildcard ports/*/*.tera) $(wildcard docs/*.tera)
 ACIDIFY   := cargo run --quiet -p acidify --
 
-.PHONY: all palette ports docs preview previews registry mirrors publish check test test-ports fmt clean
+.PHONY: all palette ports docs preview previews registry mirrors publish check test test-ports fmt fmt-check lint clean
 
 all: palette ports docs
 
@@ -46,8 +46,8 @@ mirrors: all
 publish: all check
 	@python3 scripts/publish.py $(ARGS)
 
-## Fail if any generated file is stale. For CI.
-check: test registry
+## Everything CI checks: formatting, lints, tests, stale output, the registry.
+check: fmt-check lint test registry
 	@mkdir -p target
 	cargo run --quiet -p acid-palette --bin codegen target/palette.check.json
 	diff -u palette.json target/palette.check.json
@@ -55,6 +55,12 @@ check: test registry
 
 test:
 	cargo test --workspace --quiet
+
+fmt-check:
+	cargo fmt --all --check
+
+lint:
+	cargo clippy --workspace --all-targets --quiet -- --deny warnings
 
 fmt:
 	cargo fmt --all

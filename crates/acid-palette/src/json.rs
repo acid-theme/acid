@@ -97,7 +97,10 @@ mod tests {
         assert_eq!(red["rgb"]["r"], 255);
         assert_eq!(red["accent"], true);
         assert_eq!(
-            palette()["flavors"]["acetic"]["accents"].as_array().unwrap().len(),
+            palette()["flavors"]["acetic"]["accents"]
+                .as_array()
+                .unwrap()
+                .len(),
             7
         );
     }
