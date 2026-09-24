@@ -8,20 +8,24 @@ text, earthy accents, and nothing that competes with the code for attention.
 | **Acetic** | `#000000` | Vibrant | OLED panels, dark rooms, maximum separation between code and background |
 | **Citric** | `#1c1b19` | Muted | Everyday use; the flavour closest to gruvbox |
 
+| Acetic | Citric |
+| --- | --- |
+| ![Acid Acetic in Neovim](https://raw.githubusercontent.com/acid-theme/nvim/main/previews/acetic.png) | ![Acid Citric in Neovim](https://raw.githubusercontent.com/acid-theme/nvim/main/previews/citric.png) |
+
 ## Ports
 
-| Port | Install | Repository |
+| Port | Repository | Template |
 | --- | --- | --- |
-| Alacritty | [ports/alacritty](ports/alacritty/README.md) | [acid-theme/alacritty](https://github.com/acid-theme/alacritty) |
-| Neovim | [ports/nvim](ports/nvim/README.md) | [acid-theme/nvim](https://github.com/acid-theme/nvim) |
-| fish | [ports/fish](ports/fish/README.md) | [acid-theme/fish](https://github.com/acid-theme/fish) |
-| Waybar | [ports/waybar](ports/waybar/README.md) | [acid-theme/waybar](https://github.com/acid-theme/waybar) |
-| mako | [ports/mako](ports/mako/README.md) | [acid-theme/mako](https://github.com/acid-theme/mako) |
-| niri | [ports/niri](ports/niri/README.md) | [acid-theme/niri](https://github.com/acid-theme/niri) |
-| swaylock | [ports/swaylock](ports/swaylock/README.md) | [acid-theme/swaylock](https://github.com/acid-theme/swaylock) |
+| Alacritty | [acid-theme/alacritty](https://github.com/acid-theme/alacritty) | [ports/alacritty](ports/alacritty) |
+| Neovim | [acid-theme/nvim](https://github.com/acid-theme/nvim) | [ports/nvim](ports/nvim) |
+| fish | [acid-theme/fish](https://github.com/acid-theme/fish) | [ports/fish](ports/fish) |
+| Waybar | [acid-theme/waybar](https://github.com/acid-theme/waybar) | [ports/waybar](ports/waybar) |
+| mako | [acid-theme/mako](https://github.com/acid-theme/mako) | [ports/mako](ports/mako) |
+| niri | [acid-theme/niri](https://github.com/acid-theme/niri) | [ports/niri](ports/niri) |
+| swaylock | [acid-theme/swaylock](https://github.com/acid-theme/swaylock) | [ports/swaylock](ports/swaylock) |
 
-Each port also has its own repository holding just that port's files, so one
-`curl` installs a theme.
+Install instructions, previews and the themes themselves live in each port's
+repository. One `curl` installs a theme.
 
 ## Documentation
 

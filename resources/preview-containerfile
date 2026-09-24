@@ -1,0 +1,17 @@
+# Generated. Renders the %%NAME%% preview: this port's own tool, a font, and
+# whatever is needed to give it a display.
+FROM docker.io/library/archlinux:latest
+
+RUN pacman -Syu --noconfirm --needed --disable-download-timeout \
+        %%PACKAGES%% \
+        imagemagick \
+        python \
+        ttf-jetbrains-mono-nerd \
+    && pacman -Scc --noconfirm
+
+# sway ships with cap_sys_nice=ep, which rootless podman refuses to honour, and
+# Waybar will not start without a machine id. Both are no-ops when unused.
+RUN [ -f /usr/bin/sway ] && setcap -r /usr/bin/sway || true
+RUN command -v dbus-uuidgen >/dev/null && dbus-uuidgen --ensure=/etc/machine-id || true
+
+ENV XDG_RUNTIME_DIR=/tmp/xdg

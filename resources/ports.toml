@@ -2,9 +2,10 @@
 #
 # One entry per port repository in the acid-theme organisation. This drives
 # scripts/publish.py: which files leave the hub, where they land in the mirror,
-# and what the mirror's README says. `make check` validates it against the
-# working tree, so a port cannot be added here without its files existing, or
-# added to ports/ without appearing here.
+# what the mirror's README says, and which packages its preview workflow
+# installs. `make check` validates it against the working tree, so a port cannot
+# be added here without its files existing, or added to ports/ without appearing
+# here.
 
 org = "acid-theme"
 hub = "acid-theme/acid"
@@ -14,6 +15,7 @@ name = "alacritty"
 title = "Alacritty"
 description = "Acid for Alacritty. A very dark colourscheme in two flavours."
 template = "ports/alacritty/acid.toml.tera"
+preview_packages = ["alacritty", "xorg-server-xvfb", "xdotool"]
 install = """
 ```sh
 curl -fsSLo ~/.config/alacritty/acid-acetic.toml \\
@@ -39,6 +41,7 @@ name = "nvim"
 title = "Neovim"
 description = "Acid for Neovim. A very dark colourscheme in two flavours."
 template = "ports/nvim/acid.lua.tera"
+preview_packages = ["neovim", "alacritty", "xorg-server-xvfb", "xdotool"]
 install = """
 With Neovim's built-in plugin manager:
 
@@ -87,6 +90,7 @@ curl -fsSLo ~/.config/fish/conf.d/acid-acetic.fish \\
 Use one or the other, not both.
 """
 template = "ports/fish/acid.fish.tera"
+preview_packages = ["fish", "alacritty", "xorg-server-xvfb", "xdotool"]
 [[port.publish]]
 src = "ports/fish/themes"
 dest = "themes"
@@ -99,6 +103,7 @@ name = "waybar"
 title = "Waybar"
 description = "Acid for Waybar. A very dark colourscheme in two flavours."
 template = "ports/waybar/acid.css.tera"
+preview_packages = ["waybar", "sway", "grim", "dbus"]
 install = """
 ```sh
 curl -fsSLo ~/.config/waybar/acid-acetic.css \\
@@ -132,6 +137,7 @@ name = "mako"
 title = "mako"
 description = "Acid for mako. A very dark colourscheme in two flavours."
 template = "ports/mako/acid.conf.tera"
+preview_packages = ["mako", "libnotify", "sway", "grim", "dbus"]
 install = """
 ```sh
 curl -fsSLo ~/.config/mako/acid-acetic.conf \\
@@ -162,6 +168,7 @@ name = "niri"
 title = "niri"
 description = "Acid for niri. A very dark colourscheme in two flavours."
 template = "ports/niri/acid.kdl.tera"
+preview_packages = ["niri", "alacritty", "neovim", "sway", "grim"]
 install = """
 ```sh
 curl -fsSLo ~/.config/niri/acid-acetic.kdl \\
@@ -196,6 +203,7 @@ name = "swaylock"
 title = "swaylock"
 description = "Acid for swaylock. A very dark colourscheme in two flavours."
 template = "ports/swaylock/acid.conf.tera"
+preview_packages = ["swaylock", "sway", "grim", "wtype"]
 install = """
 swaylock has no include directive, so this is a colours-only config to compose
 with. Keep local options in a separate file and concatenate the two:

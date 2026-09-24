@@ -1,0 +1,17 @@
+name: Preview
+
+# Generated. The steps live in the hub so every port shares them; this file only
+# says when to run them.
+
+on:
+  push:
+    paths:
+      - "%%WATCH%%"
+      - "preview/**"
+  workflow_dispatch:
+
+jobs:
+  preview:
+    uses: %%HUB%%/.github/workflows/port-preview.yml@main
+    permissions:
+      contents: write

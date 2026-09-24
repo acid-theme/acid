@@ -1,0 +1,59 @@
+name: Port preview
+
+# Reusable. Each port repository calls this to render its own preview, so the
+# boilerplate lives in one place while the render script and the package list
+# stay with the port.
+#
+#   jobs:
+#     preview:
+#       uses: acid-theme/acid/.github/workflows/port-preview.yml@main
+
+on:
+  workflow_call:
+    inputs:
+      flavours:
+        description: "Flavours to render, space separated"
+        required: false
+        type: string
+        default: "acetic citric"
+
+jobs:
+  render:
+    name: Render
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Install podman
+        run: command -v podman >/dev/null || {
+             sudo apt-get update -qq && sudo apt-get install -y -qq podman; }
+
+      - name: Build the preview image
+        run: podman build -t preview -f preview/Containerfile preview/
+
+      - name: Render
+        run: |
+          mkdir -p previews
+          for flavour in ${{ inputs.flavours }}; do
+            podman run --rm \
+              -v "$PWD:/repo:Z" \
+              -w /repo \
+              -e "FLAVOUR=$flavour" \
+              -e "OUT=/repo/previews/$flavour.png" \
+              preview bash preview/render.sh
+            echo "rendered $flavour"
+          done
+
+      - name: Commit
+        run: |
+          if [ -z "$(git status --porcelain previews)" ]; then
+            echo "previews unchanged"
+            exit 0
+          fi
+          git config user.name "acid-theme bot"
+          git config user.email "noreply@github.com"
+          git add previews
+          git commit -m "Render previews"
+          git push

@@ -5,6 +5,12 @@
 Part of [Acid](https://github.com/%%HUB%%), a very dark colourscheme in two
 flavours. The main README lists the other ports.
 
+## Preview
+
+| Acetic | Citric |
+| --- | --- |
+| ![Acid Acetic](previews/acetic.png) | ![Acid Citric](previews/citric.png) |
+
 ## Install
 
 %%INSTALL%%

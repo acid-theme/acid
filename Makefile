@@ -4,7 +4,7 @@
 TEMPLATES := $(wildcard ports/*/*.tera) $(wildcard docs/*.tera)
 ACIDIFY   := cargo run --quiet -p acidify --
 
-.PHONY: all palette ports docs preview registry mirrors publish check test test-ports fmt clean
+.PHONY: all palette ports docs preview previews registry mirrors publish check test test-ports fmt clean
 
 all: palette ports docs
 
@@ -16,14 +16,18 @@ palette:
 ports:
 	$(ACIDIFY) $(wildcard ports/*/*.tera)
 
-## Render the generated documentation and each port's README.
+## Render the generated documentation.
 docs:
 	$(ACIDIFY) $(wildcard docs/*.tera)
-	@python3 scripts/publish.py --readmes
 
 ## Print every colour slot the current terminal theme has loaded.
 preview:
 	@bash scripts/preview.sh
+
+## Render a preview of each port by running the real program in a container.
+## Needs podman. ARGS limits it, e.g. ARGS="nvim".
+previews:
+	@previews/run.sh $(ARGS)
 
 ## Run each port's tests in a container, against that port's own tool.
 ## Needs podman. ARGS limits it, e.g. ARGS="nvim".

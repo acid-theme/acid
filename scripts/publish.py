@@ -10,7 +10,6 @@ Python with `tomllib` rather than a crate in the workspace, because the work is
 file copying and git plumbing, and this way CI needs nothing built to run it.
 
     publish.py --check            validate the registry, touch no network
-    publish.py --readmes          write each port's README in this repository
     publish.py --dry-run          build the trees, report what would change
     publish.py --out DIR          build the trees into DIR and keep them
     publish.py                    push every port that changed
@@ -37,7 +36,21 @@ ROOT = Path(__file__).resolve().parent.parent
 MANIFEST = ROOT / "Cargo.toml"
 REGISTRY = ROOT / "resources" / "ports.toml"
 README_TEMPLATE = ROOT / "resources" / "port-readme.md"
+CALLER_TEMPLATE = ROOT / "resources" / "preview-caller.yml.in"
+CONTAINER_TEMPLATE = ROOT / "resources" / "preview-containerfile"
 PALETTE = ROOT / "palette.json"
+PREVIEWS = ROOT / "target" / "previews"
+
+# Copied into every port's `preview/` directory. Small enough that shipping them
+# everywhere beats deciding per port which are needed.
+PREVIEW_ASSETS = [
+    (ROOT / "previews" / "lib.sh", "lib.sh"),
+    (ROOT / "previews" / "samples" / "sample.lua", "sample.lua"),
+    (ROOT / "scripts" / "preview.sh", "ansi.sh"),
+    (PALETTE, "palette.json"),
+    (ROOT / "ports" / "alacritty" / "themes" / "acid-acetic.toml", "alacritty-acetic.toml"),
+    (ROOT / "ports" / "alacritty" / "themes" / "acid-citric.toml", "alacritty-citric.toml"),
+]
 LICENSE = ROOT / "LICENSE"
 
 
@@ -116,21 +129,11 @@ def validate(registry: dict) -> list[str]:
             if dest.startswith("/") or ".." in Path(dest).parts:
                 problems.append(f"{label}: publish dest {dest!r} must stay inside the repo")
 
-        readme = readme_path(port)
-        if not readme.is_file():
-            problems.append(f"{label}: {readme.relative_to(ROOT)} is missing; run `make docs`")
-        elif port.get("install") and port.get("title"):
-            files = [
-                str((Path(rule["dest"]) / item.name) if rule["dest"] else Path(item.name))
-                for rule in port.get("publish", [])
-                if (ROOT / rule["src"]).is_dir()
-                for item in sorted((ROOT / rule["src"]).iterdir())
-                if item.is_file()
-            ]
-            if readme.read_text() != render_readme(registry, port, files):
-                problems.append(
-                    f"{label}: {readme.relative_to(ROOT)} is out of date; run `make docs`"
-                )
+        script = ROOT / "previews" / "ports" / f"{port.get('name')}.sh"
+        if not script.is_file():
+            problems.append(f"{label}: {script.relative_to(ROOT)} is missing")
+        if not port.get("preview_packages"):
+            problems.append(f"{label}: `preview_packages` is empty")
 
         for rule in port.get("publish", []):
             source = ROOT / rule.get("src", "")
@@ -155,10 +158,6 @@ def validate(registry: dict) -> list[str]:
 
 def port_dir(port: dict) -> Path:
     return ROOT / Path(port["template"]).parent
-
-
-def readme_path(port: dict) -> Path:
-    return port_dir(port) / "README.md"
 
 
 def load_palette() -> dict:
@@ -193,6 +192,38 @@ def render_readme(registry: dict, port: dict, files: list[str]) -> str:
     return text
 
 
+def build_preview(registry: dict, port: dict, into: Path, published: list[str]) -> None:
+    """Everything the port needs to render its own preview, plus the workflow
+    that calls the shared steps in the hub."""
+    preview = into / "preview"
+    preview.mkdir(parents=True, exist_ok=True)
+
+    for source, name in PREVIEW_ASSETS:
+        shutil.copy2(source, preview / name)
+    shutil.copy2(ROOT / "previews" / "ports" / f"{port['name']}.sh", preview / "render.sh")
+
+    packages = port.get("preview_packages") or []
+    container = CONTAINER_TEMPLATE.read_text()
+    container = container.replace("%%PACKAGES%%", " \\\n        ".join(packages))
+    container = container.replace("%%NAME%%", port["name"])
+    (preview / "Containerfile").write_text(container)
+
+    # A preview reacts to the theme files themselves, not to everything at the
+    # root of the repository.
+    watch = sorted(published)
+    caller = CALLER_TEMPLATE.read_text()
+    caller = caller.replace("%%WATCH%%", '"\n      - "'.join(watch))
+    caller = caller.replace("%%HUB%%", registry["hub"])
+    workflows = into / ".github" / "workflows"
+    workflows.mkdir(parents=True, exist_ok=True)
+    (workflows / "preview.yml").write_text(caller)
+
+
+def has_previews(port: dict) -> bool:
+    previews = PREVIEWS / port["name"]
+    return previews.is_dir() and any(previews.iterdir())
+
+
 def build_tree(registry: dict, port: dict, into: Path) -> list[str]:
     """Lay out the mirror's contents. Returns the published file paths."""
     published: list[str] = []
@@ -206,7 +237,13 @@ def build_tree(registry: dict, port: dict, into: Path) -> list[str]:
             shutil.copy2(item, target / item.name)
             published.append(str((target / item.name).relative_to(into)))
 
-    shutil.copy2(readme_path(port), into / "README.md")
+    build_preview(registry, port, into, published)
+
+    previews = PREVIEWS / port["name"]
+    if previews.is_dir() and any(previews.iterdir()):
+        shutil.copytree(previews, into / "previews", dirs_exist_ok=True)
+
+    (into / "README.md").write_text(render_readme(registry, port, published))
     shutil.copy2(LICENSE, into / "LICENSE")
     return published
 
@@ -272,8 +309,19 @@ def publish(
                 ) from error
             raise
 
+        # Previews are built into target/, which a fresh checkout does not have.
+        # Rather than delete the mirror's copies, keep them.
+        kept = None
+        if not has_previews(port) and (repo / "previews").is_dir():
+            kept = Path(workdir) / "kept-previews"
+            shutil.move(str(repo / "previews"), str(kept))
+            print(f"  {slug}: no previews built; keeping the published ones")
+
         clear_tracked(repo)
         build_tree(registry, port, repo)
+
+        if kept is not None:
+            shutil.move(str(kept), str(repo / "previews"))
 
         run(["git", "add", "--all"], cwd=repo)
         if not run(["git", "status", "--porcelain"], cwd=repo):
@@ -305,8 +353,6 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--check", action="store_true",
                         help="validate the registry and exit")
-    parser.add_argument("--readmes", action="store_true",
-                        help="write each port's README in this repository and exit")
     parser.add_argument("--dry-run", action="store_true",
                         help="build the trees and report, push nothing")
     parser.add_argument("--only", metavar="NAME", action="append",
@@ -319,20 +365,6 @@ def main() -> int:
 
     try:
         registry = load_registry()
-
-        if args.readmes:
-            for port in registry["port"]:
-                files = [
-                    str((Path(rule["dest"]) / item.name) if rule["dest"] else Path(item.name))
-                    for rule in port["publish"]
-                    if (ROOT / rule["src"]).is_dir()
-                    for item in sorted((ROOT / rule["src"]).iterdir())
-                    if item.is_file()
-                ]
-                target = readme_path(port)
-                target.write_text(render_readme(registry, port, files))
-                print(f"readme: wrote {target.relative_to(ROOT)}")
-            return 0
 
         problems = validate(registry)
         if problems:

@@ -6,7 +6,7 @@ crates/acidify/                  the renderer: templates in, ports out
 palette.json                     generated; what non-Rust ports read
 resources/ports.toml             the port registry
 ports/<app>/*.tera               one template per port
-ports/<app>/                     generated themes and README
+ports/<app>/                     generated themes
 docs/                            palette reference, generated
 tests/                           each port checked by its own tool
 scripts/publish.py               assembles and pushes the port repositories
@@ -32,10 +32,12 @@ working tree.
 2. Add an entry to `resources/ports.toml`: repository name, description,
    template, the files to publish and where they land, and install instructions.
 3. Add `tests/ports/<app>.sh`.
-4. Run `make && make check`.
+4. Add `previews/ports/<app>.sh`, and `preview_packages` to the registry entry.
+5. Run `make && make check`, then `previews/run.sh <app>` to check it by eye.
 
-The registry entry and the README are not optional — `make check` fails without
-an entry, and the port's README is generated from the registry's install text.
+The registry entry is not optional; `make check` fails without one. The port
+repository's README and preview are assembled at publish time, so neither is
+kept here.
 
 ## Port tests
 
@@ -50,6 +52,34 @@ tests/run.sh --build    # rebuild the image first
 
 Every port test includes a negative control — a broken theme, an invented key, a
 duplicate node — so a test that cannot fail is caught.
+
+## Previews
+
+A preview is a screenshot of the real program: terminal ports run under Xvfb in
+Alacritty, Wayland ports under a headless wlroots compositor, both in a
+container.
+
+**Each port renders its own.** Publishing gives a port repository everything it
+needs — `preview/render.sh`, `preview/Containerfile` built from the port's
+`preview_packages`, the shared helpers, and a workflow — and that repository's
+CI renders the images and commits them to its own `previews/` directory.
+
+The steps are shared rather than copied: `.github/workflows/port-preview.yml`
+here is a reusable workflow, and each port's generated workflow is a dozen lines
+calling it. A change to the steps takes effect on every port's next run without
+republishing.
+
+```sh
+previews/run.sh            # every port
+previews/run.sh nvim       # one port
+```
+
+That builds the mirrors and renders from them, so it runs exactly what a port's
+CI runs. Output goes to `target/previews/`, which is not committed: previews
+belong to the port repositories.
+
+Rendering is not deterministic to the pixel — font rasterisation and timing vary
+— so previews are not part of `make check`.
 
 ## Versioning
 
@@ -91,8 +121,13 @@ holding just that port's files at the root, so a single `curl` installs a theme
 and `vim.pack` and `fisher` can consume the Neovim and fish ports directly.
 
 Those repositories are mirrors. `scripts/publish.py` assembles each one from
-`resources/ports.toml` and pushes one commit per change. A pull request against a
-mirror cannot be merged; each generated README says so and points back here.
+`resources/ports.toml` — the themes, a README rendered from the registry's
+install text, the previews, and the licence — and pushes one commit per change.
+A pull request against a mirror cannot be merged; each generated README says so
+and points back here.
+
+Everything specific to one port lives in that port's repository. This one keeps
+the sources: the palette, the templates, the registry and the generators.
 
 ```sh
 make publish                                    # push everything that changed
@@ -109,6 +144,9 @@ the port tests on every push, then uploads the built mirrors as an artifact.
 
 `publish.yml` publishes on a `v*` tag, or on manual dispatch with optional `only`
 and `dry_run` inputs, gating on the full check first.
+
+`port-preview.yml` is not run here. It is the reusable workflow each port
+repository calls to render its own preview.
 
 Publishing needs a token that can write to the sibling repositories, because the
 default `GITHUB_TOKEN` is scoped to this repository alone. Create a fine-grained
