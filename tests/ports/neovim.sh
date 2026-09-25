@@ -120,4 +120,40 @@ for flavor in acetic citric; do
         || pass "$flavor: semantic token modifiers resolve — $resolved"
 done
 
+# Plugin groups. Each name comes from that plugin's own source, so this catches
+# a group dropped from the template rather than checking a wish list.
+for flavor in acetic citric; do
+    undefined=$(nvim --headless --clean -u NONE \
+        --cmd "set rtp^=/acid/ports/neovim" -c "colorscheme acid-$flavor" \
+        -c "lua
+            local groups = {
+              'GitSignsAdd', 'GitSignsChange', 'GitSignsDelete',
+              'MiniDiffSignAdd', 'MiniDiffOverAdd',
+              'MiniFilesNormal', 'MiniFilesTitleFocused',
+              'MiniPickNormal', 'MiniPickMatchRanges', 'MiniPickPrompt',
+              'MiniStatuslineModeNormal', 'MiniStatuslineInactive',
+              'MiniHipatternsTodo', 'MiniIndentscopeSymbol', 'MiniSurround',
+              'MiniIconsAzure', 'MiniIconsGrey',
+              'BlinkCmpMenu', 'BlinkCmpLabelMatch', 'BlinkCmpKindFunction',
+              'BlinkCmpGhostText', 'BlinkCmpSignatureHelpActiveParameter',
+              'CmpItemAbbrMatch', 'CmpItemKindFunction', 'CmpItemMenu',
+              'TelescopeNormal', 'TelescopeSelection', 'TelescopeMatching',
+              'TelescopePromptTitle', 'TelescopePreviewLine',
+              'IblIndent', 'IblScope',
+              'CopilotSuggestion', 'ObsidianTag', 'ObsidianTodo',
+            }
+            local missing = {}
+            for _, g in ipairs(groups) do
+              local hl = vim.api.nvim_get_hl(0, { name = g, link = false })
+              if vim.tbl_isempty(hl) then missing[#missing + 1] = g end
+            end
+            print('PLUGINS ' .. #groups .. ' ' .. table.concat(missing, ' '))
+        " -c "qa!" 2>&1 | sed -n 's/^PLUGINS //p')
+    total=${undefined%% *}
+    rest=${undefined#* }
+    [ "$rest" = "$total" ] || [ -z "$rest" ] \
+        && pass "$flavor: all $total plugin groups resolve" \
+        || fail "$flavor: plugin groups with no highlight: $rest"
+done
+
 summary

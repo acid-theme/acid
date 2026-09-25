@@ -303,11 +303,173 @@ local groups = {
   LspInlayHint = { fg = p.overlay1, bg = p.surface0, italic = true },
   SnippetTabstop = { bg = p.surface1 },
 
-  -- Git signs, the one plugin whose groups are near universal.
+
+  -- Plugins. Group names are taken from each plugin's own source, so a theme
+  -- here is one the plugin actually reads.
+
+  -- gitsigns.nvim
   GitSignsAdd = { fg = p.green },
   GitSignsChange = { fg = p.blue },
   GitSignsDelete = { fg = p.red },
   GitSignsUntracked = { fg = p.overlay1 },
+  GitSignsAddInline = { bg = "#3c430d" },
+  GitSignsChangeInline = { bg = "#15374d" },
+  GitSignsDeleteInline = { bg = "#4d1510" },
+
+  -- mini.diff
+  MiniDiffSignAdd = { fg = p.green },
+  MiniDiffSignChange = { fg = p.blue },
+  MiniDiffSignDelete = { fg = p.red },
+  MiniDiffOverAdd = { bg = "#242808" },
+  MiniDiffOverChange = { bg = "#0c212e" },
+  MiniDiffOverChangeBuf = { bg = "#163a52" },
+  MiniDiffOverContext = { bg = p.surface0 },
+  MiniDiffOverContextBuf = { bg = p.surface1 },
+  MiniDiffOverDelete = { bg = "#2e0c0a" },
+
+  -- mini.files
+  MiniFilesNormal = { fg = p.text, bg = p.surface0 },
+  MiniFilesBorder = { fg = p.surface2, bg = p.surface0 },
+  MiniFilesBorderModified = { fg = p.yellow, bg = p.surface0 },
+  MiniFilesCursorLine = { bg = p.surface2 },
+  MiniFilesDirectory = { fg = p.blue },
+  MiniFilesFile = { fg = p.text },
+  MiniFilesTitle = { fg = p.overlay2, bg = p.surface0 },
+  MiniFilesTitleFocused = { fg = p.yellow, bg = p.surface0, bold = true },
+
+  -- mini.pick
+  MiniPickNormal = { fg = p.text, bg = p.surface0 },
+  MiniPickBorder = { fg = p.surface2, bg = p.surface0 },
+  MiniPickBorderBusy = { fg = p.orange, bg = p.surface0 },
+  MiniPickBorderText = { fg = p.yellow, bg = p.surface0 },
+  MiniPickCursor = { fg = p.base, bg = p.yellow },
+  MiniPickHeader = { fg = p.aqua },
+  MiniPickIconDirectory = { fg = p.blue },
+  MiniPickIconFile = { fg = p.subtext0 },
+  MiniPickMatchCurrent = { bg = p.surface2, bold = true },
+  MiniPickMatchMarked = { fg = p.yellow },
+  MiniPickMatchRanges = { fg = p.aqua, bold = true },
+  MiniPickPreviewLine = { bg = p.surface1 },
+  MiniPickPreviewRegion = { bg = p.surface2 },
+  MiniPickPrompt = { fg = p.aqua, bg = p.surface0 },
+  MiniPickPromptCaret = { fg = p.yellow },
+  MiniPickPromptPrefix = { fg = p.aqua },
+
+  -- mini.statusline
+  MiniStatuslineModeNormal = { fg = p.base, bg = p.blue, bold = true },
+  MiniStatuslineModeInsert = { fg = p.base, bg = p.green, bold = true },
+  MiniStatuslineModeVisual = { fg = p.base, bg = p.purple, bold = true },
+  MiniStatuslineModeReplace = { fg = p.base, bg = p.red, bold = true },
+  MiniStatuslineModeCommand = { fg = p.base, bg = p.yellow, bold = true },
+  MiniStatuslineModeOther = { fg = p.base, bg = p.aqua, bold = true },
+  MiniStatuslineDevinfo = { fg = p.subtext1, bg = p.surface1 },
+  MiniStatuslineFilename = { fg = p.subtext0, bg = p.surface0 },
+  MiniStatuslineFileinfo = { fg = p.subtext1, bg = p.surface1 },
+  MiniStatuslineInactive = { fg = p.overlay1, bg = p.mantle },
+
+  -- mini.hipatterns
+  MiniHipatternsFixme = { fg = p.base, bg = p.red, bold = true },
+  MiniHipatternsHack = { fg = p.base, bg = p.orange, bold = true },
+  MiniHipatternsTodo = { fg = p.base, bg = p.yellow, bold = true },
+  MiniHipatternsNote = { fg = p.base, bg = p.aqua, bold = true },
+
+  -- mini.indentscope, mini.surround, mini.icons
+  MiniIndentscopeSymbol = { fg = p.overlay0 },
+  MiniIndentscopeSymbolOff = { fg = p.surface2 },
+  MiniSurround = { fg = p.base, bg = p.orange },
+  MiniIconsAzure = { fg = p.blue },
+  MiniIconsBlue = { fg = p.blue },
+  MiniIconsCyan = { fg = p.aqua },
+  MiniIconsGreen = { fg = p.green },
+  MiniIconsGrey = { fg = p.subtext0 },
+  MiniIconsOrange = { fg = p.orange },
+  MiniIconsPurple = { fg = p.purple },
+  MiniIconsRed = { fg = p.red },
+  MiniIconsYellow = { fg = p.yellow },
+
+  -- blink.cmp
+  BlinkCmpMenu = { fg = p.subtext1, bg = p.surface0 },
+  BlinkCmpMenuBorder = { fg = p.surface2, bg = p.surface0 },
+  BlinkCmpMenuSelection = { bg = p.surface2, bold = true },
+  BlinkCmpCursorLine = { bg = p.surface1 },
+  BlinkCmpScrollBarGutter = { bg = p.surface1 },
+  BlinkCmpScrollBarThumb = { bg = p.overlay0 },
+  BlinkCmpLabel = { fg = p.subtext1 },
+  BlinkCmpLabelMatch = { fg = p.aqua, bold = true },
+  BlinkCmpLabelDetail = { fg = p.overlay1 },
+  BlinkCmpLabelDescription = { fg = p.overlay1 },
+  BlinkCmpLabelDeprecated = { fg = p.overlay1, strikethrough = true },
+  BlinkCmpKind = { fg = p.yellow },
+  BlinkCmpSource = { fg = p.overlay1 },
+  BlinkCmpGhostText = { fg = p.overlay0, italic = true },
+  BlinkCmpDoc = { fg = p.text, bg = p.surface0 },
+  BlinkCmpDocBorder = { fg = p.surface2, bg = p.surface0 },
+  BlinkCmpDocSeparator = { fg = p.surface2, bg = p.surface0 },
+  BlinkCmpDocCursorLine = { bg = p.surface1 },
+  BlinkCmpSignatureHelp = { fg = p.text, bg = p.surface0 },
+  BlinkCmpSignatureHelpBorder = { fg = p.surface2, bg = p.surface0 },
+  BlinkCmpSignatureHelpActiveParameter = { fg = p.yellow, bold = true },
+
+  -- nvim-cmp, whose groups blink.cmp also links to
+  CmpItemAbbr = { fg = p.subtext1 },
+  CmpItemAbbrMatch = { fg = p.aqua, bold = true },
+  CmpItemAbbrMatchFuzzy = { fg = p.aqua },
+  CmpItemAbbrDeprecated = { fg = p.overlay1, strikethrough = true },
+  CmpItemMenu = { fg = p.overlay1 },
+  CmpItemKind = { fg = p.yellow },
+
+  -- Telescope
+  TelescopeNormal = { fg = p.text, bg = p.surface0 },
+  TelescopeBorder = { fg = p.surface2, bg = p.surface0 },
+  TelescopeTitle = { fg = p.overlay2 },
+  TelescopeSelection = { bg = p.surface2, bold = true },
+  TelescopeSelectionCaret = { fg = p.yellow, bg = p.surface2 },
+  TelescopeMatching = { fg = p.aqua, bold = true },
+  TelescopeMultiSelection = { fg = p.yellow },
+  TelescopeMultiIcon = { fg = p.yellow },
+  TelescopePromptNormal = { fg = p.text, bg = p.surface1 },
+  TelescopePromptBorder = { fg = p.surface2, bg = p.surface1 },
+  TelescopePromptTitle = { fg = p.base, bg = p.aqua, bold = true },
+  TelescopePromptPrefix = { fg = p.aqua, bg = p.surface1 },
+  TelescopePromptCounter = { fg = p.overlay1, bg = p.surface1 },
+  TelescopeResultsNormal = { fg = p.subtext1, bg = p.surface0 },
+  TelescopeResultsBorder = { fg = p.surface2, bg = p.surface0 },
+  TelescopeResultsTitle = { fg = p.surface0, bg = p.surface0 },
+  TelescopeResultsComment = { fg = p.overlay1, italic = true },
+  TelescopeResultsDiffAdd = { fg = p.green },
+  TelescopeResultsDiffChange = { fg = p.blue },
+  TelescopeResultsDiffDelete = { fg = p.red },
+  TelescopeResultsDiffUntracked = { fg = p.overlay1 },
+  TelescopePreviewNormal = { fg = p.text, bg = p.surface0 },
+  TelescopePreviewBorder = { fg = p.surface2, bg = p.surface0 },
+  TelescopePreviewTitle = { fg = p.base, bg = p.green, bold = true },
+  TelescopePreviewLine = { bg = p.surface1 },
+  TelescopePreviewMatch = { fg = p.base, bg = p.yellow },
+  TelescopePreviewDirectory = { fg = p.blue },
+  TelescopePreviewLink = { fg = p.aqua, underline = true },
+  TelescopePreviewExecute = { fg = p.green },
+
+  -- indent-blankline
+  IblIndent = { fg = p.surface1 },
+  IblWhitespace = { fg = p.surface1 },
+  IblScope = { fg = p.overlay0 },
+
+  -- copilot.vim
+  CopilotSuggestion = { fg = p.overlay0, italic = true },
+  CopilotAnnotation = { fg = p.overlay1, italic = true },
+
+  -- obsidian.nvim
+  ObsidianTodo = { fg = p.yellow, bold = true },
+  ObsidianDone = { fg = p.green, bold = true },
+  ObsidianRightArrow = { fg = p.orange, bold = true },
+  ObsidianTilde = { fg = p.red, bold = true },
+  ObsidianImportant = { fg = p.red, bold = true },
+  ObsidianBullet = { fg = p.purple, bold = true },
+  ObsidianRefText = { fg = p.blue, underline = true },
+  ObsidianExtLinkIcon = { fg = p.blue },
+  ObsidianTag = { fg = p.aqua, italic = true },
+  ObsidianBlockID = { fg = p.overlay1, italic = true },
+  ObsidianHighlightText = { fg = p.base, bg = p.yellow },
 }
 
 for group, spec in pairs(groups) do
@@ -357,6 +519,39 @@ for from, to in pairs({
   ["@lsp.mod.deprecated"] = "DiagnosticDeprecated",
 }) do
   vim.api.nvim_set_hl(0, from, { link = to })
+end
+
+-- Completion item kinds. nvim-cmp reads CmpItemKind*, and blink.cmp links its
+-- own BlinkCmpKind* to the same names, so one table serves both.
+for kind, colour in pairs({
+  Text = p.text,
+  Method = p.aqua,
+  Function = p.aqua,
+  Constructor = p.aqua,
+  Field = p.blue,
+  Variable = p.blue,
+  Property = p.blue,
+  Reference = p.blue,
+  Class = p.yellow,
+  Interface = p.yellow,
+  Struct = p.yellow,
+  Enum = p.yellow,
+  Event = p.yellow,
+  Module = p.yellow,
+  TypeParameter = p.yellow,
+  Keyword = p.purple,
+  Operator = p.purple,
+  Constant = p.orange,
+  EnumMember = p.orange,
+  Value = p.orange,
+  Unit = p.orange,
+  Snippet = p.green,
+  Color = p.purple,
+  File = p.subtext0,
+  Folder = p.blue,
+}) do
+  vim.api.nvim_set_hl(0, "CmpItemKind" .. kind, { fg = colour })
+  vim.api.nvim_set_hl(0, "BlinkCmpKind" .. kind, { fg = colour })
 end
 
 -- The terminal palette matches the Alacritty port, so :terminal looks the same
