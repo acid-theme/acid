@@ -220,6 +220,12 @@ def build_preview(registry: dict, port: dict, into: Path, published: list[str]) 
     (workflows / "preview.yml").write_text(caller)
 
 
+def apply_tag(repo: Path, tag: str) -> None:
+    """Move the tag to whatever the mirror now holds, and publish it."""
+    run(["git", "tag", "--force", tag], cwd=repo)
+    run(["git", "push", "--quiet", "--force", "origin", tag], cwd=repo)
+
+
 def has_previews(port: dict) -> bool:
     previews = PREVIEWS / port["name"]
     return previews.is_dir() and any(previews.iterdir())
@@ -336,7 +342,11 @@ def publish(
 
         run(["git", "add", "--all"], cwd=repo)
         if not run(["git", "status", "--porcelain"], cwd=repo):
-            print(f"  {slug}: already up to date")
+            if tag:
+                apply_tag(repo, tag)
+                print(f"  {slug}: already up to date, tagged {tag}")
+            else:
+                print(f"  {slug}: already up to date")
             return "unchanged"
 
         subject = f"Sync from {registry['hub']}@{describe_hub()}"
@@ -353,8 +363,7 @@ def publish(
         )
         run(["git", "push", "--quiet", "origin", f"HEAD:{branch}"], cwd=repo)
         if tag:
-            run(["git", "tag", "--force", tag], cwd=repo)
-            run(["git", "push", "--quiet", "--force", "origin", tag], cwd=repo)
+            apply_tag(repo, tag)
         print(f"  {slug}: pushed {subject}")
         return "changed"
 
@@ -385,6 +394,17 @@ def main() -> int:
         if args.check:
             print(f"registry: {len(registry['port'])} ports, all consistent")
             return 0
+
+        # The version in every generated file comes from the manifest, so a tag
+        # that disagrees with it would label the release wrongly.
+        if args.tag:
+            expected = f"v{workspace_version()}"
+            if args.tag != expected:
+                raise Failure(
+                    f"tag {args.tag} does not match the version in the manifest, "
+                    f"which is {expected}. Bump `[workspace.package] version` and "
+                    f"run `make` first."
+                )
 
         ports = registry["port"]
         if args.only:
