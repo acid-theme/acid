@@ -11,7 +11,7 @@ org = "acid-theme"
 hub = "acid-theme/acid"
 # The hub ref each port's preview workflow calls. A branch tracks fixes without
 # republishing; a tag pins the steps to a release.
-hub_ref = "master"
+hub_ref = "main"
 
 [[port]]
 name = "alacritty"

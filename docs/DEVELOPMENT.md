@@ -157,7 +157,7 @@ once, by hand, and publishing fails with a clear error if one is missing.
 `ci.yml` runs formatting, lints, tests, `make check`, the registry validation and
 the port tests on every push, then uploads the built mirrors as an artifact.
 
-`publish.yml` publishes on every push to `master`, so the port repositories never
+`publish.yml` publishes on every push to `main`, so the port repositories never
 lag behind the palette. It also runs on a `v*` tag, which additionally moves that
 tag in each mirror, and on manual dispatch with optional `only` and `dry_run`
 inputs. Every path gates on the full check first.
