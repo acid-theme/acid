@@ -128,11 +128,11 @@ def validate(registry: dict) -> list[str]:
             if dest.startswith("/") or ".." in Path(dest).parts:
                 problems.append(f"{label}: publish dest {dest!r} must stay inside the repo")
 
-        script = ROOT / "previews" / "ports" / f"{port.get('name')}.sh"
-        if not script.is_file():
-            problems.append(f"{label}: {script.relative_to(ROOT)} is missing")
-        if not port.get("preview_packages"):
-            problems.append(f"{label}: `preview_packages` is empty")
+        # A preview is optional, but a script and its packages come together.
+        if preview_script(port).is_file() and not port.get("preview_packages"):
+            problems.append(f"{label}: has a preview script but no `preview_packages`")
+        if port.get("preview_packages") and not preview_script(port).is_file():
+            problems.append(f"{label}: has `preview_packages` but no preview script")
 
         for rule in port.get("publish", []):
             source = ROOT / rule.get("src", "")
@@ -186,20 +186,34 @@ def render_readme(registry: dict, port: dict, files: list[str]) -> str:
         "%%NAME%%": port["name"],
         "%%FLAVOURS%%": flavour_summary(),
         "%%VERSION%%": load_palette()["version"],
+        "%%PREVIEW%%": (
+            "## Preview\n\n"
+            "| Acetic | Citric |\n| --- | --- |\n"
+            "| ![Acid Acetic](previews/acetic.png) | ![Acid Citric](previews/citric.png) |\n\n"
+            if preview_script(port).is_file() else ""
+        ),
     }.items():
         text = text.replace(key, value)
     return text
 
 
+def preview_script(port: dict) -> Path:
+    return ROOT / "previews" / "ports" / f"{port['name']}.sh"
+
+
 def build_preview(registry: dict, port: dict, into: Path, published: list[str]) -> None:
     """Everything the port needs to render its own preview, plus the workflow
-    that calls the shared steps in the hub."""
+    that calls the shared steps in the hub. A port without a render script — one
+    whose program will not run headlessly — simply gets neither."""
+    if not preview_script(port).is_file():
+        return
+
     preview = into / "preview"
     preview.mkdir(parents=True, exist_ok=True)
 
     for source, name in PREVIEW_ASSETS:
         shutil.copy2(source, preview / name)
-    shutil.copy2(ROOT / "previews" / "ports" / f"{port['name']}.sh", preview / "render.sh")
+    shutil.copy2(preview_script(port), preview / "render.sh")
 
     packages = port.get("preview_packages") or []
     container = CONTAINER_TEMPLATE.read_text()

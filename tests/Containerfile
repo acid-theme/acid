@@ -5,6 +5,7 @@ FROM docker.io/library/archlinux:latest
 RUN pacman -Syu --noconfirm --needed --disable-download-timeout \
         alacritty \
         btop \
+        qutebrowser \
         fish \
         mako \
         neovim \

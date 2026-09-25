@@ -32,7 +32,8 @@ working tree.
 2. Add an entry to `resources/ports.toml`: repository name, description,
    template, the files to publish and where they land, and install instructions.
 3. Add `tests/ports/<app>.sh`.
-4. Add `previews/ports/<app>.sh`, and `preview_packages` to the registry entry.
+4. Optionally add `previews/ports/<app>.sh` and `preview_packages` to the
+   registry entry. `make check` requires the two together or neither.
 5. Run `make && make check`, then `previews/run.sh <app>` to check it by eye.
 
 The registry entry is not optional; `make check` fails without one. The port
@@ -71,8 +72,13 @@ A preview is a screenshot of the real program: terminal ports run under Xvfb in
 Alacritty, Wayland ports under a headless wlroots compositor, both in a
 container.
 
-**Each port renders its own.** Publishing gives a port repository everything it
-needs — `preview/render.sh`, `preview/Containerfile` built from the port's
+A preview is optional. A port whose program will not run headlessly — Qt
+WebEngine in a container, for one — simply has no render script, and its
+repository gets no `preview/` directory, no workflow and no preview section in
+its README.
+
+**Each port that has one renders it itself.** Publishing gives such a repository
+everything it needs — `preview/render.sh`, `preview/Containerfile` built from the port's
 `preview_packages`, the shared helpers, and a workflow — and that repository's
 CI renders the images and commits them to its own `previews/` directory.
 

@@ -350,3 +350,30 @@ default colour rather than an error.
 [[port.publish]]
 src = "ports/btop/themes"
 dest = ""
+
+[[port]]
+name = "qutebrowser"
+title = "qutebrowser"
+description = "Acid for qutebrowser. A very dark colourscheme in two flavours."
+template = "ports/qutebrowser/acid.py.tera"
+install = """
+```sh
+curl -fsSLo ~/.config/qutebrowser/acid-acetic.py \\
+  https://raw.githubusercontent.com/acid-theme/qutebrowser/main/acid-acetic.py
+```
+
+Then source it from `config.py`, which runs it with `c` already bound:
+
+```python
+config.source("acid-acetic.py")
+```
+
+Every one of qutebrowser's colour settings is set, so nothing falls back to a
+default: the completion menu, context menu, tooltips, downloads, hints, key
+hints, messages, prompts, the status bar in each mode, the URL in each state,
+tabs including pinned ones, and the page background shown before a site paints
+its own.
+"""
+[[port.publish]]
+src = "ports/qutebrowser/themes"
+dest = ""
