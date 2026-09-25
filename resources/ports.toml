@@ -62,8 +62,14 @@ With lazy.nvim:
 Or without a plugin manager, by dropping `colors/acid-acetic.lua` into
 `~/.config/nvim/colors/`.
 
-Covers the editor and chrome groups, legacy syntax, treesitter, markup,
-diagnostics, LSP semantic tokens, diffs, spelling, `:terminal` and git signs.
+Covers the editor and chrome groups, legacy syntax, every treesitter capture
+Neovim documents, markup, diagnostics, diffs, spelling, `:terminal` and git
+signs.
+
+LSP semantic tokens link to the treesitter groups, so a language server cannot
+repaint a buffer differently from the parser. Token modifiers are mapped too: a
+read-only symbol is coloured as a constant, one from the standard library as a
+builtin, and a deprecated one is struck through.
 """
 [[port.publish]]
 src = "ports/neovim/colors"

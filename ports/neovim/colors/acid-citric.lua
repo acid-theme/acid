@@ -179,6 +179,7 @@ local groups = {
   Changed = { fg = p.blue },
 
   -- Treesitter
+  ["@none"] = {},
   ["@variable"] = { fg = p.text },
   ["@variable.builtin"] = { fg = p.orange, italic = true },
   ["@variable.parameter"] = { fg = p.blue },
@@ -196,6 +197,8 @@ local groups = {
   ["@string.escape"] = { fg = p.orange },
   ["@string.special"] = { fg = p.orange },
   ["@string.special.url"] = { fg = p.blue, underline = true },
+  ["@string.special.path"] = { fg = p.orange, underline = true },
+  ["@string.special.symbol"] = { fg = p.orange },
   ["@character"] = { fg = p.green },
   ["@character.special"] = { fg = p.orange },
   ["@boolean"] = { fg = p.orange },
@@ -227,7 +230,9 @@ local groups = {
   ["@keyword.debug"] = { fg = p.red },
   ["@keyword.exception"] = { fg = p.red },
   ["@keyword.conditional"] = { fg = p.purple },
+  ["@keyword.conditional.ternary"] = { fg = p.purple },
   ["@keyword.directive"] = { fg = p.aqua },
+  ["@keyword.directive.define"] = { fg = p.aqua },
   ["@punctuation.delimiter"] = { fg = p.overlay2 },
   ["@punctuation.bracket"] = { fg = p.subtext0 },
   ["@punctuation.special"] = { fg = p.purple },
@@ -335,6 +340,21 @@ for from, to in pairs({
   ["@lsp.type.type"] = "@type",
   ["@lsp.type.typeParameter"] = "@type.definition",
   ["@lsp.type.variable"] = "@variable",
+
+  -- A modifier refines the type it is attached to, so each one links to the
+  -- treesitter group that already means the same thing.
+  ["@lsp.typemod.variable.readonly"] = "@constant",
+  ["@lsp.typemod.property.readonly"] = "@constant",
+  ["@lsp.typemod.variable.static"] = "@constant",
+  ["@lsp.typemod.variable.defaultLibrary"] = "@variable.builtin",
+  ["@lsp.typemod.function.defaultLibrary"] = "@function.builtin",
+  ["@lsp.typemod.method.defaultLibrary"] = "@function.builtin",
+  ["@lsp.typemod.class.defaultLibrary"] = "@type.builtin",
+  ["@lsp.typemod.type.defaultLibrary"] = "@type.builtin",
+  ["@lsp.typemod.enum.defaultLibrary"] = "@type.builtin",
+  ["@lsp.typemod.namespace.defaultLibrary"] = "@module.builtin",
+  ["@lsp.typemod.keyword.async"] = "@keyword.coroutine",
+  ["@lsp.mod.deprecated"] = "DiagnosticDeprecated",
 }) do
   vim.api.nvim_set_hl(0, from, { link = to })
 end
