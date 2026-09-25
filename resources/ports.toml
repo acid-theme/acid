@@ -227,3 +227,48 @@ light-grey default.
 [[port.publish]]
 src = "ports/swaylock/themes"
 dest = ""
+
+[[port]]
+name = "rofi"
+title = "rofi"
+description = "Acid for rofi. A very dark colourscheme in two flavours."
+template = "ports/rofi/acid.rasi.tera"
+preview_packages = ["rofi", "xorg-server-xvfb", "xdotool"]
+install = """
+```sh
+curl -fsSLo ~/.config/rofi/acid-acetic.rasi \\
+  https://raw.githubusercontent.com/acid-theme/rofi/main/acid-acetic.rasi
+```
+
+The theme is the role names only. Import it and map them onto rofi's widgets:
+
+```rasi
+@import "acid-acetic"
+
+* {
+    background-color: @base;
+    text-color:       @text;
+    border-color:     @surface2;
+}
+
+inputbar {
+    background-color: @mantle;
+    text-color:       @text;
+}
+
+element selected.normal {
+    background-color: @surface1;
+    text-color:       @text;
+}
+
+element.active {
+    text-color: @aqua;
+}
+```
+
+rofi accepts a name it does not know without complaint, so a misspelled role
+leaves that widget on rofi's own default rather than failing.
+"""
+[[port.publish]]
+src = "ports/rofi/themes"
+dest = ""

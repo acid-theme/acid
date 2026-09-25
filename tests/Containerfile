@@ -8,6 +8,7 @@ RUN pacman -Syu --noconfirm --needed --disable-download-timeout \
         mako \
         neovim \
         niri \
+        rofi \
         swaylock \
         waybar \
         gtk3 \
