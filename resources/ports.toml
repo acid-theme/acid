@@ -308,3 +308,34 @@ leaves that widget on rofi's default rather than failing.
 [[port.publish]]
 src = "ports/rofi/themes"
 dest = ""
+
+[[port]]
+name = "btop"
+title = "btop"
+description = "Acid for btop. A very dark colourscheme in two flavours."
+template = "ports/btop/acid.theme.tera"
+preview_packages = ["btop", "alacritty", "xorg-server-xvfb", "xdotool"]
+install = """
+```sh
+mkdir -p ~/.config/btop/themes
+curl -fsSLo ~/.config/btop/themes/acid-acetic.theme \\
+  https://raw.githubusercontent.com/acid-theme/btop/main/acid-acetic.theme
+```
+
+Then select it in `~/.config/btop/btop.conf`:
+
+```conf
+color_theme = "acid-acetic"
+theme_background = true
+```
+
+`theme_background = false` keeps the terminal's own background instead of the
+theme's `main_bg`, which is what to use with a transparent terminal.
+
+btop accepts a theme without validating it: a malformed colour, an unknown key
+and a missing themes directory all pass silently, so a typo shows up as a
+default colour rather than an error.
+"""
+[[port.publish]]
+src = "ports/btop/themes"
+dest = ""

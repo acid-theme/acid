@@ -9,9 +9,11 @@ RUN pacman -Syu --noconfirm --needed --disable-download-timeout \
         ttf-jetbrains-mono-nerd \
     && pacman -Scc --noconfirm
 
-# sway ships with cap_sys_nice=ep, which rootless podman refuses to honour, and
-# Waybar will not start without a machine id. Both are no-ops when unused.
-RUN [ -f /usr/bin/sway ] && setcap -r /usr/bin/sway || true
+# Rootless podman refuses to exec a binary carrying an effective capability set,
+# so they are stripped. sway and btop both ship with one.
+RUN getcap -r /usr/bin /usr/sbin 2>/dev/null | cut -d' ' -f1 | xargs -r -n1 setcap -r || true
+
+# Waybar will not start without a machine id. A no-op when dbus is not installed.
 RUN command -v dbus-uuidgen >/dev/null && dbus-uuidgen --ensure=/etc/machine-id || true
 
 ENV XDG_RUNTIME_DIR=/tmp/xdg
