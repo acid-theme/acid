@@ -39,7 +39,6 @@ README_TEMPLATE = ROOT / "resources" / "port-readme.md"
 CALLER_TEMPLATE = ROOT / "resources" / "preview-caller.yml.in"
 CONTAINER_TEMPLATE = ROOT / "resources" / "preview-containerfile"
 PALETTE = ROOT / "palette.json"
-PREVIEWS = ROOT / "target" / "previews"
 
 # Copied into every port's `preview/` directory. Small enough that shipping them
 # everywhere beats deciding per port which are needed.
@@ -226,11 +225,6 @@ def apply_tag(repo: Path, tag: str) -> None:
     run(["git", "push", "--quiet", "--force", "origin", tag], cwd=repo)
 
 
-def has_previews(port: dict) -> bool:
-    previews = PREVIEWS / port["name"]
-    return previews.is_dir() and any(previews.iterdir())
-
-
 def build_tree(registry: dict, port: dict, into: Path) -> list[str]:
     """Lay out the mirror's contents. Returns the published file paths."""
     published: list[str] = []
@@ -245,11 +239,6 @@ def build_tree(registry: dict, port: dict, into: Path) -> list[str]:
             published.append(str((target / item.name).relative_to(into)))
 
     build_preview(registry, port, into, published)
-
-    previews = PREVIEWS / port["name"]
-    if previews.is_dir() and any(previews.iterdir()):
-        shutil.copytree(previews, into / "previews", dirs_exist_ok=True)
-
     (into / "README.md").write_text(render_readme(registry, port, published))
     shutil.copy2(LICENSE, into / "LICENSE")
     return published
@@ -314,13 +303,11 @@ def publish(
                 return "skipped"
             raise
 
-        # Previews are built into target/, which a fresh checkout does not have.
-        # Rather than delete the mirror's copies, keep them.
+        # The port renders its own previews; this only ever carries them over.
         kept = None
-        if not has_previews(port) and (repo / "previews").is_dir():
+        if (repo / "previews").is_dir():
             kept = Path(workdir) / "kept-previews"
             shutil.move(str(repo / "previews"), str(kept))
-            print(f"  {slug}: no previews built; keeping the published ones")
 
         # A repository with no commits has an unborn HEAD named after whatever
         # the client defaults to, so the branch is chosen explicitly.
