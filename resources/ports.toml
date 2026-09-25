@@ -246,28 +246,64 @@ The theme is the role names only. Import it and map them onto rofi's widgets:
 @import "acid-acetic"
 
 * {
-    background-color: @base;
+    background-color: transparent;
     text-color:       @text;
+    spacing:          2;
+}
+
+window {
+    background-color: @base;
+    border:           1px;
     border-color:     @surface2;
+    padding:          8px;
 }
 
 inputbar {
-    background-color: @mantle;
-    text-color:       @text;
+    padding:  4px;
+    spacing:  4px;
+    children: [ prompt, textbox-prompt-colon, entry, num-filtered-rows, textbox-num-sep, num-rows ];
 }
 
-element selected.normal {
-    background-color: @surface1;
-    text-color:       @text;
+prompt               { text-color: @aqua; }
+textbox-prompt-colon { expand: false; str: ":"; text-color: @overlay1; }
+entry                { placeholder: "Type to filter"; placeholder-color: @overlay1; }
+num-filtered-rows,
+num-rows             { expand: false; text-color: @overlay1; }
+textbox-num-sep      { expand: false; str: "/"; text-color: @overlay1; }
+
+listview {
+    padding:      4px 0px 0px;
+    border:       2px dash 0px 0px;
+    border-color: @surface1;
+    spacing:      4px;
+    scrollbar:    true;
 }
 
-element.active {
-    text-color: @aqua;
-}
+scrollbar { width: 4px; handle-width: 8px; handle-color: @overlay0; }
+
+element { padding: 4px; spacing: 4px; }
+
+element normal.normal    { text-color: @text; }
+element normal.active    { text-color: @blue; }
+element normal.urgent    { text-color: @red; }
+
+element alternate.normal { background-color: @mantle; text-color: @text; }
+element alternate.active { background-color: @mantle; text-color: @blue; }
+element alternate.urgent { background-color: @mantle; text-color: @red; }
+
+element selected.normal  { background-color: @text; text-color: @mantle; }
+element selected.active  { background-color: @blue; text-color: @base; }
+element selected.urgent  { background-color: @red; text-color: @base; }
+
+element-text { background-color: transparent; text-color: inherit; }
 ```
 
+All nine element states are worth setting: a row is `normal`, `alternate` or
+`selected` crossed with `normal`, `active` or `urgent`, and an unset combination
+falls back to rofi's own colours.
+
 rofi accepts a name it does not know without complaint, so a misspelled role
-leaves that widget on rofi's own default rather than failing.
+leaves that widget on rofi's default rather than failing.
 """
 [[port.publish]]
 src = "ports/rofi/themes"
