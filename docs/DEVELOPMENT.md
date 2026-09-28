@@ -51,6 +51,12 @@ tests/run.sh neovim     # one port
 tests/run.sh --build    # rebuild the image first
 ```
 
+A port is checked against its own program wherever that program can be asked —
+aerc is probed object by object, qutebrowser validates values with its own
+types, niri validates its config. Where it cannot, as with Telegram Desktop,
+which needs a login and a window, the test checks structure against a vendored
+copy of the program's own defaults and says plainly what it cannot tell.
+
 Every port test includes a negative control — a broken theme, an invented key, a
 duplicate node — so a test that cannot fail is caught, and asserts its own tool
 is installed, since a check that looks for an error in a command's output would
