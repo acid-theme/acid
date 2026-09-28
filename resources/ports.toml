@@ -377,3 +377,30 @@ its own.
 [[port.publish]]
 src = "ports/qutebrowser/themes"
 dest = ""
+
+[[port]]
+name = "aerc"
+title = "aerc"
+description = "Acid for aerc. A very dark colourscheme in two flavours."
+template = "ports/aerc/acid.styleset.tera"
+install = """
+```sh
+mkdir -p ~/.config/aerc/stylesets
+curl -fsSLo ~/.config/aerc/stylesets/acid-acetic \\
+  https://raw.githubusercontent.com/acid-theme/aerc/main/acid-acetic
+```
+
+Then select it in `aerc.conf`:
+
+```ini
+[ui]
+styleset-name=acid-acetic
+```
+
+Every style object aerc documents is set. Selection raises a row rather than
+inverting it, so the colour that marks a message unread, flagged or deleted
+survives being selected.
+"""
+[[port.publish]]
+src = "ports/aerc/themes"
+dest = ""

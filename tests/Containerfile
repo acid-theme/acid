@@ -2,7 +2,12 @@
 # it rather than by a parser written here. Arch because it packages all seven.
 FROM docker.io/library/archlinux:latest
 
+# The Arch image drops man pages to save space, but several ports are checked
+# against the documentation their own program ships.
+RUN sed -i '/^NoExtract.*usr\/share\/man/d' /etc/pacman.conf
+
 RUN pacman -Syu --noconfirm --needed --disable-download-timeout \
+        aerc \
         alacritty \
         btop \
         qutebrowser \
