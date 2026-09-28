@@ -101,22 +101,7 @@ spinner.fg=#7cad76
 border.fg=#5b554a
 border.bg=#1c1b19
 
-# Quoted replies, nesting deeper with each level
-quote_1.fg=#a3ab2f
-quote_2.fg=#7cad76
-quote_3.fg=#7d9cba
-quote_4.fg=#c5839c
-quote_x.fg=#857d70
-
-# Patches shown inline
-diff_add.fg=#a3ab2f
-diff_del.fg=#de5a48
-diff_meta.fg=#d9a441
-diff_chunk.fg=#7d9cba
-diff_chunk_func.fg=#7cad76
-diff_whitespace.bg=#de5a48
-
-code.fg=#dd7b34
-url.fg=#7d9cba
-url.underline=true
-signature.fg=#857d70
+# aerc 0.22 documents style objects for quoted text, inline diffs, code, urls
+# and signatures, and ships stylesets that use them, but its own parser rejects
+# them — and one rejected object stops aerc starting. They are left out until
+# the binary accepts them.

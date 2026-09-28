@@ -397,9 +397,14 @@ Then select it in `aerc.conf`:
 styleset-name=acid-acetic
 ```
 
-Every style object aerc documents is set. Selection raises a row rather than
+Every style object this aerc accepts is set. Selection raises a row rather than
 inverting it, so the colour that marks a message unread, flagged or deleted
 survives being selected.
+
+aerc 0.22 documents style objects for quoted text, inline diffs, code, urls and
+signatures, and ships stylesets that use them, but its parser rejects them — and
+one rejected object stops aerc starting. They are left out until the binary
+accepts them.
 """
 [[port.publish]]
 src = "ports/aerc/themes"

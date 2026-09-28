@@ -108,22 +108,7 @@ spinner.fg={{ flavor.colors.aqua }}
 border.fg={{ flavor.colors.surface2 }}
 border.bg={{ flavor.colors.base }}
 
-# Quoted replies, nesting deeper with each level
-quote_1.fg={{ flavor.colors.green }}
-quote_2.fg={{ flavor.colors.aqua }}
-quote_3.fg={{ flavor.colors.blue }}
-quote_4.fg={{ flavor.colors.purple }}
-quote_x.fg={{ flavor.colors.overlay1 }}
-
-# Patches shown inline
-diff_add.fg={{ flavor.colors.green }}
-diff_del.fg={{ flavor.colors.red }}
-diff_meta.fg={{ flavor.colors.yellow }}
-diff_chunk.fg={{ flavor.colors.blue }}
-diff_chunk_func.fg={{ flavor.colors.aqua }}
-diff_whitespace.bg={{ flavor.colors.red }}
-
-code.fg={{ flavor.colors.orange }}
-url.fg={{ flavor.colors.blue }}
-url.underline=true
-signature.fg={{ flavor.colors.overlay1 }}
+# aerc 0.22 documents style objects for quoted text, inline diffs, code, urls
+# and signatures, and ships stylesets that use them, but its own parser rejects
+# them — and one rejected object stops aerc starting. They are left out until
+# the binary accepts them.

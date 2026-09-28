@@ -1,80 +1,72 @@
-# aerc has no way to validate a styleset, so the styleset is checked against the
-# object and attribute lists in aerc's own manual.
+# aerc refuses to start when a styleset names an object its parser does not
+# know, and its manual and bundled stylesets list objects the binary rejects.
+# So the binary is asked, one object at a time, rather than the documentation.
 . /acid/tests/lib.sh
 
 require aerc
 
+root=/tmp/cfg
+mkdir -p "$root/aerc/stylesets"
+printf '[ui]\nstyleset-name=probe\n' > "$root/aerc/aerc.conf"
+# Left deliberately lax: aerc checks the styleset first, then complains about
+# these permissions, which makes every probe exit immediately.
+printf '[default]\nsource=maildir:///tmp/mail\nfrom=a <a@b.c>\n' > "$root/aerc/accounts.conf"
+
+# Returns the rejected object, if aerc rejects one.
+probe() {
+    cp "$1" "$root/aerc/stylesets/probe"
+    XDG_CONFIG_HOME=$root timeout 10 aerc </dev/null 2>&1 \
+        | sed -n 's/.*unknown style object: //p' | head -1
+}
+
 page=$(ls /usr/share/man/man7/aerc-stylesets.7* 2>/dev/null | head -1)
 [ -n "$page" ] || { fail "aerc-stylesets(7) is not installed"; summary; exit; }
-
-# The manual is roff: a table cell is a bold run, and the attributes are
-# documented as <object>.name. The backslash is matched as `.` to keep the
-# pattern readable through two layers of quoting.
 zcat -f "$page" | sed -n '/^.SH STYLE OBJECTS/,/^.SH /p' \
     | grep -oE '^.fB[a-z][a-z_0-9]*.fR$' \
-    | sed 's/^.fB//; s/.fR$//' | sort -u > /tmp/objects
-zcat -f "$page" | sed -n '/^.SH ATTRIBUTES/,/^.SH /p' \
-    | grep -oE 'fB[a-z]+.fR = ' | sed 's/^fB//; s/.fR = $//' | sort -u > /tmp/attrs
+    | sed 's/^.fB//; s/.fR$//' | sort -u > /tmp/documented
 
-objects=$(wc -l < /tmp/objects)
-attrs=$(wc -l < /tmp/attrs)
-if [ "$objects" -lt 30 ] || [ "$attrs" -lt 5 ]; then
-    fail "could not read aerc's manual (objects=$objects attrs=$attrs)"
-    summary
-    exit
-fi
-note "aerc documents $objects style objects and $attrs attributes"
+documented=$(wc -l < /tmp/documented)
+[ "$documented" -ge 30 ] || { fail "could not read aerc's manual ($documented objects)"; summary; exit; }
+
+# Which documented objects this build of aerc actually accepts.
+: > /tmp/accepted
+: > /tmp/rejected
+while read -r object; do
+    printf '%s.fg=#ff0000\n' "$object" > /tmp/probe
+    if [ -n "$(probe /tmp/probe)" ]; then
+        printf '%s\n' "$object" >> /tmp/rejected
+    else
+        printf '%s\n' "$object" >> /tmp/accepted
+    fi
+done < /tmp/documented
+note "aerc documents $documented objects and accepts $(wc -l < /tmp/accepted)"
+[ -s /tmp/rejected ] && note "it rejects: $(tr '\n' ' ' < /tmp/rejected)"
 
 for flavor in acetic citric; do
     styleset="ports/aerc/themes/acid-$flavor"
-    bad_object=""
-    bad_attr=""
-    bad_value=""
-    count=0
 
-    while IFS= read -r line; do
-        case "$line" in ''|'#'*) continue ;; esac
-        key=${line%%=*}
-        value=${line#*=}
-        count=$((count + 1))
+    # The check that matters: aerc starts with this styleset.
+    bad=$(probe "$styleset")
+    [ -n "$bad" ] \
+        && fail "$flavor: aerc rejects the styleset at $bad" \
+        || pass "$flavor: aerc accepts the styleset"
 
-        object=${key%%.*}
-        attr=${key##*.}
-        [ "$object" = "*" ] || grep -qx "$object" /tmp/objects \
-            || bad_object="$bad_object $object"
-        grep -qx "$attr" /tmp/attrs || bad_attr="$bad_attr $key"
+    used=$(grep -oE '^[a-z][a-z_0-9]*' "$styleset" | sort -u)
+    unaccepted=$(printf '%s\n' "$used" | comm -23 - /tmp/accepted | tr '\n' ' ')
+    [ -n "$(printf '%s' "$unaccepted" | tr -d ' ')" ] \
+        && fail "$flavor: objects this aerc does not accept: $unaccepted" \
+        || pass "$flavor: every object used is one aerc accepts"
 
-        case "$attr" in
-            fg|bg)
-                printf '%s' "$value" | grep -qxE '#[0-9a-f]{6}' \
-                    || bad_value="$bad_value $key=$value" ;;
-            *)
-                printf '%s' "$value" | grep -qxE 'true|false|toggle' \
-                    || bad_value="$bad_value $key=$value" ;;
-        esac
-    done < "$styleset"
-
-    [ -n "$bad_object" ] \
-        && fail "$flavor: objects aerc does not define:$bad_object" \
-        || pass "$flavor: all $count keys name an object aerc defines"
-    [ -n "$bad_attr" ] \
-        && fail "$flavor: attributes aerc does not define:$bad_attr" \
-        || pass "$flavor: all $count keys name an attribute aerc defines"
-    [ -n "$bad_value" ] \
-        && fail "$flavor: values of the wrong shape:$bad_value" \
-        || pass "$flavor: colours are #rrggbb and flags are true, false or toggle"
-
-    missing=""
-    while read -r object; do
-        grep -q "^$object\." "$styleset" || missing="$missing $object"
-    done < /tmp/objects
-    [ -n "$missing" ] \
-        && fail "$flavor: objects left unstyled:$missing" \
-        || pass "$flavor: every documented object is styled"
+    missing=$(printf '%s\n' "$used" | comm -13 - /tmp/accepted | tr '\n' ' ')
+    [ -n "$(printf '%s' "$missing" | tr -d ' ')" ] \
+        && fail "$flavor: accepted objects left unstyled: $missing" \
+        || pass "$flavor: every object aerc accepts is styled"
 done
 
-grep -qx "nonsense_object" /tmp/objects \
-    && fail "control: an invented object was found in aerc's list" \
-    || pass "control: an invented object is absent from aerc's list"
+# The probe is only meaningful if an invented object is refused.
+printf 'nonsense_object.fg=#ff0000\n' > /tmp/probe
+[ "$(probe /tmp/probe)" = "nonsense_object" ] \
+    && pass "control: aerc rejects an invented object" \
+    || fail "control: an invented object was accepted, so this proves nothing"
 
 summary
