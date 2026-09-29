@@ -1,0 +1,14 @@
+title = "fish"
+description = "Acid for the fish shell. A very dark colourscheme."
+
+[test]
+packages = ["fish"]
+
+[preview]
+packages = ["fish", "alacritty", "xorg-server-xvfb", "xdotool"]
+
+[render]
+matrix = ["flavor", { format = ["theme", "conf"] }]
+# fish renders the same mapping twice; the conf form prefixes every line.
+prefix = { theme = "", conf = "set -g " }
+filename = { theme = "dist/themes/Acid {flavor_name}.theme", conf = "dist/conf.d/acid-{flavor}.fish" }

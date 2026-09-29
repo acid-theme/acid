@@ -1,0 +1,42 @@
+# Acid for Alacritty
+
+{{ flavours }}
+
+Part of [Acid](https://github.com/{{ hub }}), a very dark colourscheme. The main
+README lists the other ports.
+
+{% if preview != "" %}## Preview
+
+{{ preview }}
+
+{% endif %}## Install
+
+```sh
+curl -fsSLo ~/.config/alacritty/acid-acetic.toml \
+  https://raw.githubusercontent.com/acid-theme/alacritty/main/acid-acetic.toml
+```
+
+Then import it from `alacritty.toml`:
+
+```toml
+[general]
+import = ["~/.config/alacritty/acid-acetic.toml"]
+```
+
+Anything under `[colors]` in the main config overrides the import. A leftover
+`[colors.primary] background` line pins citric to acetic's black.
+
+## Files
+
+{{ files }}
+
+## Generated
+
+Acid {{ version }}, rendered by acidify from
+[`{{ template }}`](https://github.com/{{ hub }}/blob/main/{{ template }}).
+Edits to these files are overwritten on the next release. Report issues on
+[{{ hub }}](https://github.com/{{ hub }}/issues).
+
+## Licence
+
+MIT.

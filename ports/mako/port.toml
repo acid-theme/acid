@@ -1,0 +1,12 @@
+title = "mako"
+description = "Acid for mako. A very dark colourscheme."
+
+[test]
+packages = ["mako"]
+
+[preview]
+packages = ["mako", "libnotify", "sway", "grim", "dbus"]
+
+[render]
+matrix = ["flavor"]
+filename = "dist/acid-{flavor}.conf"

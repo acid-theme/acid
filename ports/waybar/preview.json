@@ -1,0 +1,12 @@
+{
+  "layer": "top",
+  "height": 34,
+  "modules-left": ["custom/workspaces", "custom/window"],
+  "modules-right": ["cpu", "memory", "battery", "clock"],
+  "custom/workspaces": { "format": "● ○ ○" },
+  "custom/window": { "format": "nvim  theme.tera" },
+  "cpu": { "format": "󰍛 12%" },
+  "memory": { "format": "󰘚 31%" },
+  "battery": { "format": "󰁹 87%" },
+  "clock": { "format": "󰥔 29 Sep 09:41" }
+}

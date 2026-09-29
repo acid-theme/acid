@@ -1,0 +1,12 @@
+title = "btop"
+description = "Acid for btop. A very dark colourscheme."
+
+[test]
+packages = ["btop"]
+
+[preview]
+packages = ["btop", "alacritty", "xorg-server-xvfb", "xdotool"]
+
+[render]
+matrix = ["flavor"]
+filename = "dist/acid-{flavor}.theme"

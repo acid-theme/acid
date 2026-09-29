@@ -1,0 +1,12 @@
+title = "Alacritty"
+description = "Acid for Alacritty. A very dark colourscheme."
+
+[test]
+packages = ["alacritty"]
+
+[preview]
+packages = ["alacritty", "xorg-server-xvfb", "xdotool"]
+
+[render]
+matrix = ["flavor"]
+filename = "dist/acid-{flavor}.toml"

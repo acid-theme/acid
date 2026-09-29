@@ -1,0 +1,12 @@
+title = "niri"
+description = "Acid for niri. A very dark colourscheme."
+
+[test]
+packages = ["niri"]
+
+[preview]
+packages = ["niri", "alacritty", "neovim", "sway", "grim"]
+
+[render]
+matrix = ["flavor"]
+filename = "dist/acid-{flavor}.kdl"

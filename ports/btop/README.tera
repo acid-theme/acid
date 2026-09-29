@@ -1,0 +1,47 @@
+# Acid for btop
+
+{{ flavours }}
+
+Part of [Acid](https://github.com/{{ hub }}), a very dark colourscheme. The main
+README lists the other ports.
+
+{% if preview != "" %}## Preview
+
+{{ preview }}
+
+{% endif %}## Install
+
+```sh
+mkdir -p ~/.config/btop/themes
+curl -fsSLo ~/.config/btop/themes/acid-acetic.theme \
+  https://raw.githubusercontent.com/acid-theme/btop/main/acid-acetic.theme
+```
+
+Then select it in `~/.config/btop/btop.conf`:
+
+```conf
+color_theme = "acid-acetic"
+theme_background = true
+```
+
+`theme_background = false` keeps the terminal's own background instead of the
+theme's `main_bg`, which is what to use with a transparent terminal.
+
+btop accepts a theme without validating it: a malformed colour, an unknown key
+and a missing themes directory all pass silently, so a typo shows up as a
+default colour rather than an error.
+
+## Files
+
+{{ files }}
+
+## Generated
+
+Acid {{ version }}, rendered by acidify from
+[`{{ template }}`](https://github.com/{{ hub }}/blob/main/{{ template }}).
+Edits to these files are overwritten on the next release. Report issues on
+[{{ hub }}](https://github.com/{{ hub }}/issues).
+
+## Licence
+
+MIT.

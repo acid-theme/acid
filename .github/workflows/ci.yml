@@ -44,9 +44,6 @@ jobs:
       - name: Generated files are current
         run: make check
 
-      - name: Port registry matches the tree
-        run: python3 scripts/publish.py --check
-
       # Each port checked by the program that will read its theme. The image is
       # pulled when the registry has it and built once when it does not, so a
       # run does not reinstall seven programs from scratch.
@@ -56,19 +53,10 @@ jobs:
             sudo apt-get update -qq && sudo apt-get install -y -qq podman
           }
           podman login ghcr.io -u "${{ github.actor }}" -p "${{ secrets.GITHUB_TOKEN }}"
-          tests/run.sh
-
-      - name: Publish the test image
-        if: hashFiles('target/test-image-built') != ''
-        run: podman push "$(cat target/test-image-built)"
+          cargo run --quiet -p acid -- test
 
       # Build the mirrors without pushing, so a pull request shows what each
       # port repository would receive.
       - name: Build mirrors
-        run: python3 scripts/publish.py --out target/mirrors
+        run: cargo run --quiet -p acid -- publish --dry-run
 
-      - uses: actions/upload-artifact@v7
-        with:
-          name: mirrors
-          path: target/mirrors
-          if-no-files-found: error

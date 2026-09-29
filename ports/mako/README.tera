@@ -1,0 +1,47 @@
+# Acid for mako
+
+{{ flavours }}
+
+Part of [Acid](https://github.com/{{ hub }}), a very dark colourscheme. The main
+README lists the other ports.
+
+{% if preview != "" %}## Preview
+
+{{ preview }}
+
+{% endif %}## Install
+
+```sh
+curl -fsSLo ~/.config/mako/acid-acetic.conf \
+  https://raw.githubusercontent.com/acid-theme/mako/main/acid-acetic.conf
+```
+
+`include` needs an absolute or `~/`-prefixed path:
+
+```ini
+include=~/.config/mako/acid-acetic.conf
+
+# Local settings. mako takes the last matching value, so anything below the
+# include wins.
+font=monospace 10
+padding=6
+border-size=1
+```
+
+Sets the defaults plus `[urgency=low]`, `[urgency=normal]`, `[urgency=high]` and
+`[hidden]`. Those sections do not leak into the including file.
+
+## Files
+
+{{ files }}
+
+## Generated
+
+Acid {{ version }}, rendered by acidify from
+[`{{ template }}`](https://github.com/{{ hub }}/blob/main/{{ template }}).
+Edits to these files are overwritten on the next release. Report issues on
+[{{ hub }}](https://github.com/{{ hub }}/issues).
+
+## Licence
+
+MIT.

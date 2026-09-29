@@ -1,0 +1,9 @@
+# Where the project publishes to. Everything else about a port lives in that
+# port's own folder.
+
+org = "acid-theme"
+hub = "acid-theme/acid"
+
+# The hub ref each port's preview workflow calls. A branch tracks fixes as they
+# land; a tag pins the steps to a release.
+hub_ref = "main"

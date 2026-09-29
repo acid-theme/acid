@@ -1,61 +1,33 @@
-# Everything downstream of crates/acid-palette/src/lib.rs is generated. After
-# touching a colour, run `make`.
+# Everything generated comes from crates/acid-palette/src/lib.rs and the ports'
+# own templates. After touching a colour, run `make`.
 
-TEMPLATES := $(wildcard ports/*/*.tera) $(wildcard docs/*.tera)
-ACIDIFY   := cargo run --quiet -p acidify --
+ACID := cargo run --quiet -p acid --
 
-.PHONY: all palette ports docs preview previews registry mirrors publish check test test-ports fmt fmt-check lint clean
+.PHONY: all palette render docs check test test-ports previews publish fmt fmt-check lint clean
 
-all: palette ports docs
+all: palette render docs
 
 ## Regenerate palette.json from the Rust source of truth.
 palette:
 	cargo run --quiet -p acid-palette --bin codegen
 
-## Render every port template.
-ports:
-	$(ACIDIFY) $(wildcard ports/*/*.tera)
+## Render every port's theme into its dist directory.
+render:
+	$(ACID) render
 
-## Render the generated documentation.
+## Render the palette reference and the hub's generated tables.
 docs:
-	$(ACIDIFY) $(wildcard docs/*.tera)
-	@python3 scripts/publish.py --index
+	$(ACID) docs
 
-## Print every colour slot the current terminal theme has loaded.
-preview:
-	@bash scripts/preview.sh
-
-## Render a preview of each port by running the real program in a container.
-## Needs podman. ARGS limits it, e.g. ARGS="nvim".
-previews:
-	@previews/run.sh $(ARGS)
-
-## Run each port's tests in a container, against that port's own tool.
-## Needs podman. ARGS limits it, e.g. ARGS="nvim".
-test-ports:
-	@tests/run.sh $(ARGS)
-
-## Validate the port registry against the working tree.
-registry:
-	@python3 scripts/publish.py --check
-
-## Build each port repository's contents locally, pushing nothing.
-mirrors: all
-	@python3 scripts/publish.py --out target/mirrors
-
-## Push each port to its own repository. Needs push rights on the org.
-publish: all check
-	@python3 scripts/publish.py $(ARGS)
-
-## Everything CI checks: formatting, lints, tests, stale output, the registry.
-check: fmt-check lint test registry
-	@mkdir -p target
-	cargo run --quiet -p acid-palette --bin codegen target/palette.check.json
-	diff -u palette.json target/palette.check.json
-	$(ACIDIFY) --check $(TEMPLATES)
+## Everything CI checks: formatting, lints, tests, and stale output.
+check: fmt-check lint test
+	$(ACID) check
 
 test:
 	cargo test --workspace --quiet
+
+fmt:
+	cargo fmt --all
 
 fmt-check:
 	cargo fmt --all --check
@@ -63,8 +35,18 @@ fmt-check:
 lint:
 	cargo clippy --workspace --all-targets --quiet -- --deny warnings
 
-fmt:
-	cargo fmt --all
+## Check each port with its own program, in a container. Needs podman.
+## ARGS limits it, e.g. ARGS="neovim".
+test-ports:
+	$(ACID) test $(ARGS)
+
+## Render a preview of each port by running the real program in a container.
+previews:
+	$(ACID) preview $(ARGS)
+
+## Push each port to its own repository. Needs push rights on the org.
+publish: all check
+	$(ACID) publish $(ARGS)
 
 clean:
 	cargo clean

@@ -1,0 +1,9 @@
+title = "qutebrowser"
+description = "Acid for qutebrowser. A very dark colourscheme."
+
+[render]
+matrix = ["flavor"]
+filename = "dist/acid-{flavor}.py"
+
+[test]
+packages = ["qutebrowser"]

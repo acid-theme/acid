@@ -1,0 +1,43 @@
+# Acid for swaylock
+
+{{ flavours }}
+
+Part of [Acid](https://github.com/{{ hub }}), a very dark colourscheme. The main
+README lists the other ports.
+
+{% if preview != "" %}## Preview
+
+{{ preview }}
+
+{% endif %}## Install
+
+swaylock has no include directive, so this is a colours-only config to compose
+with. Keep local options in a separate file and concatenate the two:
+
+```sh
+curl -fsSLo /tmp/acid-acetic.conf \
+  https://raw.githubusercontent.com/acid-theme/swaylock/main/acid-acetic.conf
+cat ~/.config/swaylock/base.conf /tmp/acid-acetic.conf > ~/.config/swaylock/config
+```
+
+Or add local options to a copy and point swaylock at it with `swaylock -C`. Keep
+the two files disjoint: an unrecognised key makes swaylock exit rather than
+lock.
+
+All 29 of swaylock's colour options are set, so nothing falls back to its
+light-grey default.
+
+## Files
+
+{{ files }}
+
+## Generated
+
+Acid {{ version }}, rendered by acidify from
+[`{{ template }}`](https://github.com/{{ hub }}/blob/main/{{ template }}).
+Edits to these files are overwritten on the next release. Report issues on
+[{{ hub }}](https://github.com/{{ hub }}/issues).
+
+## Licence
+
+MIT.

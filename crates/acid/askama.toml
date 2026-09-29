@@ -1,0 +1,4 @@
+# Templates live with the ports they belong to, so they are addressed as
+# `<port>/theme.tera` rather than copied into this crate.
+[general]
+dirs = ["../../ports", "../../docs"]

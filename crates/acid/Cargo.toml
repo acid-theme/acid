@@ -1,0 +1,17 @@
+[package]
+name = "acid"
+description = "Build, check, test and publish the Acid colourscheme and its ports."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+
+[dependencies]
+acid-palette = { workspace = true }
+anyhow = { workspace = true }
+clap = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+askama = "0.16"
+toml = "0.9"

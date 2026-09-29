@@ -1,0 +1,12 @@
+title = "Neovim"
+description = "Acid for Neovim. A very dark colourscheme."
+
+[test]
+packages = ["neovim"]
+
+[preview]
+packages = ["neovim", "alacritty", "xorg-server-xvfb", "xdotool"]
+
+[render]
+matrix = ["flavor"]
+filename = "dist/colors/acid-{flavor}.lua"

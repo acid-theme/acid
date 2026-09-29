@@ -1,0 +1,47 @@
+# Acid for Telegram Desktop
+
+{{ flavours }}
+
+Part of [Acid](https://github.com/{{ hub }}), a very dark colourscheme. The main
+README lists the other ports.
+
+{% if preview != "" %}## Preview
+
+{{ preview }}
+
+{% endif %}## Install
+
+```sh
+curl -fsSLO \
+  https://raw.githubusercontent.com/acid-theme/telegram-desktop/main/acid-acetic.tdesktop-palette
+```
+
+Open the file with Telegram Desktop, or in Telegram: **Settings → Chat Settings
+→ Theme → Edit theme**, then load it.
+
+All 586 of Telegram's palette entries are set. A partial palette would leave the
+rest on Telegram's light defaults, so completeness is the point rather than a
+nicety.
+
+Telegram's source palette allows a `value | fallback` form that its theme parser
+refuses, so only the value is kept.
+
+The palette is built from Telegram's own default by transformation: neutral
+colours are mapped onto the Acid neutral ramp by inverted lightness, so the
+layering its designers encoded survives, and saturated colours snap to the
+nearest Acid accent. Entries that reference another entry upstream still do.
+
+## Files
+
+{{ files }}
+
+## Generated
+
+Acid {{ version }}, rendered by acidify from
+[`{{ template }}`](https://github.com/{{ hub }}/blob/main/{{ template }}).
+Edits to these files are overwritten on the next release. Report issues on
+[{{ hub }}](https://github.com/{{ hub }}/issues).
+
+## Licence
+
+MIT.

@@ -1,121 +1,83 @@
 # Development
 
 ```
+acid.toml                        where the ports are published
 crates/acid-palette/src/lib.rs   the source of truth: every colour, once
-crates/acidify/                  the renderer: templates in, ports out
-palette.json                     generated; what non-Rust ports read
-resources/ports.toml             the port registry
-ports/<app>/*.tera               one template per port
-ports/<app>/                     generated themes
-docs/                            palette reference, generated
-tests/                           each port checked by its own tool
-scripts/publish.py               assembles and pushes the port repositories
+crates/acid/                     the one tool: render, check, test, preview, publish
+palette.json                     generated; what other tools read
+ports/<name>/                    everything about one port
+docs/                            this, and the generated palette reference
+previews/                        the sample files a preview may use
 ```
 
 A colour is edited only in `crates/acid-palette/src/lib.rs`. Everything else is
 generated, so run `make` afterwards and commit the result.
 
 ```sh
-make            # regenerate palette.json, the ports, and the docs
-make check      # run the tests and fail if any generated file is stale
-make test-ports # check each port with its own tool, in a container
-make mirrors    # build each port repository's contents locally
+make            # regenerate palette.json, the ports and the docs
+make check      # formatting, lints, tests, and everything generated current
+make test-ports # check each port with its own program, in a container
+make previews   # render each port's preview
+make publish    # push each port to its own repository
 ```
 
-`make check` is the gate: it runs the Rust tests, re-renders every template to
-confirm the committed output matches, and validates the registry against the
-working tree.
+## The tool
+
+One binary does everything, and one language: Rust. Templates are compiled into
+it, so a template that names a colour role wrongly does not build.
+
+```sh
+acid new <name>     start a port
+acid render         render every theme into its dist directory
+acid docs           the palette reference and the hub's generated tables
+acid check          fail if anything generated is out of date or invalid
+acid test [ports]   check each port with its own program
+acid preview [ports]
+acid publish [--only <port>] [--tag vX.Y.Z] [--dry-run]
+```
+
+`acid test` and `acid preview` have two halves. Outside, they build the port's
+image and start the container; inside, they run that port's compiled checks. The
+binary is mounted in, so the container needs no toolchain — and it is copied
+first, so rebuilding while a long run is going does not break it.
+
+## What `acid check` enforces
+
+- formatting, clippy with warnings denied, and the Rust tests
+- every generated file matches what its template produces now
+- every manifest parses, with unknown fields refused
+- **every published file names the version that produced it**
+- **a preview script and its packages come together, or neither**
+- every port has a test
+- every variant of a matrix has a filename
+
+The two in bold were each added after something slipped past: themes published
+without a version stamp, and a port that named preview packages but had no
+preview to run.
 
 ## Adding a port
 
-1. Write `ports/<app>/<name>.tera`. See [PORTING.md](PORTING.md).
-2. Add an entry to `resources/ports.toml`: repository name, description,
-   template, the files to publish and where they land, and install instructions.
-   The README's ports table is generated from it.
-3. Add `tests/ports/<app>.sh`.
-4. Optionally add `previews/ports/<app>.sh` and `preview_packages` to the
-   registry entry. `make check` requires the two together or neither.
-5. Run `make && make check`, then `previews/run.sh <app>` to check it by eye.
+1. `acid new <name>` and replace the stubs. See [PORTING.md](PORTING.md).
+2. `make && make check`
+3. `acid test <name>`, then `acid preview <name>` if it has one.
 
-The registry entry is not optional; `make check` fails without one. The port
-repository's README and preview are assembled at publish time, so neither is
-kept here.
+The hub's README lists the port automatically; the folder is the registry.
 
-## Port tests
+## Containers
 
-Each port is checked by the program that will read its theme, inside a container
-built from `tests/Containerfile`. Podman is required.
+One image per port, built from the packages its manifest names, so a run
+installs that port's tool rather than every port's. The image is named after a
+hash of its own definition and pulled from `ghcr.io` when one has been published,
+so an unchanged definition is never rebuilt. Podman is required.
 
-```sh
-tests/run.sh            # every port
-tests/run.sh neovim     # one port
-tests/run.sh --build    # rebuild the image first
-```
-
-A port is checked against its own program wherever that program can be asked —
-aerc is probed object by object, qutebrowser validates values with its own
-types, niri validates its config. Where it cannot, as with Telegram Desktop,
-which needs a login and a window, the test checks structure against a vendored
-copy of the program's own defaults and says plainly what it cannot tell.
-
-Every port test includes a negative control — a broken theme, an invented key, a
-duplicate node — so a test that cannot fail is caught, and asserts its own tool
-is installed, since a check that looks for an error in a command's output would
-otherwise pass when the command is missing.
-
-The image is named after a hash of `tests/Containerfile`, so changing the
-definition changes the image rather than reusing a stale one. `tests/run.sh`
-takes a matching local image if there is one, pulls
-`ghcr.io/acid-theme/acid-tests:<hash>` if not, and builds only as a last resort.
-CI publishes the image whenever it had to build one, so the next run pulls it
-instead of reinstalling seven programs.
-
-`--build` forces a rebuild, which is what to use when a rolling package has moved
-underneath an unchanged Containerfile.
-
-## Previews
-
-A preview is a screenshot of the real program: terminal ports run under Xvfb in
-Alacritty, Wayland ports under a headless wlroots compositor, both in a
-container.
-
-A preview is optional. A port whose program will not run headlessly — Qt
-WebEngine in a container, for one — simply has no render script, and its
-repository gets no `preview/` directory, no workflow and no preview section in
-its README.
-
-**Each port that has one renders it itself.** Publishing gives such a repository
-everything it needs — `preview/render.sh`, `preview/Containerfile` built from the port's
-`preview_packages`, the shared helpers, and a workflow — and that repository's
-CI renders the images and commits them to its own `previews/` directory.
-
-The steps are shared rather than copied: `.github/workflows/port-preview.yml`
-here is a reusable workflow, and each port's generated workflow is a dozen lines
-calling it. A change to the steps takes effect on every port's next run without
-republishing.
-
-`hub_ref` in the registry is the ref those workflows call. A branch tracks fixes
-as they land; a tag pins the steps to a release instead.
-
-```sh
-previews/run.sh            # every port
-previews/run.sh neovim     # one port
-```
-
-That builds the mirrors and renders from them, so it runs exactly what a port's
-CI runs. Output goes to `target/previews/`, which is not committed: previews
-belong to the port repositories.
-
-Rendering is not deterministic to the pixel — font rasterisation and timing vary
-— so previews are not part of `make check`.
+Every port's checks include a control — a deliberately broken theme that must be
+rejected — because a check that cannot fail proves nothing.
 
 ## Versioning
 
-One version covers the palette, the renderer and every port: a theme is only ever
+One version covers the palette, the tool and every port: a theme is only ever
 released together with the palette it came from. It is set once, in
-`[workspace.package]` in `Cargo.toml`, and reaches everything else from there —
-`acid_palette::VERSION`, the `version` field in `palette.json`, the `{{ version }}`
-template variable, and the header of every generated file.
+`[workspace.package]` in `Cargo.toml`, and reaches everything else from there.
 
 | Change | Bump |
 | --- | --- |
@@ -126,9 +88,6 @@ template variable, and the header of every generated file.
 
 A colour value is a minor bump rather than a patch because it changes every
 port's output.
-
-`make check` fails if the manifest and `palette.json` disagree, and if any
-published file is missing the current version.
 
 ### Releasing
 
@@ -141,6 +100,9 @@ git tag v0.2.0
 git push --tags        # publish.yml mirrors the tag to every port repository
 ```
 
+`acid publish --tag` refuses a tag that disagrees with the palette's version, and
+tags every port whether or not its files changed.
+
 ## Publishing
 
 This repository is the hub and the only one edited. Each port also has a
@@ -148,40 +110,26 @@ repository in the [acid-theme](https://github.com/acid-theme) organisation
 holding just that port's files at the root, so a single `curl` installs a theme
 and `vim.pack` and `fisher` can consume the Neovim and fish ports directly.
 
-Those repositories are mirrors. `scripts/publish.py` assembles each one from
-`resources/ports.toml` — the themes, a README rendered from the registry's
-install text, the previews, and the licence — and pushes one commit per change.
-A pull request against a mirror cannot be merged; each generated README says so
-and points back here.
+Those repositories are mirrors: the themes, a README rendered from the port's own
+`README.tera`, the licence, and a workflow. A pull request against one cannot be
+merged; each generated README says so and points back here.
 
-Everything specific to one port lives in that port's repository. This one keeps
-the sources: the palette, the templates, the registry and the generators.
-
-```sh
-make publish                                    # push everything that changed
-make publish ARGS="--only neovim --dry-run"
-```
+Previews are the exception — the port's own repository renders and commits them,
+and publishing carries them over rather than replacing them. That is why a stale
+local render cannot overwrite what a port's CI produced.
 
 Publishing is idempotent, and only ever pushes. Port repositories are created
-once, by hand, and publishing fails with a clear error if one is missing.
+once, by hand.
 
 ## Continuous integration
 
-`ci.yml` runs formatting, lints, tests, `make check`, the registry validation and
-the port tests on every push, then uploads the built mirrors as an artifact.
+`ci.yml` runs `make check` and the port checks on every push.
 
-`publish.yml` publishes on every push to `main`, so the port repositories never
-lag behind the palette. It also runs on a `v*` tag, which additionally moves that
-tag in each mirror, and on manual dispatch with optional `only` and `dry_run`
-inputs. Every path gates on the full check first.
-
-Publishing is idempotent, so a push that changes nothing a port publishes
-produces no commit in that port.
+`publish.yml` publishes on every push to `main`, and on a `v*` tag, which
+additionally moves that tag in each mirror. It needs a token that can write to
+the sibling repositories, because the default `GITHUB_TOKEN` is scoped to this
+repository alone: a fine-grained personal access token owned by the organisation
+with `Contents: Read and write`, stored as the `ACID_PUBLISH_TOKEN` secret.
 
 `port-preview.yml` is not run here. It is the reusable workflow each port
 repository calls to render its own preview.
-
-Publishing needs a token that can write to the sibling repositories, because the
-default `GITHUB_TOKEN` is scoped to this repository alone. Create a fine-grained
-personal access token owned by the organisation with `Contents: Read and write`
-on the port repositories, and store it as the `ACID_PUBLISH_TOKEN` secret.

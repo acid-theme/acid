@@ -1,0 +1,9 @@
+title = "aerc"
+description = "Acid for aerc. A very dark colourscheme."
+
+[render]
+matrix = ["flavor"]
+filename = "dist/acid-{flavor}"
+
+[test]
+packages = ["aerc"]

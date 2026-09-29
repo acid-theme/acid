@@ -1,0 +1,9 @@
+@import "theme.css";
+* {{ font-family: "{font}"; font-size: 13px; }}
+window#waybar {{ background-color: @base; color: @text; }}
+#custom-workspaces {{ color: @aqua; padding: 0 12px; }}
+#custom-window {{ color: @overlay2; padding: 0 8px; }}
+#cpu {{ color: @blue; padding: 0 10px; }}
+#memory {{ color: @purple; padding: 0 10px; }}
+#battery {{ color: @green; padding: 0 10px; }}
+#clock {{ color: @yellow; padding: 0 14px; }}

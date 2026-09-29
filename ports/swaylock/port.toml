@@ -1,0 +1,12 @@
+title = "swaylock"
+description = "Acid for swaylock. A very dark colourscheme."
+
+[test]
+packages = ["swaylock"]
+
+[preview]
+packages = ["swaylock", "sway", "grim", "wtype"]
+
+[render]
+matrix = ["flavor"]
+filename = "dist/acid-{flavor}.conf"

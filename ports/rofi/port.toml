@@ -1,0 +1,9 @@
+title = "rofi"
+description = "Acid for rofi. A very dark colourscheme."
+
+[preview]
+packages = ["rofi", "xorg-server-xvfb", "xdotool"]
+
+[render]
+matrix = ["flavor"]
+filename = "dist/acid-{flavor}.rasi"

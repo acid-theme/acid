@@ -1,0 +1,6 @@
+title = "Telegram Desktop"
+description = "Acid for Telegram Desktop. A very dark colourscheme."
+
+[render]
+matrix = ["flavor"]
+filename = "dist/acid-{flavor}.tdesktop-palette"

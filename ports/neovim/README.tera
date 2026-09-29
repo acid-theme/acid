@@ -1,0 +1,57 @@
+# Acid for Neovim
+
+{{ flavours }}
+
+Part of [Acid](https://github.com/{{ hub }}), a very dark colourscheme. The main
+README lists the other ports.
+
+{% if preview != "" %}## Preview
+
+{{ preview }}
+
+{% endif %}## Install
+
+With Neovim's built-in plugin manager:
+
+```lua
+vim.pack.add({ { src = "https://github.com/acid-theme/neovim" } })
+vim.cmd.colorscheme("acid-acetic")
+```
+
+With lazy.nvim:
+
+```lua
+{ "acid-theme/neovim", name = "acid", lazy = false, priority = 1000 }
+```
+
+Or without a plugin manager, by dropping `colors/acid-acetic.lua` into
+`~/.config/nvim/colors/`.
+
+Covers the editor and chrome groups, legacy syntax, every treesitter capture
+Neovim documents, markup, diagnostics, diffs, spelling, `:terminal` and git
+signs.
+
+LSP semantic tokens link to the treesitter groups, so a language server cannot
+repaint a buffer differently from the parser. Token modifiers are mapped too: a
+read-only symbol is coloured as a constant, one from the standard library as a
+builtin, and a deprecated one is struck through.
+
+Plugins covered: gitsigns, mini.nvim (diff, files, pick, statusline,
+hipatterns, indentscope, surround, icons), blink.cmp, nvim-cmp, Telescope,
+indent-blankline, copilot.vim and obsidian.nvim. Group names are taken from each
+plugin's own source.
+
+## Files
+
+{{ files }}
+
+## Generated
+
+Acid {{ version }}, rendered by acidify from
+[`{{ template }}`](https://github.com/{{ hub }}/blob/main/{{ template }}).
+Edits to these files are overwritten on the next release. Report issues on
+[{{ hub }}](https://github.com/{{ hub }}/issues).
+
+## Licence
+
+MIT.

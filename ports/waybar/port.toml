@@ -1,0 +1,12 @@
+title = "Waybar"
+description = "Acid for Waybar. A very dark colourscheme."
+
+[test]
+packages = ["gtk3", "python-gobject"]
+
+[preview]
+packages = ["waybar", "sway", "grim", "dbus"]
+
+[render]
+matrix = ["flavor"]
+filename = "dist/acid-{flavor}.css"
