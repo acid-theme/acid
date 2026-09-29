@@ -9,27 +9,6 @@ use crate::{
     templates,
 };
 
-/// One line naming every flavour, so no prose has to count them.
-pub fn flavour_summary() -> String {
-    let parts: Vec<String> = acid_palette::FLAVORS
-        .iter()
-        .map(|f| format!("**{}** (`{}`), {}", f.name, f.colors.base, f.description))
-        .collect();
-
-    let lead = match parts.len() {
-        1 => "One flavour".to_owned(),
-        2 => "Two flavours".to_owned(),
-        3 => "Three flavours".to_owned(),
-        n => format!("{n} flavours"),
-    };
-    let joined = match parts.split_last() {
-        Some((last, [])) => last.clone(),
-        Some((last, rest)) => format!("{}; and {last}", rest.join("; ")),
-        None => String::new(),
-    };
-    format!("{lead}: {joined}.")
-}
-
 /// The files a port publishes, relative to its repository root.
 pub fn published(port: &Port) -> Result<Vec<String>> {
     let dist = port.dist();
@@ -73,44 +52,56 @@ fn preview_table(port: &Port) -> String {
 }
 
 pub fn render(config: &Config, port: &Port) -> Result<String> {
-    let files = published(port)?;
-    let listing = files
-        .iter()
-        .map(|f| format!("- `{f}`"))
-        .collect::<Vec<_>>()
-        .join("\n");
-
-    templates::readme(
+    Ok(templates::normalise(templates::readme(
         &port.name,
         &templates::Readme {
             hub: &config.hub,
-            version: acid_palette::VERSION,
-            flavours: &flavour_summary(),
-            files: &listing,
-            template: &format!("ports/{}/theme.tera", port.name),
             preview: &preview_table(port),
         },
-    )
+    )?))
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
 
-    /// The summary counts the flavours so no prose has to.
+    fn port(preview: bool) -> Port {
+        let mut toml = r#"
+            title = "Example"
+            description = "Acid for Example."
+            [render]
+            matrix = ["flavor"]
+            filename = "dist/acid-{flavor}.conf"
+        "#
+        .to_owned();
+        if preview {
+            toml.push_str(
+                "
+[preview]
+packages = [\"example\"]
+",
+            );
+        }
+        Port {
+            name: "example".to_owned(),
+            dir: std::path::PathBuf::from("ports/example"),
+            manifest: toml::from_str(&toml).expect("manifest parses"),
+        }
+    }
+
+    /// The table has a column per flavour, and a control: a port with no
+    /// preview gets nothing, so its README omits the section entirely.
     #[test]
-    fn the_summary_names_every_flavour() {
-        let summary = flavour_summary();
+    fn the_preview_table_covers_every_flavour() {
+        let table = preview_table(&port(true));
         for flavour in &acid_palette::FLAVORS {
             assert!(
-                summary.contains(flavour.name),
-                "{summary} omits {}",
+                table.contains(flavour.name),
+                "{table} omits {}",
                 flavour.name
             );
-            assert!(summary.contains(flavour.description));
+            assert!(table.contains(&format!("previews/{}.png", flavour.identifier)));
         }
-        assert!(summary.starts_with("Three flavours:"), "{summary}");
-        // The last is joined with "and", not another semicolon.
-        assert!(summary.contains("; and "), "{summary}");
+        assert_eq!(preview_table(&port(false)), "");
     }
 }

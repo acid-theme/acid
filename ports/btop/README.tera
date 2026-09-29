@@ -1,13 +1,14 @@
 # Acid for btop
 
-{{ flavours }}
+Generated from [acid-theme/acid](https://github.com/{{ hub }}) — open issues
+and pull requests there.
 
-Part of [Acid](https://github.com/{{ hub }}), a very dark colourscheme. The main
-README lists the other ports.
-
-{% if preview != "" %}## Preview
+{% if preview != "" %}<details>
+<summary>Screenshots</summary>
 
 {{ preview }}
+
+</details>
 
 {% endif %}## Install
 
@@ -27,21 +28,6 @@ theme_background = true
 `theme_background = false` keeps the terminal's own background instead of the
 theme's `main_bg`, which is what to use with a transparent terminal.
 
-btop accepts a theme without validating it: a malformed colour, an unknown key
-and a missing themes directory all pass silently, so a typo shows up as a
-default colour rather than an error.
+## Credits
 
-## Files
-
-{{ files }}
-
-## Generated
-
-Acid {{ version }}, rendered by acidify from
-[`{{ template }}`](https://github.com/{{ hub }}/blob/main/{{ template }}).
-Edits to these files are overwritten on the next release. Report issues on
-[{{ hub }}](https://github.com/{{ hub }}/issues).
-
-## Licence
-
-MIT.
+[@ssiyad](https://github.com/ssiyad)

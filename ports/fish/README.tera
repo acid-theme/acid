@@ -1,13 +1,14 @@
 # Acid for fish
 
-{{ flavours }}
+Generated from [acid-theme/acid](https://github.com/{{ hub }}) — open issues
+and pull requests there.
 
-Part of [Acid](https://github.com/{{ hub }}), a very dark colourscheme. The main
-README lists the other ports.
-
-{% if preview != "" %}## Preview
+{% if preview != "" %}<details>
+<summary>Screenshots</summary>
 
 {{ preview }}
+
+</details>
 
 {% endif %}## Install
 
@@ -29,17 +30,6 @@ curl -fsSLo ~/.config/fish/conf.d/acid-acetic.fish \
 
 Use one or the other, not both.
 
-## Files
+## Credits
 
-{{ files }}
-
-## Generated
-
-Acid {{ version }}, rendered by acidify from
-[`{{ template }}`](https://github.com/{{ hub }}/blob/main/{{ template }}).
-Edits to these files are overwritten on the next release. Report issues on
-[{{ hub }}](https://github.com/{{ hub }}/issues).
-
-## Licence
-
-MIT.
+[@ssiyad](https://github.com/ssiyad)

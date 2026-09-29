@@ -1,13 +1,14 @@
 # Acid for aerc
 
-{{ flavours }}
+Generated from [acid-theme/acid](https://github.com/{{ hub }}) — open issues
+and pull requests there.
 
-Part of [Acid](https://github.com/{{ hub }}), a very dark colourscheme. The main
-README lists the other ports.
-
-{% if preview != "" %}## Preview
+{% if preview != "" %}<details>
+<summary>Screenshots</summary>
 
 {{ preview }}
+
+</details>
 
 {% endif %}## Install
 
@@ -24,26 +25,6 @@ Then select it in `aerc.conf`:
 styleset-name=acid-acetic
 ```
 
-Every style object this aerc accepts is set. Selection raises a row rather than
-inverting it, so the colour that marks a message unread, flagged or deleted
-survives being selected.
+## Credits
 
-aerc 0.22 documents style objects for quoted text, inline diffs, code, urls and
-signatures, and ships stylesets that use them, but its parser rejects them — and
-one rejected object stops aerc starting. They are left out until the binary
-accepts them.
-
-## Files
-
-{{ files }}
-
-## Generated
-
-Acid {{ version }}, rendered by acidify from
-[`{{ template }}`](https://github.com/{{ hub }}/blob/main/{{ template }}).
-Edits to these files are overwritten on the next release. Report issues on
-[{{ hub }}](https://github.com/{{ hub }}/issues).
-
-## Licence
-
-MIT.
+[@ssiyad](https://github.com/ssiyad)

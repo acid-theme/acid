@@ -1,13 +1,14 @@
 # Acid for rofi
 
-{{ flavours }}
+Generated from [acid-theme/acid](https://github.com/{{ hub }}) — open issues
+and pull requests there.
 
-Part of [Acid](https://github.com/{{ hub }}), a very dark colourscheme. The main
-README lists the other ports.
-
-{% if preview != "" %}## Preview
+{% if preview != "" %}<details>
+<summary>Screenshots</summary>
 
 {{ preview }}
+
+</details>
 
 {% endif %}## Install
 
@@ -74,24 +75,6 @@ element selected.urgent  { background-color: @red; text-color: @base; }
 element-text { background-color: transparent; text-color: inherit; }
 ```
 
-All nine element states are worth setting: a row is `normal`, `alternate` or
-`selected` crossed with `normal`, `active` or `urgent`, and an unset combination
-falls back to rofi's own colours.
+## Credits
 
-rofi accepts a name it does not know without complaint, so a misspelled role
-leaves that widget on rofi's default rather than failing.
-
-## Files
-
-{{ files }}
-
-## Generated
-
-Acid {{ version }}, rendered by acidify from
-[`{{ template }}`](https://github.com/{{ hub }}/blob/main/{{ template }}).
-Edits to these files are overwritten on the next release. Report issues on
-[{{ hub }}](https://github.com/{{ hub }}/issues).
-
-## Licence
-
-MIT.
+[@ssiyad](https://github.com/ssiyad)

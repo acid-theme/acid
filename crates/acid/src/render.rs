@@ -76,7 +76,7 @@ pub fn one(port: &Port, variant: &Variant) -> Result<String> {
         .as_ref()
         .map_or("", |p| p.get(&variant.format));
 
-    let mut rendered = templates::theme(
+    let rendered = templates::theme(
         &port.name,
         &templates::Theme {
             flavor: variant.flavor,
@@ -86,12 +86,7 @@ pub fn one(port: &Port, variant: &Variant) -> Result<String> {
         },
     )?;
 
-    // A theme file ends with exactly one newline, whatever the template did.
-    while rendered.ends_with('\n') {
-        rendered.pop();
-    }
-    rendered.push('\n');
-    Ok(rendered)
+    Ok(templates::normalise(rendered))
 }
 
 /// Render every variant of every port. Returns the paths written.

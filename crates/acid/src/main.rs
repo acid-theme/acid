@@ -37,7 +37,7 @@ enum Command {
     },
     /// Render every port's theme into its dist directory.
     Render,
-    /// Render the palette reference, the hub's tables and each port's README.
+    /// Render the palette reference and the hub's tables.
     Docs,
     /// Fail if anything generated is out of date.
     Check,

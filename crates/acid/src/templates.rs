@@ -23,10 +23,6 @@ pub struct Theme<'a> {
 /// What a README template can refer to.
 pub struct Readme<'a> {
     pub hub: &'a str,
-    pub version: &'a str,
-    pub flavours: &'a str,
-    pub files: &'a str,
-    pub template: &'a str,
     /// The preview table, empty when the port has no preview.
     pub preview: &'a str,
 }
@@ -68,12 +64,7 @@ macro_rules! acid_templates {
                 #[allow(dead_code, reason = "read by the generated render code")]
                 pub struct $ident<'a> {
                     pub hub: &'a str,
-                    pub version: &'a str,
-                    pub flavours: &'a str,
-                    pub files: &'a str,
-                    pub template: &'a str,
-                    /// The preview table, empty when the port has no preview.
-    pub preview: &'a str,
+                    pub preview: &'a str,
                 }
             )*
         }
@@ -95,10 +86,6 @@ macro_rules! acid_templates {
             match port {
                 $($name => Ok(readmes::$ident {
                     hub: data.hub,
-                    version: data.version,
-                    flavours: data.flavours,
-                    files: data.files,
-                    template: data.template,
                     preview: data.preview,
                 }
                 .render()?),)*
@@ -109,3 +96,25 @@ macro_rules! acid_templates {
 }
 
 include!(concat!(env!("OUT_DIR"), "/ports.rs"));
+
+/// A generated file ends with exactly one newline, whatever the template did.
+pub fn normalise(mut rendered: String) -> String {
+    while rendered.ends_with('\n') {
+        rendered.pop();
+    }
+    rendered.push('\n');
+    rendered
+}
+
+#[cfg(test)]
+mod tests {
+    use super::normalise;
+
+    #[test]
+    fn every_generated_file_ends_with_one_newline() {
+        assert_eq!(normalise("a".to_owned()), "a\n");
+        assert_eq!(normalise("a\n".to_owned()), "a\n");
+        assert_eq!(normalise("a\n\n\n".to_owned()), "a\n");
+        assert_eq!(normalise(String::new()), "\n");
+    }
+}

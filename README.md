@@ -1,21 +1,13 @@
 # Acid
 
-A very dark colourscheme in the spirit of gruvbox, in two flavours. Warm cream
-text, earthy accents, and nothing that competes with the code for attention.
+<details>
+<summary>Screenshots</summary>
 
-<!-- flavours:start -->
-
-| Flavour | Background | |
+| Acetic | Citric | Lactic |
 | --- | --- | --- |
-| **Acetic** | `#000000` | pure black with vibrant accents |
-| **Citric** | `#1c1b19` | warm dark grey with muted accents |
-| **Lactic** | `#ffffff` | white with accents darkened to match |
+| ![Acetic](https://raw.githubusercontent.com/acid-theme/neovim/main/previews/acetic.png) | ![Citric](https://raw.githubusercontent.com/acid-theme/neovim/main/previews/citric.png) | ![Lactic](https://raw.githubusercontent.com/acid-theme/neovim/main/previews/lactic.png) |
 
-<!-- flavours:end -->
-
-| Acetic | Citric |
-| --- | --- |
-| ![Acid Acetic in Neovim](https://raw.githubusercontent.com/acid-theme/neovim/main/previews/acetic.png) | ![Acid Citric in Neovim](https://raw.githubusercontent.com/acid-theme/neovim/main/previews/citric.png) |
+</details>
 
 ## Ports
 
@@ -38,15 +30,14 @@ text, earthy accents, and nothing that competes with the code for attention.
 
 <!-- ports:end -->
 
-Install instructions, previews and the themes themselves live in each port's
-repository. One `curl` installs a theme.
+Each repository holds its own install instructions.
 
 ## Documentation
 
-[docs/PALETTE.md](docs/PALETTE.md) lists every colour with its contrast ratio.
-[docs/](docs/) holds the design notes, the porting guide and the development
-reference.
+- [docs/PALETTE.md](docs/PALETTE.md) — every colour, with contrast ratios
+- [docs/PORTING.md](docs/PORTING.md) — adding a port
+- [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) — the tooling
 
-## Licence
+## Credits
 
-MIT.
+[@ssiyad](https://github.com/ssiyad)
