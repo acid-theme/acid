@@ -411,14 +411,14 @@ src = "ports/aerc/themes"
 dest = ""
 
 [[port]]
-name = "telegram"
+name = "telegram-desktop"
 title = "Telegram Desktop"
 description = "Acid for Telegram Desktop. A very dark colourscheme in two flavours."
-template = "ports/telegram/acid.palette.tera"
+template = "ports/telegram-desktop/acid.palette.tera"
 install = """
 ```sh
 curl -fsSLO \\
-  https://raw.githubusercontent.com/acid-theme/telegram/main/acid-acetic.tdesktop-palette
+  https://raw.githubusercontent.com/acid-theme/telegram-desktop/main/acid-acetic.tdesktop-palette
 ```
 
 Open the file with Telegram Desktop, or in Telegram: **Settings → Chat Settings
@@ -428,11 +428,14 @@ All 586 of Telegram's palette entries are set. A partial palette would leave the
 rest on Telegram's light defaults, so completeness is the point rather than a
 nicety.
 
+Telegram's source palette allows a `value | fallback` form that its theme parser
+refuses, so only the value is kept.
+
 The palette is built from Telegram's own default by transformation: neutral
 colours are mapped onto the Acid neutral ramp by inverted lightness, so the
 layering its designers encoded survives, and saturated colours snap to the
 nearest Acid accent. Entries that reference another entry upstream still do.
 """
 [[port.publish]]
-src = "ports/telegram/themes"
+src = "ports/telegram-desktop/themes"
 dest = ""

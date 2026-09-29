@@ -1,6 +1,6 @@
 # Telegram is a GUI client that cannot load a theme headlessly, so this checks
 # the palette's structure against Telegram's own default palette, vendored at
-# ports/telegram/upstream.palette. It cannot tell whether the result looks good.
+# ports/telegram-desktop/upstream.palette. It cannot tell whether the result looks good.
 . /acid/tests/lib.sh
 
 python3 - <<'PY'
@@ -28,11 +28,11 @@ def parse(path):
             entries[match.group(1)] = match.group(2).strip()
     return entries
 
-upstream = parse("ports/telegram/upstream.palette")
+upstream = parse("ports/telegram-desktop/upstream.palette")
 report(len(upstream) > 500, f"Telegram's default palette has {len(upstream)} keys")
 
 for flavour in ("acetic", "citric"):
-    theme = parse(f"ports/telegram/themes/acid-{flavour}.tdesktop-palette")
+    theme = parse(f"ports/telegram-desktop/themes/acid-{flavour}.tdesktop-palette")
 
     unknown = sorted(set(theme) - set(upstream))
     report(not unknown, f"{flavour}: every key exists upstream — {len(theme)} keys"
@@ -42,13 +42,13 @@ for flavour in ("acetic", "citric"):
     report(not missing, f"{flavour}: no key is left out"
            + (f"; missing: {missing[:4]}" if missing else ""))
 
-    # Telegram accepts a literal colour, another key's name, or a literal with a
-    # fallback key. Anything else stops the theme loading.
+    # A value is a literal colour or another key's name, and nothing else.
+    # Telegram's *source* palette also allows "value | fallback", but its theme
+    # parser refuses it: "Expected ';' after each value in the color scheme".
     bad = []
     for name, value in theme.items():
         literal = r"#[0-9a-f]{3,4}|#[0-9a-f]{6}|#[0-9a-f]{8}"
-        if not re.fullmatch(rf"(({literal})(\s*\|\s*[a-zA-Z0-9]+)?)|[a-zA-Z][a-zA-Z0-9]*",
-                            value, re.IGNORECASE):
+        if not re.fullmatch(rf"({literal})|[a-zA-Z][a-zA-Z0-9]*", value, re.IGNORECASE):
             bad.append(f"{name}={value}")
     report(not bad, f"{flavour}: every value is a colour or a key"
            + (f"; bad: {bad[:4]}" if bad else ""))
@@ -78,9 +78,12 @@ for flavour in ("acetic", "citric"):
     report(not cycles, f"{flavour}: no reference cycles"
            + (f"; cycles: {cycles[:4]}" if cycles else ""))
 
-# The grammar check is only meaningful if it refuses something.
-report(not re.fullmatch(r"(#[0-9a-f]{6})|[a-zA-Z][a-zA-Z0-9]*", "#00zz00", re.IGNORECASE),
+# The grammar check is only meaningful if it refuses what Telegram refuses.
+grammar = r"(#[0-9a-f]{3,4}|#[0-9a-f]{6}|#[0-9a-f]{8})|[a-zA-Z][a-zA-Z0-9]*"
+report(not re.fullmatch(grammar, "#00zz00", re.IGNORECASE),
        "control: a malformed colour is refused")
+report(not re.fullmatch(grammar, "#2dad2d | boxTextFgGood", re.IGNORECASE),
+       "control: the source-only fallback syntax is refused")
 
 print(f"    -- {passed} passed, {failed} failed")
 sys.exit(1 if failed else 0)

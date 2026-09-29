@@ -15,6 +15,9 @@ acidify:
 // the Acid neutral ramp by inverted lightness, so the layering survives, and
 // saturated colours snap to the nearest Acid accent. Entries that reference
 // another entry upstream still do, so those relationships are kept.
+//
+// Telegram's source palette allows "value | fallback"; its theme parser does
+// not, so only the value is kept.
 
 // This file is part of Desktop App Toolkit,
 // a set of libraries for developing nice desktop applications.
@@ -185,8 +188,8 @@ contactsStatusFgOnline: windowActiveTextFg; // contacts (and some other) box row
 photoCropFadeBg: layerBg; // avatar crop box fade background (when choosing a new photo in Settings or for a group)
 photoCropPointFg: {{ flavor.colors.base | alpha(amount=0.498) }}; // avatar crop box corner rectangles (when choosing a new photo in Settings or for a group)
 
-callArrowFg: {{ flavor.colors.aqua }} | boxTextFgGood; // received phone call arrow (in calls list box)
-callArrowMissedFg: {{ flavor.colors.red }} | boxTextFgError; // missed phone call arrow (in calls list box)
+callArrowFg: {{ flavor.colors.aqua }}; // received phone call arrow (in calls list box)
+callArrowMissedFg: {{ flavor.colors.red }}; // missed phone call arrow (in calls list box)
 
 // intro
 introBg: windowBg; // login background
@@ -219,8 +222,8 @@ dialogsSentIconFg: {{ flavor.colors.green }}; // chat list sent message tick / d
 dialogsUnreadBg: windowBgActive; // chat list unread badge background for not muted chat
 dialogsUnreadBgMuted: {{ flavor.colors.surface2 }}; // chat list unread badge background for muted chat
 dialogsUnreadFg: windowFgActive; // chat list unread badge text
-dialogsArchiveFg: {{ flavor.colors.subtext1 }} | dialogsNameFg; // chat list archive name text
-dialogsOnlineBadgeFg: {{ flavor.colors.green }} | dialogsUnreadBg; // chat list online status
+dialogsArchiveFg: {{ flavor.colors.subtext1 }}; // chat list archive name text
+dialogsOnlineBadgeFg: {{ flavor.colors.green }}; // chat list online status
 dialogsScamFg: dialogsDraftFg; // chat list scam label
 
 dialogsBgOver: {{ flavor.colors.surface0 }}; // chat list background with mouse over
@@ -237,7 +240,7 @@ dialogsSentIconFgOver: {{ flavor.colors.green }}; // chat list sent message tick
 dialogsUnreadBgOver: dialogsUnreadBg; // chat list unread badge background for not muted chat with mouse over
 dialogsUnreadBgMutedOver: dialogsUnreadBgMuted; // chat list unread badge background for muted chat with mouse over
 dialogsUnreadFgOver: dialogsUnreadFg; // chat list unread badge text with mouse over
-dialogsArchiveFgOver: {{ flavor.colors.subtext1 }} | dialogsNameFgOver; // chat list archive name text with mouse over
+dialogsArchiveFgOver: {{ flavor.colors.subtext1 }}; // chat list archive name text with mouse over
 dialogsScamFgOver: dialogsDraftFgOver; // chat list scam label with mouse over
 
 dialogsBgActive: {{ flavor.colors.surface2 }}; // chat list background for current (active) chat
@@ -271,11 +274,11 @@ searchedTextCurrentMatchFg: {{ flavor.colors.text }}; // in-page search current 
 topBarBg: windowBg; // top bar background (in chat view, media overview..)
 
 emojiPanBg: windowBg; // emoji panel background
-emojiPanCategories: {{ flavor.colors.mantle }} | windowBg; // emoji panel categories background
+emojiPanCategories: {{ flavor.colors.mantle }}; // emoji panel categories background
 emojiPanHeaderFg: windowSubTextFg; // emoji panel section header text
-emojiPanHeaderBg: {{ flavor.colors.base | alpha(amount=0.949) }} | emojiPanBg; // emoji panel section header background
+emojiPanHeaderBg: {{ flavor.colors.base | alpha(amount=0.949) }}; // emoji panel section header background
 emojiIconFg: {{ flavor.colors.overlay1 }}; // emoji category icon
-emojiSubIconFgActive: {{ flavor.colors.subtext0 }} | windowBoldFg; // active emoji subcategory icon
+emojiSubIconFgActive: {{ flavor.colors.subtext0 }}; // active emoji subcategory icon
 stickerPanDeleteBg: {{ flavor.colors.text | alpha(amount=1.000) }}; // delete X button background for custom sent stickers in stickers panel (legacy)
 stickerPanDeleteFg: windowFgActive; // delete X button icon for custom sent stickers in stickers panel (legacy)
 stickerPreviewBg: {{ flavor.colors.base | alpha(amount=0.690) }}; // sticker and GIF preview background (when you press and hold on a sticker)
@@ -342,14 +345,14 @@ historyPeerUserpicFg: windowFgActive; // default userpic initials
 historyPeerSavedMessagesBg: historyPeer4UserpicBg; // saved messages userpic background
 historyPeerArchiveUserpicBg: dialogsUnreadBgMuted; // archive folder userpic background
 
-historyPeer1UserpicBg2: {{ flavor.colors.red }} | historyPeer1UserpicBg; // the second red userpic background
-historyPeer2UserpicBg2: {{ flavor.colors.aqua }} | historyPeer2UserpicBg; // the second green userpic background
-historyPeer3UserpicBg2: {{ flavor.colors.yellow }} | historyPeer3UserpicBg; // the second yellow userpic background (actually unused)
-historyPeer4UserpicBg2: {{ flavor.colors.blue }} | historyPeer4UserpicBg; // the second blue userpic background
-historyPeer5UserpicBg2: {{ flavor.colors.blue }} | historyPeer5UserpicBg; // the second purple userpic background
-historyPeer6UserpicBg2: {{ flavor.colors.red }} | historyPeer6UserpicBg; // the second pink userpic background
-historyPeer7UserpicBg2: {{ flavor.colors.blue }} | historyPeer7UserpicBg; // the second sea userpic background
-historyPeer8UserpicBg2: {{ flavor.colors.orange }} | historyPeer8UserpicBg; // the second orange userpic background
+historyPeer1UserpicBg2: {{ flavor.colors.red }}; // the second red userpic background
+historyPeer2UserpicBg2: {{ flavor.colors.aqua }}; // the second green userpic background
+historyPeer3UserpicBg2: {{ flavor.colors.yellow }}; // the second yellow userpic background (actually unused)
+historyPeer4UserpicBg2: {{ flavor.colors.blue }}; // the second blue userpic background
+historyPeer5UserpicBg2: {{ flavor.colors.blue }}; // the second purple userpic background
+historyPeer6UserpicBg2: {{ flavor.colors.red }}; // the second pink userpic background
+historyPeer7UserpicBg2: {{ flavor.colors.blue }}; // the second sea userpic background
+historyPeer8UserpicBg2: {{ flavor.colors.orange }}; // the second orange userpic background
 historyPeerSavedMessagesBg2: historyPeer4UserpicBg2; // the second saved messages userpic background
 
 settingsIconBg1: {{ flavor.colors.red }}; // red settings icon background
@@ -518,14 +521,14 @@ notificationsBoxMonitorFg: windowFg; // custom notifications settings box monito
 notificationsBoxScreenBg: dialogsBgActive; // #6389a8; // custom notifications settings box monitor screen background
 
 notificationSampleUserpicFg: windowBgActive; // custom notifications settings box small sample userpic placeholder
-notificationSampleCloseFg: {{ flavor.colors.surface0 }} | windowSubTextFg; // custom notifications settings box small sample close button placeholder
-notificationSampleTextFg: {{ flavor.colors.surface0 }} | windowSubTextFg; // custom notifications settings box small sample text placeholder
-notificationSampleNameFg: {{ flavor.colors.overlay1 }} | windowSubTextFg; // custom notifications settings box small sample name placeholder
+notificationSampleCloseFg: {{ flavor.colors.surface0 }}; // custom notifications settings box small sample close button placeholder
+notificationSampleTextFg: {{ flavor.colors.surface0 }}; // custom notifications settings box small sample text placeholder
+notificationSampleNameFg: {{ flavor.colors.overlay1 }}; // custom notifications settings box small sample name placeholder
 
 mainMenuBg: windowBg; // main menu background
 mainMenuCoverBg: dialogsBgActive; // main menu top cover background
 mainMenuCloudFg: activeButtonFg; // main menu top cover saved messages / archive button icon
-mainMenuCloudBg: {{ flavor.colors.blue }} | activeButtonBgRipple; // main menu top cover saved messages / archive button background
+mainMenuCloudBg: {{ flavor.colors.blue }}; // main menu top cover saved messages / archive button background
 
 mediaPlayerBg: windowBg; // audio file player background
 mediaPlayerActiveFg: windowBgActive; // audio file player playback progress already played part
@@ -628,7 +631,7 @@ groupCallVideoSubTextFg: {{ flavor.colors.base | alpha(amount=0.753) }}; // grou
 
 callBarBg: dialogsBgActive; // active phone call bar background
 callBarMuteRipple: dialogsRippleBgActive; // active phone call bar mute and hangup button ripple effect
-callBarBgMuted: {{ flavor.colors.overlay1 }} | dialogsUnreadBgMuted; // phone call bar with muted mic background
+callBarBgMuted: {{ flavor.colors.overlay1 }}; // phone call bar with muted mic background
 callBarFg: dialogsNameFgActive; // phone call bar text and icons
 
 importantTooltipBg: toastBg; // group call important tooltip background color
@@ -640,7 +643,7 @@ outdateSoonBg: {{ flavor.colors.orange }}; // operating system version is soon o
 outdatedBg: {{ flavor.colors.red }}; // operating system version is already outdated bar background
 
 // spellcheck
-spellUnderline: {{ flavor.colors.red | alpha(amount=0.533) }} | attentionButtonFg; // misspelled words
+spellUnderline: {{ flavor.colors.red | alpha(amount=0.533) }}; // misspelled words
 
 walletTitleBg: {{ flavor.colors.text }}; // wallet window title background when window is inactive
 walletTitleBgActive: walletTitleBg; // wallet window title background when window is active
@@ -718,6 +721,6 @@ rankAdminFg: {{ flavor.colors.aqua }}; // admin badge text and pill, green
 rankOwnerFg: {{ flavor.colors.purple }}; // owner badge text and pill, purple
 rankUserFg: windowSubTextFg; // regular user badge text, gray
 
-dialogsMentionIconFg: {{ flavor.colors.blue }} | dialogsVerifiedIconBg; // chat list mention icon
-dialogsReactionIconFg: {{ flavor.colors.red }} | attentionButtonFg; // chat list reaction icon
-dialogsPollIconFg: {{ flavor.colors.blue }} | historyPeer5NameFg; // chat list poll icon
+dialogsMentionIconFg: {{ flavor.colors.blue }}; // chat list mention icon
+dialogsReactionIconFg: {{ flavor.colors.red }}; // chat list reaction icon
+dialogsPollIconFg: {{ flavor.colors.blue }}; // chat list poll icon

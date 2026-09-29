@@ -8,6 +8,9 @@
 // the Acid neutral ramp by inverted lightness, so the layering survives, and
 // saturated colours snap to the nearest Acid accent. Entries that reference
 // another entry upstream still do, so those relationships are kept.
+//
+// Telegram's source palette allows "value | fallback"; its theme parser does
+// not, so only the value is kept.
 
 // This file is part of Desktop App Toolkit,
 // a set of libraries for developing nice desktop applications.
@@ -178,8 +181,8 @@ contactsStatusFgOnline: windowActiveTextFg; // contacts (and some other) box row
 photoCropFadeBg: layerBg; // avatar crop box fade background (when choosing a new photo in Settings or for a group)
 photoCropPointFg: #1c1b197f; // avatar crop box corner rectangles (when choosing a new photo in Settings or for a group)
 
-callArrowFg: #7cad76 | boxTextFgGood; // received phone call arrow (in calls list box)
-callArrowMissedFg: #de5a48 | boxTextFgError; // missed phone call arrow (in calls list box)
+callArrowFg: #7cad76; // received phone call arrow (in calls list box)
+callArrowMissedFg: #de5a48; // missed phone call arrow (in calls list box)
 
 // intro
 introBg: windowBg; // login background
@@ -212,8 +215,8 @@ dialogsSentIconFg: #a3ab2f; // chat list sent message tick / double tick icon
 dialogsUnreadBg: windowBgActive; // chat list unread badge background for not muted chat
 dialogsUnreadBgMuted: #5b554a; // chat list unread badge background for muted chat
 dialogsUnreadFg: windowFgActive; // chat list unread badge text
-dialogsArchiveFg: #cabea7 | dialogsNameFg; // chat list archive name text
-dialogsOnlineBadgeFg: #a3ab2f | dialogsUnreadBg; // chat list online status
+dialogsArchiveFg: #cabea7; // chat list archive name text
+dialogsOnlineBadgeFg: #a3ab2f; // chat list online status
 dialogsScamFg: dialogsDraftFg; // chat list scam label
 
 dialogsBgOver: #35332c; // chat list background with mouse over
@@ -230,7 +233,7 @@ dialogsSentIconFgOver: #a3ab2f; // chat list sent message tick / double tick ico
 dialogsUnreadBgOver: dialogsUnreadBg; // chat list unread badge background for not muted chat with mouse over
 dialogsUnreadBgMutedOver: dialogsUnreadBgMuted; // chat list unread badge background for muted chat with mouse over
 dialogsUnreadFgOver: dialogsUnreadFg; // chat list unread badge text with mouse over
-dialogsArchiveFgOver: #cabea7 | dialogsNameFgOver; // chat list archive name text with mouse over
+dialogsArchiveFgOver: #cabea7; // chat list archive name text with mouse over
 dialogsScamFgOver: dialogsDraftFgOver; // chat list scam label with mouse over
 
 dialogsBgActive: #5b554a; // chat list background for current (active) chat
@@ -264,11 +267,11 @@ searchedTextCurrentMatchFg: #e2d6b6; // in-page search current result highlight 
 topBarBg: windowBg; // top bar background (in chat view, media overview..)
 
 emojiPanBg: windowBg; // emoji panel background
-emojiPanCategories: #121211 | windowBg; // emoji panel categories background
+emojiPanCategories: #121211; // emoji panel categories background
 emojiPanHeaderFg: windowSubTextFg; // emoji panel section header text
-emojiPanHeaderBg: #1c1b19f2 | emojiPanBg; // emoji panel section header background
+emojiPanHeaderBg: #1c1b19f2; // emoji panel section header background
 emojiIconFg: #857d70; // emoji category icon
-emojiSubIconFgActive: #b4ab9b | windowBoldFg; // active emoji subcategory icon
+emojiSubIconFgActive: #b4ab9b; // active emoji subcategory icon
 stickerPanDeleteBg: #e2d6b6ff; // delete X button background for custom sent stickers in stickers panel (legacy)
 stickerPanDeleteFg: windowFgActive; // delete X button icon for custom sent stickers in stickers panel (legacy)
 stickerPreviewBg: #1c1b19b0; // sticker and GIF preview background (when you press and hold on a sticker)
@@ -335,14 +338,14 @@ historyPeerUserpicFg: windowFgActive; // default userpic initials
 historyPeerSavedMessagesBg: historyPeer4UserpicBg; // saved messages userpic background
 historyPeerArchiveUserpicBg: dialogsUnreadBgMuted; // archive folder userpic background
 
-historyPeer1UserpicBg2: #de5a48 | historyPeer1UserpicBg; // the second red userpic background
-historyPeer2UserpicBg2: #7cad76 | historyPeer2UserpicBg; // the second green userpic background
-historyPeer3UserpicBg2: #d9a441 | historyPeer3UserpicBg; // the second yellow userpic background (actually unused)
-historyPeer4UserpicBg2: #7d9cba | historyPeer4UserpicBg; // the second blue userpic background
-historyPeer5UserpicBg2: #7d9cba | historyPeer5UserpicBg; // the second purple userpic background
-historyPeer6UserpicBg2: #de5a48 | historyPeer6UserpicBg; // the second pink userpic background
-historyPeer7UserpicBg2: #7d9cba | historyPeer7UserpicBg; // the second sea userpic background
-historyPeer8UserpicBg2: #dd7b34 | historyPeer8UserpicBg; // the second orange userpic background
+historyPeer1UserpicBg2: #de5a48; // the second red userpic background
+historyPeer2UserpicBg2: #7cad76; // the second green userpic background
+historyPeer3UserpicBg2: #d9a441; // the second yellow userpic background (actually unused)
+historyPeer4UserpicBg2: #7d9cba; // the second blue userpic background
+historyPeer5UserpicBg2: #7d9cba; // the second purple userpic background
+historyPeer6UserpicBg2: #de5a48; // the second pink userpic background
+historyPeer7UserpicBg2: #7d9cba; // the second sea userpic background
+historyPeer8UserpicBg2: #dd7b34; // the second orange userpic background
 historyPeerSavedMessagesBg2: historyPeer4UserpicBg2; // the second saved messages userpic background
 
 settingsIconBg1: #de5a48; // red settings icon background
@@ -511,14 +514,14 @@ notificationsBoxMonitorFg: windowFg; // custom notifications settings box monito
 notificationsBoxScreenBg: dialogsBgActive; // #6389a8; // custom notifications settings box monitor screen background
 
 notificationSampleUserpicFg: windowBgActive; // custom notifications settings box small sample userpic placeholder
-notificationSampleCloseFg: #35332c | windowSubTextFg; // custom notifications settings box small sample close button placeholder
-notificationSampleTextFg: #35332c | windowSubTextFg; // custom notifications settings box small sample text placeholder
-notificationSampleNameFg: #857d70 | windowSubTextFg; // custom notifications settings box small sample name placeholder
+notificationSampleCloseFg: #35332c; // custom notifications settings box small sample close button placeholder
+notificationSampleTextFg: #35332c; // custom notifications settings box small sample text placeholder
+notificationSampleNameFg: #857d70; // custom notifications settings box small sample name placeholder
 
 mainMenuBg: windowBg; // main menu background
 mainMenuCoverBg: dialogsBgActive; // main menu top cover background
 mainMenuCloudFg: activeButtonFg; // main menu top cover saved messages / archive button icon
-mainMenuCloudBg: #7d9cba | activeButtonBgRipple; // main menu top cover saved messages / archive button background
+mainMenuCloudBg: #7d9cba; // main menu top cover saved messages / archive button background
 
 mediaPlayerBg: windowBg; // audio file player background
 mediaPlayerActiveFg: windowBgActive; // audio file player playback progress already played part
@@ -621,7 +624,7 @@ groupCallVideoSubTextFg: #1c1b19c0; // group call additional text over video
 
 callBarBg: dialogsBgActive; // active phone call bar background
 callBarMuteRipple: dialogsRippleBgActive; // active phone call bar mute and hangup button ripple effect
-callBarBgMuted: #857d70 | dialogsUnreadBgMuted; // phone call bar with muted mic background
+callBarBgMuted: #857d70; // phone call bar with muted mic background
 callBarFg: dialogsNameFgActive; // phone call bar text and icons
 
 importantTooltipBg: toastBg; // group call important tooltip background color
@@ -633,7 +636,7 @@ outdateSoonBg: #dd7b34; // operating system version is soon outdated bar backgro
 outdatedBg: #de5a48; // operating system version is already outdated bar background
 
 // spellcheck
-spellUnderline: #de5a4888 | attentionButtonFg; // misspelled words
+spellUnderline: #de5a4888; // misspelled words
 
 walletTitleBg: #e2d6b6; // wallet window title background when window is inactive
 walletTitleBgActive: walletTitleBg; // wallet window title background when window is active
@@ -711,6 +714,6 @@ rankAdminFg: #7cad76; // admin badge text and pill, green
 rankOwnerFg: #c5839c; // owner badge text and pill, purple
 rankUserFg: windowSubTextFg; // regular user badge text, gray
 
-dialogsMentionIconFg: #7d9cba | dialogsVerifiedIconBg; // chat list mention icon
-dialogsReactionIconFg: #de5a48 | attentionButtonFg; // chat list reaction icon
-dialogsPollIconFg: #7d9cba | historyPeer5NameFg; // chat list poll icon
+dialogsMentionIconFg: #7d9cba; // chat list mention icon
+dialogsReactionIconFg: #de5a48; // chat list reaction icon
+dialogsPollIconFg: #7d9cba; // chat list poll icon
