@@ -42,7 +42,7 @@ done < /tmp/documented
 note "aerc documents $documented objects and accepts $(wc -l < /tmp/accepted)"
 [ -s /tmp/rejected ] && note "it rejects: $(tr '\n' ' ' < /tmp/rejected)"
 
-for flavor in acetic citric; do
+for flavor in $FLAVOURS; do
     styleset="ports/aerc/themes/acid-$flavor"
 
     # The check that matters: aerc starts with this styleset.

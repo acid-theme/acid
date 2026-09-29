@@ -4,6 +4,7 @@
 . /acid/tests/lib.sh
 
 python3 - <<'PY'
+import json
 import re
 import sys
 
@@ -31,7 +32,7 @@ def parse(path):
 upstream = parse("ports/telegram-desktop/upstream.palette")
 report(len(upstream) > 500, f"Telegram's default palette has {len(upstream)} keys")
 
-for flavour in ("acetic", "citric"):
+for flavour in json.load(open("palette.json"))["flavors"]:
     theme = parse(f"ports/telegram-desktop/themes/acid-{flavour}.tdesktop-palette")
 
     unknown = sorted(set(theme) - set(upstream))

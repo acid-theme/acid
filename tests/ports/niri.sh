@@ -5,7 +5,7 @@
 
 require niri
 
-for flavor in acetic citric; do
+for flavor in $FLAVOURS; do
     theme="ports/niri/themes/acid-$flavor.kdl"
     if niri validate -c "$theme" 2>&1 | grep -q "config is valid"; then
         pass "$flavor: niri validated $theme"

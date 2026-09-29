@@ -6,7 +6,10 @@ set -euo pipefail
 
 cd "$(dirname "$0")/.."
 
-FLAVOURS=(acetic citric)
+mapfile -t FLAVOURS < <(python3 -c "
+import json
+print(*json.load(open('palette.json'))['flavors'], sep=chr(10))
+")
 
 if ! command -v podman >/dev/null 2>&1; then
     echo "previews: podman is not installed" >&2

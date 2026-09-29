@@ -3,7 +3,7 @@
 
 require nvim
 
-for flavor in acetic citric; do
+for flavor in $FLAVOURS; do
     output=$(nvim --headless --clean -u NONE \
         --cmd "set rtp^=/acid/ports/neovim" \
         -c "lua
@@ -63,7 +63,7 @@ if [ "$count" -lt 50 ]; then
     fail "could not read Neovim's capture list (found $count)"
 else
     note "Neovim documents $count captures"
-    for flavor in acetic citric; do
+    for flavor in $FLAVOURS; do
         undefined=$(printf '%s\n' "$captures" | nvim --headless --clean -u NONE \
             --cmd "set rtp^=/acid/ports/neovim" \
             -c "colorscheme acid-$flavor" \
@@ -98,7 +98,7 @@ fi
 
 # Semantic token modifiers carry the server's extra information, so they must
 # resolve to a colour rather than to nothing.
-for flavor in acetic citric; do
+for flavor in $FLAVOURS; do
     resolved=$(nvim --headless --clean -u NONE \
         --cmd "set rtp^=/acid/ports/neovim" -c "colorscheme acid-$flavor" \
         -c "lua
@@ -122,7 +122,7 @@ done
 
 # Plugin groups. Each name comes from that plugin's own source, so this catches
 # a group dropped from the template rather than checking a wish list.
-for flavor in acetic citric; do
+for flavor in $FLAVOURS; do
     undefined=$(nvim --headless --clean -u NONE \
         --cmd "set rtp^=/acid/ports/neovim" -c "colorscheme acid-$flavor" \
         -c "lua

@@ -12,10 +12,10 @@ on:
   workflow_call:
     inputs:
       flavours:
-        description: "Flavours to render, space separated"
+        description: "Flavours to render, space separated. Blank renders every one."
         required: false
         type: string
-        default: "acetic citric"
+        default: ""
 
 jobs:
   render:
@@ -36,7 +36,14 @@ jobs:
       - name: Render
         run: |
           mkdir -p previews
-          for flavour in ${{ inputs.flavours }}; do
+          flavours="${{ inputs.flavours }}"
+          if [ -z "$flavours" ]; then
+            flavours=$(python3 -c "
+          import json
+          print(*json.load(open('preview/palette.json'))['flavors'])
+          ")
+          fi
+          for flavour in $flavours; do
             podman run --rm \
               -v "$PWD:/repo:Z" \
               -w /repo \

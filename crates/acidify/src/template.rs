@@ -245,7 +245,7 @@ mod tests {
         let source =
             "---\nacidify:\n  matrix:\n    - flavor\n    - transparent: [true, false]\n---\n";
         let combinations = Template::parse(source, "test").unwrap().combinations();
-        assert_eq!(combinations.len(), 4);
+        assert_eq!(combinations.len(), acid_palette::FLAVORS.len() * 2);
         // The outermost axis varies slowest.
         assert_eq!(combinations[0]["flavor"], "acetic");
         assert_eq!(combinations[0]["transparent"], true);
@@ -257,7 +257,7 @@ mod tests {
     fn accent_axis_covers_every_accent() {
         let source = "---\nacidify:\n  matrix: [flavor, accent]\n---\n";
         let combinations = Template::parse(source, "test").unwrap().combinations();
-        assert_eq!(combinations.len(), 14);
+        assert_eq!(combinations.len(), acid_palette::FLAVORS.len() * 7);
     }
 
     #[test]

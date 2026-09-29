@@ -5,7 +5,7 @@
 
 require alacritty
 
-for flavor in acetic citric; do
+for flavor in $FLAVOURS; do
     theme="ports/alacritty/themes/acid-$flavor.toml"
     output=$(alacritty migrate --dry-run -c "$theme" 2>&1)
     if contains "$output" "migration failed"; then

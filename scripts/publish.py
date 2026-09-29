@@ -148,13 +148,11 @@ def validate(registry: dict) -> list[str]:
 
     # The README's ports table is generated, so it cannot list a stale set.
     text = README.read_text()
-    if INDEX_START not in text or INDEX_END not in text:
-        problems.append("README.md has no ports:start/ports:end markers")
-    else:
-        before, _, rest = text.partition(INDEX_START)
-        _, _, after = rest.partition(INDEX_END)
-        if before + ports_table(registry) + after != text:
-            problems.append("README.md's ports table is out of date; run `make docs`")
+    markers = all(m in text for m in (INDEX_START, INDEX_END, FLAVOURS_START, FLAVOURS_END))
+    if not markers:
+        problems.append("README.md is missing its ports or flavours markers")
+    elif rendered_readme(registry) != text:
+        problems.append("README.md's generated tables are out of date; run `make docs`")
 
     # Every port template in the tree must be registered, or it ships nowhere.
     for path in sorted(ROOT.glob("ports/*/*.tera")):
@@ -177,11 +175,15 @@ def load_palette() -> dict:
 
 def flavour_summary() -> str:
     """One line naming each flavour, taken from the palette rather than repeated."""
+    flavours = list(load_palette()["flavors"].values())
     parts = [
-        f"**{flavor['name']}** (`{flavor['colors']['base']['hex']}`)"
-        for flavor in load_palette()["flavors"].values()
+        f"**{flavour['name']}** (`{flavour['colors']['base']['hex']}`), {flavour['description']}"
+        for flavour in flavours
     ]
-    return f"Two flavours: {parts[0]}, vibrant, and {parts[1]}, muted."
+    counts = {1: "One flavour", 2: "Two flavours", 3: "Three flavours"}
+    lead = counts.get(len(parts), f"{len(parts)} flavours")
+    joined = "; ".join(parts[:-1]) + f"; and {parts[-1]}" if len(parts) > 1 else parts[0]
+    return f"{lead}: {joined}."
 
 
 def render_readme(registry: dict, port: dict, files: list[str]) -> str:
@@ -211,6 +213,20 @@ def render_readme(registry: dict, port: dict, files: list[str]) -> str:
 README = ROOT / "README.md"
 INDEX_START = "<!-- ports:start -->"
 INDEX_END = "<!-- ports:end -->"
+FLAVOURS_START = "<!-- flavours:start -->"
+FLAVOURS_END = "<!-- flavours:end -->"
+
+
+def flavours_table() -> str:
+    """The flavour table for README.md, so a new flavour appears there."""
+    rows = [
+        f"| **{f['name']}** | `{f['colors']['base']['hex']}` | {f['description']} |"
+        for f in load_palette()["flavors"].values()
+    ]
+    return "\n".join(
+        [FLAVOURS_START, "", "| Flavour | Background | |", "| --- | --- | --- |",
+         *rows, "", FLAVOURS_END]
+    )
 
 
 def ports_table(registry: dict) -> str:
@@ -227,12 +243,22 @@ def ports_table(registry: dict) -> str:
     )
 
 
+def replace_block(text: str, start: str, end: str, block: str) -> str:
+    before, _, rest = text.partition(start)
+    _, _, after = rest.partition(end)
+    return before + block + after
+
+
+def rendered_readme(registry: dict) -> str:
+    text = README.read_text()
+    text = replace_block(text, INDEX_START, INDEX_END, ports_table(registry))
+    return replace_block(text, FLAVOURS_START, FLAVOURS_END, flavours_table())
+
+
 def write_index(registry: dict) -> bool:
     """Returns whether README.md changed."""
     text = README.read_text()
-    before, _, rest = text.partition(INDEX_START)
-    _, _, after = rest.partition(INDEX_END)
-    updated = before + ports_table(registry) + after
+    updated = rendered_readme(registry)
     if updated == text:
         return False
     README.write_text(updated)

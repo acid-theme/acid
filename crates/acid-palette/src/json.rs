@@ -47,6 +47,7 @@ pub fn flavor(flavor: &Flavor) -> Value {
     json!({
         "name": flavor.name,
         "identifier": flavor.identifier,
+        "description": flavor.description,
         "order": flavor.order,
         "dark": flavor.dark,
         "invertedDepth": flavor.inverted_depth,
@@ -81,7 +82,7 @@ mod tests {
     fn keeps_flavours_and_colours_in_order() {
         let palette = palette();
         let flavors: Vec<_> = palette["flavors"].as_object().unwrap().keys().collect();
-        assert_eq!(flavors, ["acetic", "citric"]);
+        assert_eq!(flavors, ["acetic", "citric", "lactic"]);
 
         let colors = palette["flavors"]["acetic"]["colors"].as_object().unwrap();
         let first: Vec<_> = colors.keys().take(3).collect();

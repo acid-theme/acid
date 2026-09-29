@@ -5,6 +5,7 @@
 require python3
 
 python3 - <<'PY'
+import json
 import sys, pathlib
 import gi
 gi.require_version("Gtk", "3.0")
@@ -37,7 +38,7 @@ def parse(text):
         errors.append(error.message)
     return errors
 
-for flavor in ("acetic", "citric"):
+for flavor in json.load(open("palette.json"))["flavors"]:
     theme = pathlib.Path(f"ports/waybar/themes/acid-{flavor}.css").read_text()
     report(not parse(theme), f"{flavor}: GTK parsed the theme")
 

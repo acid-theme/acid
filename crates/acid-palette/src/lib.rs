@@ -110,6 +110,8 @@ pub struct Flavor {
     pub identifier: &'static str,
     /// Display name, e.g. `Acetic`.
     pub name: &'static str,
+    /// One line describing the flavour, used wherever it is introduced.
+    pub description: &'static str,
     /// Position in the canonical flavour order.
     pub order: u32,
     /// Always true today; both flavours are dark.
@@ -138,6 +140,7 @@ impl Flavor {
 pub const ACETIC: Flavor = Flavor {
     identifier: "acetic",
     name: "Acetic",
+    description: "pure black with vibrant accents",
     order: 0,
     dark: true,
     inverted_depth: true,
@@ -173,6 +176,7 @@ pub const ACETIC: Flavor = Flavor {
 pub const CITRIC: Flavor = Flavor {
     identifier: "citric",
     name: "Citric",
+    description: "warm dark grey with muted accents",
     order: 1,
     dark: true,
     inverted_depth: false,
@@ -203,8 +207,44 @@ pub const CITRIC: Flavor = Flavor {
     },
 };
 
+/// White, with accents darkened until they hold their own against it. The light
+/// flavour: same roles, same rules, opposite polarity.
+pub const LACTIC: Flavor = Flavor {
+    identifier: "lactic",
+    name: "Lactic",
+    description: "white with accents darkened to match",
+    order: 2,
+    dark: false,
+    inverted_depth: false,
+    colors: FlavorColors {
+        red: Hex::new(0xdf2910),
+        orange: Hex::new(0xbd560b),
+        yellow: Hex::new(0x9c6a0e),
+        green: Hex::new(0x737914),
+        aqua: Hex::new(0x4a8143),
+        blue: Hex::new(0x4978a4),
+        purple: Hex::new(0xbc4d77),
+
+        text: Hex::new(0x3a3117),
+        subtext1: Hex::new(0x4f4430),
+        subtext0: Hex::new(0x5f5647),
+
+        overlay2: Hex::new(0x706a5c),
+        overlay1: Hex::new(0x877e71),
+        overlay0: Hex::new(0x9a958a),
+
+        surface2: Hex::new(0xb4ada2),
+        surface1: Hex::new(0xcbc6bf),
+        surface0: Hex::new(0xe3e1dd),
+
+        base: Hex::new(0xffffff),
+        mantle: Hex::new(0xf4f4f3),
+        crust: Hex::new(0xe8e8e4),
+    },
+};
+
 /// Every flavour, in canonical order.
-pub const FLAVORS: [Flavor; 2] = [ACETIC, CITRIC];
+pub const FLAVORS: [Flavor; 3] = [ACETIC, CITRIC, LACTIC];
 
 /// Look a flavour up by its identifier, e.g. `"citric"`.
 pub fn flavor(identifier: &str) -> Option<Flavor> {
@@ -329,8 +369,8 @@ mod tests {
         }
     }
 
-    /// The surface ramp must climb monotonically away from `base`, and the text
-    /// ramp must brighten monotonically towards `text`.
+    /// The ramp runs monotonically from `base` to `text`: away from the
+    /// background and towards the foreground, whichever direction that is.
     #[test]
     fn ramps_are_monotonic() {
         for flavor in FLAVORS {
@@ -340,12 +380,16 @@ mod tests {
                 c.subtext0, c.subtext1, c.text,
             ];
             for pair in ramp.windows(2) {
+                let (lower, upper) = (pair[0].luminance(), pair[1].luminance());
+                let ordered = if flavor.dark {
+                    upper > lower
+                } else {
+                    upper < lower
+                };
                 assert!(
-                    pair[1].luminance() > pair[0].luminance(),
-                    "{}: {} is not lighter than {}",
-                    flavor.identifier,
-                    pair[1],
-                    pair[0],
+                    ordered,
+                    "{}: {} does not continue the ramp away from {}",
+                    flavor.identifier, pair[1], pair[0],
                 );
             }
         }

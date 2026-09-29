@@ -11,7 +11,7 @@ parse_errors() {
 roles="red orange yellow green aqua blue purple text subtext1 subtext0
        overlay2 overlay1 overlay0 surface2 surface1 surface0 base mantle crust"
 
-for flavor in acetic citric; do
+for flavor in $FLAVOURS; do
     theme="ports/rofi/themes/acid-$flavor.rasi"
     if contains "$(parse_errors "$theme")" "Failed to parse"; then
         fail "$flavor: rofi rejected $theme"

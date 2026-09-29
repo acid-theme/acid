@@ -5,6 +5,7 @@
 require qutebrowser python3
 
 python3 - <<'PY'
+import json
 import re
 import sys
 from qutebrowser.config import configdata
@@ -27,7 +28,7 @@ def report(ok, message):
         failed += 1
         print(f"    FAIL {message}")
 
-for flavour in ("acetic", "citric"):
+for flavour in json.load(open("palette.json"))["flavors"]:
     path = f"ports/qutebrowser/themes/acid-{flavour}.py"
     assigned = {}
     for line in open(path):

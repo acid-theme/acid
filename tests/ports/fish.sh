@@ -18,7 +18,7 @@ for flavor in Acetic Citric; do
 done
 
 # The two forms must set identical values for every variable.
-for flavor in acetic citric; do
+for flavor in $FLAVOURS; do
     title=$(printf '%s' "$flavor" | sed 's/^./\U&/')
     result=$(fish --no-config -c "
         source ports/fish/conf.d/acid-$flavor.fish

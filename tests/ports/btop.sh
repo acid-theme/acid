@@ -16,7 +16,7 @@ if [ "$known" -lt 20 ]; then
 fi
 note "btop ships $known theme keys"
 
-for flavor in acetic citric; do
+for flavor in $FLAVOURS; do
     theme="ports/btop/themes/acid-$flavor.theme"
     unknown=""
     malformed=""

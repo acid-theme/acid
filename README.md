@@ -3,10 +3,15 @@
 A very dark colourscheme in the spirit of gruvbox, in two flavours. Warm cream
 text, earthy accents, and nothing that competes with the code for attention.
 
-| Flavour | Background | Accents | Intended for |
-| --- | --- | --- | --- |
-| **Acetic** | `#000000` | Vibrant | OLED panels, dark rooms, maximum separation between code and background |
-| **Citric** | `#1c1b19` | Muted | Everyday use; the flavour closest to gruvbox |
+<!-- flavours:start -->
+
+| Flavour | Background | |
+| --- | --- | --- |
+| **Acetic** | `#000000` | pure black with vibrant accents |
+| **Citric** | `#1c1b19` | warm dark grey with muted accents |
+| **Lactic** | `#ffffff` | white with accents darkened to match |
+
+<!-- flavours:end -->
 
 | Acetic | Citric |
 | --- | --- |

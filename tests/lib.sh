@@ -1,6 +1,13 @@
 # Shared helpers for the per-port tests. Sourced inside the container.
 set -u
 
+# The flavours to check, read from the palette so a new one is picked up here
+# without editing every port's test.
+FLAVOURS=$(python3 -c "
+import json
+print(' '.join(json.load(open('/acid/palette.json'))['flavors']))
+")
+
 _pass=0
 _fail=0
 

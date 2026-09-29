@@ -15,7 +15,7 @@ if [ "$known" -lt 20 ]; then
 fi
 note "swaylock advertises $known options"
 
-for flavor in acetic citric; do
+for flavor in $FLAVOURS; do
     theme="ports/swaylock/themes/acid-$flavor.conf"
     unknown=""
     malformed=""

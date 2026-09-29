@@ -10,7 +10,7 @@ parses() {
         | grep -q "Failed to parse"
 }
 
-for flavor in acetic citric; do
+for flavor in $FLAVOURS; do
     root=/tmp/$flavor
     mkdir -p "$root/mako"
     cp "ports/mako/themes/acid-$flavor.conf" "$root/mako/config"

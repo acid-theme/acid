@@ -15,6 +15,7 @@ follows and why.
 | --- | --- | --- |
 | **Acetic** (`acetic`) | `#000000` | Vibrant |
 | **Citric** (`citric`) | `#1c1b19` | Muted |
+| **Lactic** (`lactic`) | `#ffffff` | Muted |
 
 Every colour below carries its contrast ratio against its own flavour's `base`,
 measured per WCAG 2.1. Accents and text tones are all at or above 4.5:1, which
@@ -71,6 +72,32 @@ is the AA threshold for body text.
 | `base` | `#1c1b19` | rgb(28, 27, 25) | hsl(40, 6%, 10%) | — |
 | `mantle` | `#121211` | rgb(18, 18, 17) | hsl(60, 3%, 7%) | 1.09:1 |
 | `crust` | `#060605` | rgb(6, 6, 5) | hsl(60, 9%, 2%) | 1.18:1 |
+
+## Lactic
+
+`lactic` · standard depth axis
+
+| Role | Hex | RGB | HSL | Contrast on base |
+| --- | --- | --- | --- | --- |
+| `red` | `#df2910` | rgb(223, 41, 16) | hsl(7, 87%, 47%) | 4.71:1 |
+| `orange` | `#bd560b` | rgb(189, 86, 11) | hsl(25, 89%, 39%) | 4.67:1 |
+| `yellow` | `#9c6a0e` | rgb(156, 106, 14) | hsl(39, 84%, 33%) | 4.69:1 |
+| `green` | `#737914` | rgb(115, 121, 20) | hsl(64, 72%, 28%) | 4.69:1 |
+| `aqua` | `#4a8143` | rgb(74, 129, 67) | hsl(113, 32%, 38%) | 4.65:1 |
+| `blue` | `#4978a4` | rgb(73, 120, 164) | hsl(209, 38%, 46%) | 4.66:1 |
+| `purple` | `#bc4d77` | rgb(188, 77, 119) | hsl(337, 45%, 52%) | 4.7:1 |
+| `text` | `#3a3117` | rgb(58, 49, 23) | hsl(45, 43%, 16%) | 12.87:1 |
+| `subtext1` | `#4f4430` | rgb(79, 68, 48) | hsl(39, 24%, 25%) | 9.54:1 |
+| `subtext0` | `#5f5647` | rgb(95, 86, 71) | hsl(38, 14%, 33%) | 7.22:1 |
+| `overlay2` | `#706a5c` | rgb(112, 106, 92) | hsl(42, 10%, 40%) | 5.38:1 |
+| `overlay1` | `#877e71` | rgb(135, 126, 113) | hsl(35, 9%, 49%) | 4:1 |
+| `overlay0` | `#9a958a` | rgb(154, 149, 138) | hsl(41, 7%, 57%) | 2.98:1 |
+| `surface2` | `#b4ada2` | rgb(180, 173, 162) | hsl(37, 11%, 67%) | 2.22:1 |
+| `surface1` | `#cbc6bf` | rgb(203, 198, 191) | hsl(35, 10%, 77%) | 1.7:1 |
+| `surface0` | `#e3e1dd` | rgb(227, 225, 221) | hsl(40, 10%, 88%) | 1.31:1 |
+| `base` | `#ffffff` | rgb(255, 255, 255) | hsl(0, 0%, 100%) | — |
+| `mantle` | `#f4f4f3` | rgb(244, 244, 243) | hsl(60, 4%, 95%) | 1.1:1 |
+| `crust` | `#e8e8e4` | rgb(232, 232, 228) | hsl(60, 8%, 90%) | 1.23:1 |
 
 ## Roles
 

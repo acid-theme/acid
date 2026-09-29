@@ -257,7 +257,7 @@ mod tests {
         let outputs = render_to_string(
             "---\nacidify:\n  matrix: [flavor]\n  filename: \"acid-{{ flavor.identifier }}.toml\"\n---\nbg = \"{{ flavor.colors.base }}\"\n",
         );
-        assert_eq!(outputs.len(), 2);
+        assert_eq!(outputs.len(), acid_palette::FLAVORS.len());
         assert_eq!(outputs[0].0, Some(PathBuf::from("out/acid-acetic.toml")));
         assert_eq!(outputs[0].1, "bg = \"#000000\"\n");
         assert_eq!(outputs[1].0, Some(PathBuf::from("out/acid-citric.toml")));
@@ -303,11 +303,16 @@ mod tests {
         let outputs = render_to_string(
             "---\nacidify:\n  matrix: [flavor, accent]\n  filename: \"{{ flavor.identifier }}-{{ accent.identifier }}.txt\"\n---\n{{ accent.hex }}",
         );
-        assert_eq!(outputs.len(), 14);
+        let accents = acid_palette::ACETIC.accents().count();
+        assert_eq!(outputs.len(), acid_palette::FLAVORS.len() * accents);
         assert_eq!(outputs[0].0, Some(PathBuf::from("out/acetic-red.txt")));
         assert_eq!(outputs[0].1, "#ff4536");
-        assert_eq!(outputs[7].0, Some(PathBuf::from("out/citric-red.txt")));
-        assert_eq!(outputs[7].1, "#de5a48");
+        // The accent axis resolves against whichever flavour it is paired with.
+        assert_eq!(
+            outputs[accents].0,
+            Some(PathBuf::from("out/citric-red.txt"))
+        );
+        assert_eq!(outputs[accents].1, "#de5a48");
     }
 
     /// Metadata stays reachable for templates that iterate the palette.
