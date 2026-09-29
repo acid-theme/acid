@@ -14,6 +14,8 @@ text, earthy accents, and nothing that competes with the code for attention.
 
 ## Ports
 
+<!-- ports:start -->
+
 | Port | Repository | Template |
 | --- | --- | --- |
 | Alacritty | [acid-theme/alacritty](https://github.com/acid-theme/alacritty) | [ports/alacritty](ports/alacritty) |
@@ -23,6 +25,13 @@ text, earthy accents, and nothing that competes with the code for attention.
 | mako | [acid-theme/mako](https://github.com/acid-theme/mako) | [ports/mako](ports/mako) |
 | niri | [acid-theme/niri](https://github.com/acid-theme/niri) | [ports/niri](ports/niri) |
 | swaylock | [acid-theme/swaylock](https://github.com/acid-theme/swaylock) | [ports/swaylock](ports/swaylock) |
+| rofi | [acid-theme/rofi](https://github.com/acid-theme/rofi) | [ports/rofi](ports/rofi) |
+| btop | [acid-theme/btop](https://github.com/acid-theme/btop) | [ports/btop](ports/btop) |
+| qutebrowser | [acid-theme/qutebrowser](https://github.com/acid-theme/qutebrowser) | [ports/qutebrowser](ports/qutebrowser) |
+| aerc | [acid-theme/aerc](https://github.com/acid-theme/aerc) | [ports/aerc](ports/aerc) |
+| Telegram Desktop | [acid-theme/telegram-desktop](https://github.com/acid-theme/telegram-desktop) | [ports/telegram-desktop](ports/telegram-desktop) |
+
+<!-- ports:end -->
 
 Install instructions, previews and the themes themselves live in each port's
 repository. One `curl` installs a theme.

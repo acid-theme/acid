@@ -19,6 +19,7 @@ ports:
 ## Render the generated documentation.
 docs:
 	$(ACIDIFY) $(wildcard docs/*.tera)
+	@python3 scripts/publish.py --index
 
 ## Print every colour slot the current terminal theme has loaded.
 preview:

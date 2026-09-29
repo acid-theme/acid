@@ -10,6 +10,7 @@ Python with `tomllib` rather than a crate in the workspace, because the work is
 file copying and git plumbing, and this way CI needs nothing built to run it.
 
     publish.py --check            validate the registry, touch no network
+    publish.py --index            rewrite the ports table in README.md
     publish.py --dry-run          build the trees, report what would change
     publish.py --out DIR          build the trees into DIR and keep them
     publish.py                    push every port that changed
@@ -145,6 +146,16 @@ def validate(registry: dict) -> list[str]:
                         f"with version {version}"
                     )
 
+    # The README's ports table is generated, so it cannot list a stale set.
+    text = README.read_text()
+    if INDEX_START not in text or INDEX_END not in text:
+        problems.append("README.md has no ports:start/ports:end markers")
+    else:
+        before, _, rest = text.partition(INDEX_START)
+        _, _, after = rest.partition(INDEX_END)
+        if before + ports_table(registry) + after != text:
+            problems.append("README.md's ports table is out of date; run `make docs`")
+
     # Every port template in the tree must be registered, or it ships nowhere.
     for path in sorted(ROOT.glob("ports/*/*.tera")):
         if path not in declared_templates:
@@ -195,6 +206,37 @@ def render_readme(registry: dict, port: dict, files: list[str]) -> str:
     }.items():
         text = text.replace(key, value)
     return text
+
+
+README = ROOT / "README.md"
+INDEX_START = "<!-- ports:start -->"
+INDEX_END = "<!-- ports:end -->"
+
+
+def ports_table(registry: dict) -> str:
+    """The ports table for README.md, so it cannot fall behind the registry."""
+    org = registry["org"]
+    rows = [
+        f"| {port['title']} | [{org}/{port['name']}](https://github.com/{org}/{port['name']}) "
+        f"| [{Path(port['template']).parent}]({Path(port['template']).parent}) |"
+        for port in registry["port"]
+    ]
+    return "\n".join(
+        [INDEX_START, "", "| Port | Repository | Template |", "| --- | --- | --- |",
+         *rows, "", INDEX_END]
+    )
+
+
+def write_index(registry: dict) -> bool:
+    """Returns whether README.md changed."""
+    text = README.read_text()
+    before, _, rest = text.partition(INDEX_START)
+    _, _, after = rest.partition(INDEX_END)
+    updated = before + ports_table(registry) + after
+    if updated == text:
+        return False
+    README.write_text(updated)
+    return True
 
 
 def preview_script(port: dict) -> Path:
@@ -373,6 +415,8 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--check", action="store_true",
                         help="validate the registry and exit")
+    parser.add_argument("--index", action="store_true",
+                        help="rewrite the ports table in README.md and exit")
     parser.add_argument("--dry-run", action="store_true",
                         help="build the trees and report, push nothing")
     parser.add_argument("--only", metavar="NAME", action="append",
@@ -385,6 +429,11 @@ def main() -> int:
 
     try:
         registry = load_registry()
+
+        if args.index:
+            print("index: " + ("rewrote" if write_index(registry) else "already current")
+                  + " the ports table in README.md")
+            return 0
 
         problems = validate(registry)
         if problems:

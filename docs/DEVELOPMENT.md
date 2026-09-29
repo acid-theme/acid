@@ -31,6 +31,7 @@ working tree.
 1. Write `ports/<app>/<name>.tera`. See [PORTING.md](PORTING.md).
 2. Add an entry to `resources/ports.toml`: repository name, description,
    template, the files to publish and where they land, and install instructions.
+   The README's ports table is generated from it.
 3. Add `tests/ports/<app>.sh`.
 4. Optionally add `previews/ports/<app>.sh` and `preview_packages` to the
    registry entry. `make check` requires the two together or neither.
