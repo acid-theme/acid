@@ -124,9 +124,10 @@ pub fn prepare(config: &Config, port: &Port) -> Result<Image> {
     })
 }
 
-/// Push an image the registry does not have yet.
+/// Push an image the registry does not have yet. Only CI pushes: it is logged
+/// in to the registry, and a local build may come from an unpushed definition.
 pub fn publish(image: &Image) -> Result<()> {
-    if image.source != Source::Built {
+    if image.source != Source::Built || std::env::var_os("GITHUB_ACTIONS").is_none() {
         return Ok(());
     }
     if !podman(&["push", &image.remote])? {

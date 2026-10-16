@@ -68,7 +68,8 @@ The hub's README lists the port automatically; the folder is the registry.
 One image per port, built from the packages its manifest names, so a run
 installs that port's tool rather than every port's. The image is named after a
 hash of its own definition and pulled from `ghcr.io` when one has been published,
-so an unchanged definition is never rebuilt. Podman is required.
+so an unchanged definition is never rebuilt. Only CI pushes images; a local run
+builds what it cannot pull and keeps it. Podman is required.
 
 Every port's checks include a control — a deliberately broken theme that must be
 rejected — because a check that cannot fail proves nothing.
