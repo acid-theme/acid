@@ -1,0 +1,12 @@
+title = "Ironbar"
+description = "Acid for Ironbar. A very dark colourscheme."
+
+[test]
+packages = ["gtk4", "python-gobject"]
+
+[preview]
+packages = ["ironbar", "sway", "grim", "dbus"]
+
+[render]
+matrix = ["flavor"]
+filename = "dist/acid-{flavor}.css"

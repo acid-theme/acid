@@ -1,0 +1,15 @@
+{
+  "position": "top",
+  "height": 34,
+  "anchor_to_edges": true,
+  "start": [
+    { "type": "label", "name": "workspaces", "label": "● ○ ○" },
+    { "type": "label", "name": "window", "label": "nvim  theme.tera" }
+  ],
+  "end": [
+    { "type": "label", "name": "cpu", "label": "󰍛 12%" },
+    { "type": "label", "name": "memory", "label": "󰘚 31%" },
+    { "type": "label", "name": "battery", "label": "󰁹 87%" },
+    { "type": "label", "name": "clock", "label": "󰥔 29 Sep 09:41" }
+  ]
+}

@@ -19,6 +19,7 @@
 | Alacritty | [acid-theme/alacritty](https://github.com/acid-theme/alacritty) | [ports/alacritty](ports/alacritty) |
 | btop | [acid-theme/btop](https://github.com/acid-theme/btop) | [ports/btop](ports/btop) |
 | fish | [acid-theme/fish](https://github.com/acid-theme/fish) | [ports/fish](ports/fish) |
+| Ironbar | [acid-theme/ironbar](https://github.com/acid-theme/ironbar) | [ports/ironbar](ports/ironbar) |
 | mako | [acid-theme/mako](https://github.com/acid-theme/mako) | [ports/mako](ports/mako) |
 | Neovim | [acid-theme/neovim](https://github.com/acid-theme/neovim) | [ports/neovim](ports/neovim) |
 | niri | [acid-theme/niri](https://github.com/acid-theme/niri) | [ports/niri](ports/niri) |

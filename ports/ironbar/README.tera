@@ -1,0 +1,46 @@
+# Acid for Ironbar
+
+Generated from [acid-theme/acid](https://github.com/{{ hub }}) — open issues
+and pull requests there.
+
+{% if preview != "" %}<details>
+<summary>Screenshots</summary>
+
+{{ preview }}
+
+</details>
+
+{% endif %}## Install
+
+```sh
+curl -fsSLo ~/.config/ironbar/acid-acetic.css \
+  https://raw.githubusercontent.com/acid-theme/ironbar/main/acid-acetic.css
+```
+
+Import it at the top of `~/.config/ironbar/style.css`, so a later definition
+can override it:
+
+```css
+@import url("acid-acetic.css");
+
+#bar {
+    background-color: @base;
+    color: @text;
+}
+
+popover > contents {
+    color: @text;
+    background-color: @base;
+    border: 1px solid @surface1;
+}
+```
+
+Popups are GTK popovers, so the widgets inside them (buttons, sliders, the
+calendar) keep your GTK theme's colours until a rule names them.
+
+GTK reports no error for a colour name it does not know, so a misspelt role
+leaves that widget unstyled.
+
+## Credits
+
+[@ssiyad](https://github.com/ssiyad)
