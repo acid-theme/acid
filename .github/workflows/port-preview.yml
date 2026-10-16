@@ -1,8 +1,8 @@
 name: Port preview
 
-# Reusable. Each port repository calls this to render its own preview, so the
-# boilerplate lives in one place while the render script and the package list
-# stay with the port.
+# Reusable. Each port repository calls this to render its own preview. The
+# render steps are compiled into the hub's tool, so this checks out the hub at
+# the commit the mirror was synced from and runs `acid preview` there.
 #
 #   jobs:
 #     preview:
@@ -10,12 +10,6 @@ name: Port preview
 
 on:
   workflow_call:
-    inputs:
-      flavours:
-        description: "Flavours to render, space separated. Blank renders every one."
-        required: false
-        type: string
-        default: ""
 
 jobs:
   render:
@@ -26,31 +20,72 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
+      # A sync commit names the hub commit it came from, so the previews are
+      # rendered from the same themes the mirror holds, even on a manual run
+      # after a preview commit. A mirror with no sync commit renders from main.
+      - name: Find the hub commit
+        id: hub
+        run: |
+          subject=$(git log -1 --format=%s --grep='^Sync ' HEAD)
+          ref=$(printf '%s\n' "$subject" | sed -n 's/.*@\([0-9a-f]\{7,40\}\)$/\1/p')
+          echo "ref=${ref:-main}" >> "$GITHUB_OUTPUT"
+          echo "port=${GITHUB_REPOSITORY#*/}" >> "$GITHUB_OUTPUT"
+
+      # Short SHAs cannot be checked out directly, so the whole history is
+      # fetched.
+      - uses: actions/checkout@v7
+        with:
+          repository: acid-theme/acid
+          path: .acid-hub
+          fetch-depth: 0
+
+      - name: Check out the hub commit
+        working-directory: .acid-hub
+        env:
+          REF: ${{ steps.hub.outputs.ref }}
+          PORT: ${{ steps.hub.outputs.port }}
+        run: |
+          git checkout --quiet "$REF"
+          git log -1 --oneline
+          test -d "ports/$PORT" || {
+            echo "::error::the hub has no port named $PORT"
+            exit 1
+          }
+
+      - name: Cache cargo
+        uses: actions/cache@v6
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            .acid-hub/target
+          key: cargo-${{ runner.os }}-${{ hashFiles('.acid-hub/Cargo.lock') }}
+          restore-keys: cargo-${{ runner.os }}-
+
       - name: Install podman
         run: command -v podman >/dev/null || {
              sudo apt-get update -qq && sudo apt-get install -y -qq podman; }
 
-      - name: Build the preview image
-        run: podman build -t preview -f preview/Containerfile preview/
-
       - name: Render
+        working-directory: .acid-hub
+        env:
+          PORT: ${{ steps.hub.outputs.port }}
+        run: cargo run --quiet -p acid -- preview "$PORT"
+
+      # `acid preview` reports a failed flavour without failing, so a missing
+      # image is caught here instead of committing a partial set.
+      - name: Collect
+        env:
+          PORT: ${{ steps.hub.outputs.port }}
         run: |
+          out=".acid-hub/target/previews/$PORT"
           mkdir -p previews
-          flavours="${{ inputs.flavours }}"
-          if [ -z "$flavours" ]; then
-            flavours=$(python3 -c "
-          import json
-          print(*json.load(open('preview/palette.json'))['flavors'])
-          ")
-          fi
-          for flavour in $flavours; do
-            podman run --rm \
-              -v "$PWD:/repo:Z" \
-              -w /repo \
-              -e "FLAVOUR=$flavour" \
-              -e "OUT=/repo/previews/$flavour.png" \
-              preview bash preview/render.sh
-            echo "rendered $flavour"
+          for flavour in $(jq -r '.flavors | keys[]' .acid-hub/palette.json); do
+            test -s "$out/$flavour.png" || {
+              echo "::error::no preview rendered for $flavour"
+              exit 1
+            }
+            cp "$out/$flavour.png" "previews/$flavour.png"
           done
 
       - name: Commit
