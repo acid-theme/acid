@@ -1,6 +1,8 @@
-// tmux checks an option when it is set: an unknown name or a malformed style is
-// an error from source-file. So each theme is sourced into a real server, every
-// option is read back, and the set is compared with the colour options this
+// tmux checks an option when it is set: a malformed style is an error from
+// source-file. An unknown name is too, but the theme sets with `-q` so an older
+// tmux skips the options it lacks, which hides a misspelt name. So each theme
+// is sourced into a real server, every option is read back — an unknown one
+// reads back as nothing — and the set is compared with the colour options this
 // tmux has.
 
 // Colour options the theme leaves alone on purpose. Each must still be one tmux
@@ -43,14 +45,19 @@ fn is_colour_option(name: &str) -> bool {
         || name.starts_with("light-theme-")
 }
 
-/// `set -g NAME "VALUE"` lines from a theme.
+/// `set -gq NAME "VALUE"` lines from a theme.
 fn settings(theme: &str) -> Vec<(String, String)> {
     theme
         .lines()
-        .filter_map(|line| line.strip_prefix("set -g "))
+        .filter_map(|line| line.strip_prefix("set -gq "))
         .filter_map(|rest| rest.split_once(' '))
         .map(|(name, value)| (name.to_owned(), value.trim_matches('"').to_owned()))
         .collect()
+}
+
+/// Whether an option reads back from the server with the value written.
+fn reads_back(socket: &str, name: &str, value: &str) -> bool {
+    tmux(socket, &["show", "-gv", name]).trim().trim_matches('"') == value
 }
 
 /// Source a file into a fresh server and return what tmux said.
@@ -82,11 +89,14 @@ pub fn run(h: &mut Harness) -> anyhow::Result<()> {
             }),
         );
 
+        h.check(
+            theme.len() > 40,
+            format!("{id}: the theme has {} `set -gq` lines to check", theme.len()),
+        );
+
         let wrong: Vec<&String> = theme
             .iter()
-            .filter(|(name, value)| {
-                tmux(&socket, &["show", "-gv", name]).trim().trim_matches('"') != value
-            })
+            .filter(|(name, value)| !reads_back(&socket, name, value))
             .map(|(name, _)| name)
             .collect();
         h.check(
@@ -169,15 +179,18 @@ pub fn run(h: &mut Harness) -> anyhow::Result<()> {
         tmux(&socket, &["kill-server"]);
     }
 
-    let unknown = scratch("unknown.conf", "set -g nonsense-style \"fg=#ff0000\"\n")?;
+    // `-q` keeps a misspelt option quiet, so the read-back has to catch it.
+    let unknown = scratch("unknown.conf", "set -gq nonsense-style \"fg=#ff0000\"\n")?;
+    let said = source("acid-control", &unknown);
     h.check(
-        !source("acid-control", &unknown).trim().is_empty(),
-        "control: tmux rejects an unknown option",
+        said.trim().is_empty() && !reads_back("acid-control", "nonsense-style", "fg=#ff0000"),
+        "control: an unknown option set with -q is silent, and does not read back",
     );
-    let malformed = scratch("malformed.conf", "set -g status-style \"fg=nonsense\"\n")?;
+    // `-q` does not cover values, so a malformed style is still an error.
+    let malformed = scratch("malformed.conf", "set -gq status-style \"fg=nonsense\"\n")?;
     h.check(
         !source("acid-control", &malformed).trim().is_empty(),
-        "control: tmux rejects a malformed style",
+        "control: tmux rejects a malformed style, even with -q",
     );
     tmux("acid-control", &["kill-server"]);
 

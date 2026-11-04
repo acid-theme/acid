@@ -34,6 +34,10 @@ line's content stays yours.
 Every role is also a user option, `@acid_<role>`, so a format can name a colour
 rather than repeat its value: `#[fg=#{@acid_blue}]`.
 
+Written for tmux 3.8. Every option is set with `-q`, so tmux 3.2 to 3.7 load
+it too: each skips the options it does not have, without an error, and draws
+the rest.
+
 `window-style` and `window-active-style` are left alone, so panes keep the
 terminal's own background. Pair it with the Acid theme for your terminal.
 
