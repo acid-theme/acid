@@ -1,0 +1,42 @@
+# Acid for tmux
+
+Generated from [acid-theme/acid](https://github.com/{{ hub }}) — open issues
+and pull requests there.
+
+{% if preview != "" %}<details>
+<summary>Screenshots</summary>
+
+{{ preview }}
+
+</details>
+
+{% endif %}## Install
+
+```sh
+curl -fsSLo ~/.config/tmux/acid-acetic.conf \
+  https://raw.githubusercontent.com/acid-theme/tmux/main/acid-acetic.conf
+```
+
+Source it from `tmux.conf`, above the local settings:
+
+```tmux
+source-file ~/.config/tmux/acid-acetic.conf
+
+# Local settings. Anything below the source-file line wins.
+set -g status-left " #S "
+set -g status-right "#[fg=#{@acid_aqua}]#{pane_current_command} "
+```
+
+The theme sets colours only: every `*-style` and `*-colour` option that draws
+the status line, borders, messages, copy mode, menus and popups. The status
+line's content stays yours.
+
+Every role is also a user option, `@acid_<role>`, so a format can name a colour
+rather than repeat its value: `#[fg=#{@acid_blue}]`.
+
+`window-style` and `window-active-style` are left alone, so panes keep the
+terminal's own background. Pair it with the Acid theme for your terminal.
+
+## Credits
+
+[@ssiyad](https://github.com/ssiyad)

@@ -27,6 +27,7 @@
 | rofi | [acid-theme/rofi](https://github.com/acid-theme/rofi) | [ports/rofi](ports/rofi) |
 | swaylock | [acid-theme/swaylock](https://github.com/acid-theme/swaylock) | [ports/swaylock](ports/swaylock) |
 | Telegram Desktop | [acid-theme/telegram-desktop](https://github.com/acid-theme/telegram-desktop) | [ports/telegram-desktop](ports/telegram-desktop) |
+| tmux | [acid-theme/tmux](https://github.com/acid-theme/tmux) | [ports/tmux](ports/tmux) |
 | Waybar | [acid-theme/waybar](https://github.com/acid-theme/waybar) | [ports/waybar](ports/waybar) |
 
 <!-- ports:end -->

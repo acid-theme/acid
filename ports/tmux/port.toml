@@ -1,0 +1,12 @@
+title = "tmux"
+description = "Acid for tmux. A very dark colourscheme."
+
+[test]
+packages = ["tmux"]
+
+[preview]
+packages = ["tmux", "alacritty", "xorg-server-xvfb", "xdotool"]
+
+[render]
+matrix = ["flavor"]
+filename = "dist/acid-{flavor}.conf"
